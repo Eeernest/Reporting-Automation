@@ -6,6 +6,11 @@ class Config(BaseSettings):
   POSTGRES_URL: str
 
 
+  # Alembic
+
+  ALEMBIC_DB_URL: str
+
+
   # model config
 
   model_config = SettingsConfigDict(
