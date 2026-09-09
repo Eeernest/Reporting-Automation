@@ -8,6 +8,12 @@ class AppError(Exception):
 class ValidationError(AppError):
   status_code = 422
 
+class EmailTooLongError(ValidationError):
+  detail = "Email should be shorter than 320 characters"
+
+class UsernameTooLongError(ValidationError):
+  detail = "Username should be shorter than 32 characters"
+
 class PasswordTooShortError(ValidationError):
   detail = "Password should hate at least 8 characters"
 
