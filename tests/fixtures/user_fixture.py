@@ -1,7 +1,10 @@
 from unittest.mock import AsyncMock
 
+from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.dependencies.user_dependency import get_user_service
+from app.main import app
 from app.models.user_model import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user_schema import UserRole, UserCreateRequest
@@ -28,6 +31,18 @@ def mock_user_repo():
 def unit_user_service(mock_user_security, mock_user_repo):
   return UserService(mock_user_security, mock_user_repo)
 
+@pytest.fixture
+def mock_user_service():
+  return AsyncMock()
+
+@pytest.fixture
+async def unit_user_client(mock_user_service):
+  app.dependency_overrides[get_user_service] = lambda: mock_user_service
+
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+    yield c
+
+  app.dependency_overrides.clear()
 
 # Objects
 
