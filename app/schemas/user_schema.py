@@ -51,3 +51,6 @@ class UserCreateRequest(UserBase):
       raise e.PasswordNumberError()
     
     return v
+
+class UserResponse(UserBase):
+  id: int
