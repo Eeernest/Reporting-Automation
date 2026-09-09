@@ -45,7 +45,7 @@ class UserCreateRequest(UserBase):
       raise e.PasswordTooShortError()
     
     if not re.search(r"[A-Z]", v):
-      raise e.PasswordNoUppercasError()
+      raise e.PasswordNoUppercaseError()
     
     if not re.search(r"\d", v):
       raise e.PasswordNumberError()
