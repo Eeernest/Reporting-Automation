@@ -18,6 +18,11 @@ class Config(BaseSettings):
   ADMIN_HASHED_PASSWORD: str = "ADMIN_HASHED_PASSWORD"
 
 
+  # App URL
+
+  APP_URL: str
+
+
   # model config
 
   model_config = SettingsConfigDict(
