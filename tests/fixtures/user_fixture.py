@@ -20,16 +20,8 @@ def user_db_repo(db_session):
 # Unit
 
 @pytest.fixture
-def mock_user_security():
-  return AsyncMock()
-
-@pytest.fixture
-def mock_user_repo():
-  return AsyncMock()
-
-@pytest.fixture
-def unit_user_service(mock_user_security, mock_user_repo):
-  return UserService(mock_user_security, mock_user_repo)
+def unit_user_service(mock_security, mock_user_repo):
+  return UserService(mock_security, mock_user_repo)
 
 @pytest.fixture
 def mock_user_service():
