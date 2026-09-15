@@ -10,6 +10,7 @@ from app.models.user_model import User
 
 pytest_plugins = [
   "anyio",
+  "tests.fixtures.token_fixture",
   "tests.fixtures.user_fixture",
 ]
 
