@@ -18,6 +18,23 @@ class Config(BaseSettings):
   ADMIN_HASHED_PASSWORD: str = "ADMIN_HASHED_PASSWORD"
 
 
+  # Login
+
+  DUMMY_PASSWORD: str
+
+
+  # JWT
+
+  SECRET_KEY: str
+  ALGORITHM: str
+
+
+  # JWT Token
+
+  ACCESS_TOKEN_EXPIRE_MINUTES: int
+  REFRESH_TOKEN_EXPIRE_DAYS: int
+
+
   # App URL
 
   APP_URL: str
