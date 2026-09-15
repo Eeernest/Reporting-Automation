@@ -19,28 +19,31 @@ class Security:
   async def verify_password(self, password: str, hashed_password: str) -> bool:
     return await run_in_threadpool(self.hasher.verify, password, hashed_password)
 
-  async def create_access_token(self, user_data: dict) -> str:
+  def create_access_token_payload(self, user_data: dict) -> dict:
     expires = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-    payload = {
-      "sub": user_data["sub"],
+    access_token_payload = {
+      "sub": str(user_data["sub"]),
       "role": user_data["role"],
       "exp": expires,
       "jti": str(uuid.uuid4()),
       "refresh": False
     }
 
-    return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
+    return access_token_payload
 
-  async def create_refresh_token(self, user_data: dict) -> str:
+  def create_refresh_token_payload(self, user_data: dict) -> dict:
     expires = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
-    payload = {
-      "sub": user_data["sub"],
+    refresh_token_payload = {
+      "sub": str(user_data["sub"]),
       "role": user_data["role"],
       "exp": expires,
       "jti": str(uuid.uuid4()),
       "refresh": True
     }
 
-    return jwt.encode(payload, settings.SECRET_KEY, settings.ALGORITHM)
+    return refresh_token_payload
+
+  def encode_jwt_token(self, token_payload: dict) -> str:
+    return jwt.encode(token_payload, settings.SECRET_KEY, settings.ALGORITHM)
