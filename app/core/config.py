@@ -6,6 +6,11 @@ class Config(BaseSettings):
   POSTGRES_URL: str
 
 
+  # Redis
+
+  REDIS_URL: str
+
+
   # Alembic
 
   ALEMBIC_DB_URL: str
