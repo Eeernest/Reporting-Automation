@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock, Mock
+
 import pytest
 from redis.asyncio import Redis
 from sqlalchemy.pool import NullPool
@@ -82,3 +84,23 @@ async def db_session(test_engine, setup_database):
       await session.close()
       await trans.rollback()
       await conn.close()
+
+
+# Dependency Mocks
+
+@pytest.fixture()
+def mock_security():
+  mock = AsyncMock()
+  mock.create_access_token_payload = Mock()
+  mock.create_refresh_token_payload = Mock()
+  mock.encode_jwt_token = Mock()
+
+  return mock
+
+@pytest.fixture()
+def mock_user_repo():
+  return AsyncMock()
+
+@pytest.fixture()
+def mock_token_repo():
+  return AsyncMock()
