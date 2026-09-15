@@ -25,7 +25,7 @@ class Security:
     access_token_payload = {
       "sub": str(user_data["sub"]),
       "role": user_data["role"],
-      "exp": expires,
+      "exp": int(expires.timestamp()),
       "jti": str(uuid.uuid4()),
       "refresh": False
     }
@@ -38,7 +38,7 @@ class Security:
     refresh_token_payload = {
       "sub": str(user_data["sub"]),
       "role": user_data["role"],
-      "exp": expires,
+      "exp": int(expires.timestamp()),
       "jti": str(uuid.uuid4()),
       "refresh": True
     }
