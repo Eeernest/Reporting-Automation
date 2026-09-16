@@ -1,6 +1,15 @@
 class AppError(Exception):
   status_code = 500
-  detail = "An error occured"
+  detail = "An error occurred"
+
+
+# Service Unavailable Errors (503)
+
+class ServiceUnavailableError(AppError):
+  status_code = 503
+
+class RedisFailureError(ServiceUnavailableError):
+  detail = "Redis operation failed"
 
 
 # Validation Errors (422)
@@ -15,7 +24,7 @@ class UsernameTooLongError(ValidationError):
   detail = "Username should be shorter than 32 characters"
 
 class PasswordTooShortError(ValidationError):
-  detail = "Password should hate at least 8 characters"
+  detail = "Password should have at least 8 characters"
 
 class PasswordNoUppercaseError(ValidationError):
   detail = "Password should have at least one big letter"
@@ -34,3 +43,27 @@ class UsernameUnavailableError(ConflictError):
 
 class EmailUnavailableError(ConflictError):
   detail = "Email is already in use"
+
+
+# Forbidden Errors (403)
+
+class ForbiddenError(AppError):
+  status_code = 403
+
+class UserInactiveError(ForbiddenError):
+  detail = "User account is inactive"
+
+
+# Unauthorized Errors (401)
+
+class UnauthorizedError(AppError):
+  status_code = 401
+
+class InvalidCredentialsError(UnauthorizedError):
+  detail = "Incorrect username or password"
+
+class UserDeletedError(UnauthorizedError):
+  detail = "User account no longer exists"
+
+class TokenExpiredError(UnauthorizedError):
+  detail = "Token expired. Log in again"
