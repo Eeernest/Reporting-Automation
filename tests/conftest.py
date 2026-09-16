@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, MagicMock
 
 import pytest
 from redis.asyncio import Redis
@@ -9,9 +9,11 @@ from testcontainers.redis import RedisContainer
 
 from app.db.database import Base
 from app.models.user_model import User
+from app.schemas.user_schema import UserRole
 
 pytest_plugins = [
   "anyio",
+  "tests.fixtures.auth_fixture",
   "tests.fixtures.token_fixture",
   "tests.fixtures.user_fixture",
 ]
@@ -104,3 +106,16 @@ def mock_user_repo():
 @pytest.fixture()
 def mock_token_repo():
   return AsyncMock()
+
+@pytest.fixture()
+def mock_user_obj():
+  user = MagicMock(spec=User)
+  user.id = 1
+  user.username = "user1"
+  user.email = "user1@example.com"
+  user.hashed_password = "Hashedpassword123"
+  user.user_role = UserRole.user
+  user.is_active = True
+  user.is_deleted = False
+
+  return user
