@@ -7,8 +7,8 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_register_user_success(mock_user_service, unit_user_client, unit_user_obj):
-  mock_user_service.create_account.return_value = unit_user_obj
+async def test_register_user_success(mock_user_service, unit_user_client, mock_user_obj):
+  mock_user_service.create_account.return_value = mock_user_obj
   
   result = await unit_user_client.post("/register_user", json={
     "username": "user1",

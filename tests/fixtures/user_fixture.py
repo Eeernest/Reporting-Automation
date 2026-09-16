@@ -58,13 +58,3 @@ def user_request_data():
     email="user1@example.com",
     password="Password123",
   )
-
-@pytest.fixture
-def unit_user_obj():
-  return User(
-    id=1,
-    username="user1",
-    email="user1@example.com",
-    hashed_password="Hashedpassword123",
-    user_role=UserRole.user
-  )

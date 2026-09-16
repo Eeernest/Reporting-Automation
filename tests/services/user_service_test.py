@@ -7,21 +7,32 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_create_account_success(mock_security, mock_user_repo, unit_user_service, user_request_data, unit_user_obj):
+async def test_create_account_success(
+  mock_security,
+  mock_user_repo,
+  unit_user_service,
+  user_request_data,
+  mock_user_obj
+):
   mock_user_repo.get_by_username.return_value = None
   mock_user_repo.get_by_email.return_value = None
-  mock_security.get_password_hash.return_value = unit_user_obj.hashed_password
-  mock_user_repo.save.return_value = unit_user_obj
+  mock_security.get_password_hash.return_value = mock_user_obj.hashed_password
+  mock_user_repo.save.return_value = mock_user_obj
 
   result = await unit_user_service.create_account(user_request_data)
 
-  assert result == unit_user_obj
+  assert result == mock_user_obj
   assert mock_user_repo.save.call_count == 1
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_create_account_username_unavailable_error(mock_user_repo, unit_user_service, user_request_data, unit_user_obj):
-  mock_user_repo.get_by_username.return_value = unit_user_obj
+async def test_create_account_username_unavailable_error(
+  mock_user_repo,
+  unit_user_service,
+  user_request_data,
+  mock_user_obj
+):
+  mock_user_repo.get_by_username.return_value = mock_user_obj
 
   with pytest.raises(e.UsernameUnavailableError) as exc:
     await unit_user_service.create_account(user_request_data)
@@ -31,9 +42,14 @@ async def test_create_account_username_unavailable_error(mock_user_repo, unit_us
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_create_account_email_unavailable_error(mock_user_repo, unit_user_service, user_request_data, unit_user_obj):
+async def test_create_account_email_unavailable_error(
+  mock_user_repo,
+  unit_user_service,
+  user_request_data,
+  mock_user_obj
+):
   mock_user_repo.get_by_username.return_value = None
-  mock_user_repo.get_by_email.return_value = unit_user_obj
+  mock_user_repo.get_by_email.return_value = mock_user_obj
 
 
   with pytest.raises(e.EmailUnavailableError) as exc:
@@ -44,10 +60,16 @@ async def test_create_account_email_unavailable_error(mock_user_repo, unit_user_
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_create_account_username_race_condition(mock_security, mock_user_repo, unit_user_service, user_request_data, unit_user_obj):
+async def test_create_account_username_race_condition(
+  mock_security,
+  mock_user_repo,
+  unit_user_service,
+  user_request_data,
+  mock_user_obj
+):
   mock_user_repo.get_by_username.return_value = None
   mock_user_repo.get_by_email.return_value = None
-  mock_security.get_password_hash.return_value = unit_user_obj.hashed_password
+  mock_security.get_password_hash.return_value = mock_user_obj.hashed_password
   mock_user_repo.save.side_effect = IntegrityError("stmt", "params", "username")
 
   with pytest.raises(e.UsernameUnavailableError) as exc:
@@ -58,10 +80,16 @@ async def test_create_account_username_race_condition(mock_security, mock_user_r
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_create_account_email_race_condition(mock_security, mock_user_repo, unit_user_service, user_request_data, unit_user_obj):
+async def test_create_account_email_race_condition(
+  mock_security,
+  mock_user_repo,
+  unit_user_service,
+  user_request_data,
+  mock_user_obj
+):
   mock_user_repo.get_by_username.return_value = None
   mock_user_repo.get_by_email.return_value = None
-  mock_security.get_password_hash.return_value = unit_user_obj.hashed_password
+  mock_security.get_password_hash.return_value = mock_user_obj.hashed_password
   mock_user_repo.save.side_effect = IntegrityError("stmt", "params", "email")
 
   with pytest.raises(e.EmailUnavailableError) as exc:
