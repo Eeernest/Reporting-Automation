@@ -6,14 +6,14 @@ from app.schemas.token_schema import TokenResponse
 
 # Integration
 
-@pytest.fixture()
+@pytest.fixture
 def token_repo(redis_container):
   return TokenRepository(redis_container)
 
 
 # Object
 
-@pytest.fixture()
+@pytest.fixture
 def token_response_obj():
   return TokenResponse(
     access_token="access_token",
@@ -24,7 +24,7 @@ def token_response_obj():
 
 # Helper
 
-@pytest.fixture()
+@pytest.fixture
 def refresh_token_payload():
   security = Security()
 

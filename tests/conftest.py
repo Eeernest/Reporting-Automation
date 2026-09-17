@@ -90,7 +90,7 @@ async def db_session(test_engine, setup_database):
 
 # Dependency Mocks
 
-@pytest.fixture()
+@pytest.fixture
 def mock_security():
   mock = AsyncMock()
   mock.create_access_token_payload = Mock()
@@ -99,15 +99,15 @@ def mock_security():
 
   return mock
 
-@pytest.fixture()
+@pytest.fixture
 def mock_user_repo():
   return AsyncMock()
 
-@pytest.fixture()
+@pytest.fixture
 def mock_token_repo():
   return AsyncMock()
 
-@pytest.fixture()
+@pytest.fixture
 def mock_user_obj():
   user = MagicMock(spec=User)
   user.id = 1
