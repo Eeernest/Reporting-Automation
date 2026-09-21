@@ -38,11 +38,13 @@ class Config(BaseSettings):
 
   ACCESS_TOKEN_EXPIRE_MINUTES: int
   REFRESH_TOKEN_EXPIRE_DAYS: int
+  TOKEN_STORAGE_PATH: str
 
 
   # App URL
 
   APP_URL: str
+  SERVICE_NAME: str
 
 
   # model config
