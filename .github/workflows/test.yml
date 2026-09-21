@@ -10,12 +10,17 @@ jobs:
       POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       ALEMBIC_DB_URL: "ALEMBIC_DB_URL"
+
       DUMMY_PASSWORD: "DUMMY_PASSWORD"
       SECRET_KEY: "SECRET_KEY"
       ALGORITHM: "ALGORITHM"
+
       ACCESS_TOKEN_EXPIRE_MINUTES: 1
       REFRESH_TOKEN_EXPIRE_DAYS: 1
+      TOKEN_STORAGE_PATH: "TOKEN_STORAGE_PATH"
+
       APP_URL: "APP_URL"
+      SERVICE_NAME: "SERVICE_NAME"
 
     steps:
       - uses: actions/checkout@v4
