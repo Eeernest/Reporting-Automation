@@ -3,6 +3,7 @@ import argparse
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
+from app.cli.auth_cli import setup_auth_parser
 from app.cli.user_cli import setup_user_parser
 from app.core.config import settings
 from app.core.exceptions import AppError
@@ -44,6 +45,7 @@ def parser():
     help="Resources"
   )
 
+  setup_auth_parser(resource_subparser)
   setup_user_parser(resource_subparser)
 
   args = parser.parse_args()
