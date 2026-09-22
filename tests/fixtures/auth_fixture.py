@@ -25,13 +25,3 @@ async def unit_auth_client(mock_auth_service):
     yield c
 
   app.dependency_overrides.clear()
-
-# Helper
-
-@pytest.fixture
-def token_dict():
-  return {
-    "jti": "1",
-    "exp": 1,
-    "sub": "3"
-  }

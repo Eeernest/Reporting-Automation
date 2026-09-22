@@ -2,7 +2,7 @@ import pytest
 
 from app.core.security import Security
 from app.repositories.token_repository import TokenRepository
-from app.schemas.token_schema import TokenResponse
+from app.schemas.token_schema import TokenLogoutRequest, TokenResponse
 
 # Integration
 
@@ -14,6 +14,10 @@ def token_repo(redis_container):
 # Object
 
 @pytest.fixture
+def token_logout_obj():
+  return TokenLogoutRequest(refresh_token="refresh_token")
+
+@pytest.fixture
 def token_response_obj():
   return TokenResponse(
     access_token="access_token",
@@ -23,6 +27,14 @@ def token_response_obj():
 
 
 # Helper
+
+@pytest.fixture
+def token_dict():
+  return {
+    "jti": "1",
+    "exp": 1,
+    "sub": "3"
+  }
 
 @pytest.fixture
 def refresh_token_payload():
