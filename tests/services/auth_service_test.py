@@ -1,3 +1,4 @@
+from jwt.exceptions import PyJWTError
 import pytest
 from redis.exceptions import RedisError
 
@@ -125,3 +126,35 @@ async def test_login_redis_failure_error(
 
   assert exc.value.status_code == e.RedisFailureError.status_code
   assert exc.value.detail == e.RedisFailureError.detail
+
+
+# logout
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_success(
+  mock_security,
+  mock_token_repo,
+  unit_auth_service,
+  token_logout_obj,
+  token_dict
+):
+  mock_security.decode_jwt_token.return_value = token_dict
+  mock_token_repo.delete_refresh_token.return_value = None
+
+  result = await unit_auth_service.logout(token_logout_obj)
+
+  assert result == None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_pyjwterror(
+  mock_security,
+  unit_auth_service,
+  token_logout_obj
+):
+  mock_security.decode_jwt_token.side_effect = PyJWTError
+
+  result = await unit_auth_service.logout(token_logout_obj)
+
+  assert result == None
