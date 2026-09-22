@@ -1,3 +1,4 @@
+from jwt.exceptions import PyJWTError
 from redis.exceptions import RedisError
 
 from app.core.config import settings
@@ -6,7 +7,7 @@ from app.core.security import Security
 from app.models.user_model import User
 from app.repositories.token_repository import TokenRepository
 from app.repositories.user_repository import UserRepository
-from app.schemas.token_schema import TokenResponse
+from app.schemas.token_schema import TokenLogoutRequest, TokenResponse
 
 class AuthService:
   def __init__(self, security: Security, token_repo: TokenRepository, user_repo: UserRepository):
@@ -38,6 +39,15 @@ class AuthService:
       refresh_token=encoded_refresh_token,
       token_type="bearer"
     )
+
+  async def logout(self, logout_request: TokenLogoutRequest) -> None:
+    try:
+      decoded_refresh_token = self.security.decode_jwt_token(logout_request.refresh_token)
+
+      await self.token_repo.delete_refresh_token(decoded_refresh_token["jti"])
+
+    except PyJWTError:
+      pass
 
 
   # Helper Methods
