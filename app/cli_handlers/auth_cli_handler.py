@@ -23,6 +23,12 @@ def auth_login_handler(args: Namespace) -> None:
 
     token_data = response.json()
 
+    token_payload = {
+      "access_token": token_data.get("access_token"),
+      "refresh_token": token_data.get("refresh_token"),
+      "token_type": token_data.get("token_type") 
+    }
+
     access_token = token_data.get("access_token")
     refresh_token = token_data.get("refresh_token")
     token_type = token_data.get("token_type")
@@ -44,20 +50,10 @@ def auth_login_handler(args: Namespace) -> None:
 
 # Helper Functions
 
-def _save_tokens(
-    access_token: str,
-    refresh_token: str,
-    token_type: str
-) -> None:
-  if not access_token or not refresh_token or not token_type:
+def _save_tokens(token_payload: dict) -> None:
+  if not token_payload.access_token or not token_payload.refresh_token or not token_payload.token_type:
     print("API did not return complete token data")
     return
-  
-  payload = {
-    "access_token": access_token,
-    "refresh_token": refresh_token,
-    "token_type": token_type
-  }
 
   token_file = Path.home() / settings.TOKEN_STORAGE_PATH
-  token_file.write_text(json.dumps(payload))
+  token_file.write_text(json.dumps(token_payload))
