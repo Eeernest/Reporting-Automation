@@ -96,6 +96,7 @@ def mock_security():
   mock.create_access_token_payload = Mock()
   mock.create_refresh_token_payload = Mock()
   mock.encode_jwt_token = Mock()
+  mock.decode_jwt_token = Mock()
 
   return mock
 
