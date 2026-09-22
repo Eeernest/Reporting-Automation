@@ -5,5 +5,14 @@ class TokenBase(BaseModel):
   refresh_token: str
   token_type: str
 
+
+# Requests
+
+class TokenLogoutRequest(BaseModel):
+  refresh_token: str
+
+
+# Responses
+
 class TokenResponse(TokenBase):
   pass
