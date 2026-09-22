@@ -47,3 +47,6 @@ class Security:
 
   def encode_jwt_token(self, token_payload: dict) -> str:
     return jwt.encode(token_payload, settings.SECRET_KEY, settings.ALGORITHM)
+
+  def decode_jwt_token(self, encoded_token: str) -> dict:
+    return jwt.decode(encoded_token, settings.SECRET_KEY, settings.ALGORITHM)
