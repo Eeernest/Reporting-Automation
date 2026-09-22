@@ -28,10 +28,7 @@ async def test_login_success(
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_login_invalid_credentials_error(
-  mock_auth_service,
-  unit_auth_client
-):
+async def test_login_invalid_credentials_error(mock_auth_service, unit_auth_client):
   mock_auth_service.login.side_effect = e.InvalidCredentialsError()
 
   result = await unit_auth_client.post("/login", data={
@@ -43,3 +40,15 @@ async def test_login_invalid_credentials_error(
 
   assert result.status_code == e.InvalidCredentialsError.status_code
   assert data["detail"] == e.InvalidCredentialsError.detail
+
+
+# logout
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_success(mock_auth_service, unit_auth_client):
+  mock_auth_service.logout.return_value = None
+
+  result = await unit_auth_client.post("/logout", json={"refresh_token": "refresh_token"})
+
+  assert result.status_code == status.HTTP_204_NO_CONTENT
