@@ -52,5 +52,5 @@ class UserCreateRequest(UserBase):
     
     return v
 
-class UserResponse(UserBase):
+class UserCreateResponse(UserBase):
   id: int
