@@ -4,7 +4,7 @@ import app.core.exceptions as e
 from app.core.security import Security
 from app.models.user_model import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user_schema import UserRole, UserCreateRequest
+from app.schemas.user_schema import UserRole, UserCreateRequest, UserCreateResponse
 
 class UserService:
   def __init__(self, security: Security, user_repo: UserRepository):
@@ -13,7 +13,7 @@ class UserService:
 
   # Main Methods
 
-  async def create_account(self, user_request_data: UserCreateRequest) -> User:
+  async def create_account(self, user_request_data: UserCreateRequest) -> UserCreateResponse:
     await self._check_username(user_request_data.username)
     await self._check_email(user_request_data.email)
 
