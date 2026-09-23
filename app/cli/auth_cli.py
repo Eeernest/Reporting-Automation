@@ -13,6 +13,7 @@ def setup_auth_parser(subparsers: _SubParsersAction) -> None:
   )
 
   _login_parser(auth_subparser)
+  _logout_parser(auth_subparser)
 
 
 # Helper Functions
@@ -37,3 +38,8 @@ def _login_parser(subparsers: _SubParsersAction) -> None:
   )
 
   login_parser.set_defaults(func=handler.auth_login_handler)
+
+def _logout_parser(subparsers: _SubParsersAction) -> None:
+  logout_parser = subparsers.add_parser("logout", help="Logout from api")
+
+  logout_parser.set_defaults(func=handler.auth_logout_handler)
