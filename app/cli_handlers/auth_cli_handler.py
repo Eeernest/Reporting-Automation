@@ -29,14 +29,8 @@ def auth_login_handler(args: Namespace) -> None:
       "token_type": token_data.get("token_type") 
     }
 
-    access_token = token_data.get("access_token")
-    refresh_token = token_data.get("refresh_token")
-    token_type = token_data.get("token_type")
-
     _save_tokens(
-      access_token,
-      refresh_token,
-      token_type
+      token_payload
     )
 
     print("User successfully logged in")
