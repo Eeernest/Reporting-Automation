@@ -19,6 +19,6 @@ async def login(
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(service: AuthServiceDep, logout_request: TokenLogoutRequest):
-  await service.logout(logout_request)
+  await service.logout(logout_request.refresh_token)
 
   return status.HTTP_204_NO_CONTENT
