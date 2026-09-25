@@ -48,3 +48,27 @@ async def test_logout_success(mock_auth_service, unit_auth_client):
   result = await unit_auth_client.post("/logout", json={"refresh_token": "refresh_token"})
 
   assert result.status_code == status.HTTP_204_NO_CONTENT
+
+
+# restore_tokens
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_restore_tokens_success(
+  mock_auth_service,
+  unit_auth_client,
+  token_response_obj
+):
+  mock_auth_service.restore_tokens.return_value = token_response_obj
+
+  result = await unit_auth_client.post(
+    "/restore_tokens",
+    json={"refresh_token": "refresh_token"}
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["access_token"] == token_response_obj.access_token
+  assert data["refresh_token"] == token_response_obj.refresh_token
+  assert data["token_type"] == token_response_obj.token_type
