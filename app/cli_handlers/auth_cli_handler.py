@@ -53,10 +53,44 @@ def auth_logout_handler(args: Namespace) -> None:
 
   try:
     response = requests.post(endpoint_url, json=request_payload)
+    response.raise_for_status()
 
     token_file.unlink()
 
     print("User successfully logged out")
+
+  except requests.exceptions.HTTPError as err:
+    print(f"HTTP Error: {err}")
+
+    if response.content:
+      print(f"Detail: {response.text}")
+
+def auth_restore_tokens_handler(args: Namespace) -> None:
+  endpoint_url = f"{APP_URL}/restore_tokens"
+
+  token_data = _load_tokens()
+
+  if not token_data or not token_data["refresh_token"]:
+      print("Refresh token error. Login again")
+      return
+  
+  request_payload = {"refresh_token": token_data["refresh_token"]}
+
+  try:
+    response = requests.post(endpoint_url, json=request_payload)
+    response.raise_for_status()
+
+    token_data = response.json()
+    
+    token_payload = {
+      "access_token": token_data["access_token"],
+      "refresh_token": token_data["refresh_token"],
+      "token_type": token_data["token_type"]
+    }
+
+    _save_tokens(token_payload)
+
+    print("Tokens successfully restored")
 
   except requests.exceptions.HTTPError as err:
     print(f"HTTP Error: {err}")
