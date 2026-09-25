@@ -10,7 +10,12 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.token_schema import TokenLogoutRequest, TokenResponse
 
 class AuthService:
-  def __init__(self, security: Security, token_repo: TokenRepository, user_repo: UserRepository):
+  def __init__(
+    self,
+    security: Security,
+    token_repo: TokenRepository,
+    user_repo: UserRepository
+  ):
     self.security = security
     self.token_repo = token_repo
     self.user_repo = user_repo

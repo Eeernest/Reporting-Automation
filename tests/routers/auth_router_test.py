@@ -7,11 +7,7 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_login_success(
-  mock_auth_service,
-  unit_auth_client,
-  token_response_obj
-):
+async def test_login_success(mock_auth_service, unit_auth_client, token_response_obj):
   mock_auth_service.login.return_value = token_response_obj
 
   result = await unit_auth_client.post("/login", data={

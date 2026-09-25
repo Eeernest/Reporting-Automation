@@ -6,11 +6,7 @@ from app.schemas.token_schema import TokenLogoutRequest, TokenResponse
 
 router = APIRouter()
 
-@router.post(
-  "/login",
-  response_model=TokenResponse,
-  status_code=status.HTTP_200_OK
-)
+@router.post("/login", response_model=TokenResponse, status_code=status.HTTP_200_OK)
 async def login(
   service: AuthServiceDep,
   login_data: OAuth2PasswordRequestForm = Depends()

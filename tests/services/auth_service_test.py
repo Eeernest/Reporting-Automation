@@ -35,11 +35,7 @@ async def test_login_success(
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_login_user_not_found(
-  mock_security,
-  mock_user_repo,
-  unit_auth_service
-):
+async def test_login_user_not_found(mock_security, mock_user_repo, unit_auth_service):
   mock_user_repo.get_by_username.return_value = None
   mock_security.verify_password.return_value = False
 
@@ -148,11 +144,7 @@ async def test_logout_success(
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_logout_pyjwterror(
-  mock_security,
-  unit_auth_service,
-  token_logout_obj
-):
+async def test_logout_pyjwterror(mock_security, unit_auth_service, token_logout_obj):
   mock_security.decode_jwt_token.side_effect = PyJWTError
 
   result = await unit_auth_service.logout(token_logout_obj)
