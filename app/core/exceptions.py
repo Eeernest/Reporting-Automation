@@ -62,8 +62,11 @@ class UnauthorizedError(AppError):
 class InvalidCredentialsError(UnauthorizedError):
   detail = "Incorrect username or password"
 
-class UserDeletedError(UnauthorizedError):
-  detail = "User account no longer exists"
+class InvalidTokenError(UnauthorizedError):
+  detail = "Could not validate credentials"
 
 class TokenExpiredError(UnauthorizedError):
   detail = "Token expired. Log in again"
+
+class UserDeletedError(UnauthorizedError):
+  detail = "User account no longer exists"
