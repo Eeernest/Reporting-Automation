@@ -13,7 +13,10 @@ class UserService:
 
   # Main Methods
 
-  async def create_account(self, user_request_data: UserCreateRequest) -> UserCreateResponse:
+  async def create_account(
+    self,
+    user_request_data: UserCreateRequest
+  ) -> UserCreateResponse:
     await self._check_username(user_request_data.username)
     await self._check_email(user_request_data.email)
 
