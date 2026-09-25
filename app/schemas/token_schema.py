@@ -11,6 +11,9 @@ class TokenBase(BaseModel):
 class TokenLogoutRequest(BaseModel):
   refresh_token: str
 
+class TokenRestoreRequest(BaseModel):
+  refresh_token: str
+
 
 # Responses
 
