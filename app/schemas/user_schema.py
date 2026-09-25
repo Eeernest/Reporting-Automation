@@ -36,7 +36,10 @@ class UserBase(BaseModel):
 
     return v
 
-class UserCreateRequest(UserBase):
+
+# Requests
+
+class RegisterRequest(UserBase):
   password: str
 
   @field_validator("password")
@@ -52,5 +55,8 @@ class UserCreateRequest(UserBase):
     
     return v
 
-class UserCreateResponse(UserBase):
+
+# Responses
+
+class RegisterResponse(UserBase):
   id: int

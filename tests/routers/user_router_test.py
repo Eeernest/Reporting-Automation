@@ -14,7 +14,7 @@ async def test_register_user_success(
 ):
   mock_user_service.create_account.return_value = mock_user_obj
   
-  result = await unit_user_client.post("/register_user", json={
+  result = await unit_user_client.post("/register", json={
     "username": "user1",
     "email": "user1@example.com",
     "password": "Password123"
@@ -28,7 +28,7 @@ async def test_register_user_success(
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_register_user_password_too_short_error(unit_user_client):
-  result = await unit_user_client.post("/register_user", json={
+  result = await unit_user_client.post("/register", json={
     "username": "user1",
     "email": "user1@example.com",
     "password": "Short1"
@@ -42,7 +42,7 @@ async def test_register_user_password_too_short_error(unit_user_client):
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_register_user_password_no_number_error(unit_user_client):
-  result = await unit_user_client.post("/register_user", json={
+  result = await unit_user_client.post("/register", json={
     "username": "user1",
     "email": "user1@example.com",
     "password": "Password"
@@ -56,7 +56,7 @@ async def test_register_user_password_no_number_error(unit_user_client):
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_register_user_password_no_uppercase_error(unit_user_client):
-  result = await unit_user_client.post("/register_user", json={
+  result = await unit_user_client.post("/register", json={
     "username": "user1",
     "email": "user1@example.com",
     "password": "password123"

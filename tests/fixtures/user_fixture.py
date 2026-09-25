@@ -7,7 +7,7 @@ from app.dependencies.user_dependency import get_user_service
 from app.main import app
 from app.models.user_model import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user_schema import UserRole, UserCreateRequest
+from app.schemas.user_schema import UserRole, RegisterRequest
 from app.services.user_service import UserService
 
 # Integration
@@ -53,7 +53,7 @@ async def saved_user_obj(user_db_repo, user_obj):
 
 @pytest.fixture
 def user_request_data():
-  return UserCreateRequest(
+  return RegisterRequest(
     username="user1",
     email="user1@example.com",
     password="Password123",
