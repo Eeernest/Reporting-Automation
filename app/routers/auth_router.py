@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.dependencies.auth_dependency import AuthServiceDep
-from app.schemas.token_schema import TokenLogoutRequest, TokenResponse
+from app.schemas.token_schema import TokenLogoutRequest, TokenRestoreRequest, TokenResponse
 
 router = APIRouter()
 
@@ -15,6 +15,14 @@ async def login(
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(service: AuthServiceDep, logout_request: TokenLogoutRequest):
-  await service.logout(logout_request.refresh_token)
+  await service.logout(logout_request)
 
   return status.HTTP_204_NO_CONTENT
+
+@router.post(
+  "/restore_tokens",
+  response_model=TokenResponse,
+  status_code=status.HTTP_200_OK
+)
+async def restore_tokens(service: AuthServiceDep, restore_request: TokenRestoreRequest):
+  return await service.restore_tokens(restore_request)
