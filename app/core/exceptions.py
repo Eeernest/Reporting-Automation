@@ -20,17 +20,17 @@ class ValidationError(AppError):
 class EmailTooLongError(ValidationError):
   detail = "Email should be shorter than 320 characters"
 
-class UsernameTooLongError(ValidationError):
-  detail = "Username should be shorter than 32 characters"
-
-class PasswordTooShortError(ValidationError):
-  detail = "Password should have at least 8 characters"
-
 class PasswordNoUppercaseError(ValidationError):
   detail = "Password should have at least one big letter"
 
 class PasswordNumberError(ValidationError):
   detail = "Password should have at least one number"
+
+class PasswordTooShortError(ValidationError):
+  detail = "Password should have at least 8 characters"
+
+class UsernameTooLongError(ValidationError):
+  detail = "Username should be shorter than 32 characters"
 
 
 # Conflict Errors (409)
@@ -38,11 +38,11 @@ class PasswordNumberError(ValidationError):
 class ConflictError(AppError):
   status_code = 409
 
-class UsernameUnavailableError(ConflictError):
-  detail = "Username is already in use"
-
 class EmailUnavailableError(ConflictError):
   detail = "Email is already in use"
+
+class UsernameUnavailableError(ConflictError):
+  detail = "Username is already in use"
 
 
 # Forbidden Errors (403)
