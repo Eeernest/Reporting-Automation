@@ -12,6 +12,23 @@ async def test_save_user_obj_success(user_db_repo, user_obj):
   assert result.email == user_obj.email
 
 
+# get_by_id
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_id_success(user_db_repo, saved_user_obj):
+  result = await user_db_repo.get_by_id(saved_user_obj.id)
+
+  assert result == saved_user_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_id_return_none_success(user_db_repo):
+  result = await user_db_repo.get_by_id(14)
+
+  assert result == None
+
+
 # get_by_username
 
 @pytest.mark.anyio
