@@ -250,15 +250,14 @@ async def test_restore_tokens_user_not_found(
   mock_token_repo,
   mock_user_repo,
   unit_auth_service,
-  token_restore_obj,
-  token_dict
+  token_payload
 ):
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
   mock_token_repo.delete_refresh_token.return_value = None
   mock_user_repo.get_by_id.return_value = None
 
   with pytest.raises(e.InvalidTokenError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refresh_token")
 
   assert exc.value.status_code == e.InvalidTokenError.status_code
   assert exc.value.detail == e.InvalidTokenError.detail
