@@ -1,3 +1,4 @@
+from re import M
 from unittest.mock import AsyncMock
 
 from httpx import AsyncClient, ASGITransport
@@ -25,3 +26,23 @@ async def unit_auth_client(mock_auth_service):
     yield c
 
   app.dependency_overrides.clear()
+
+
+# Helpers
+
+@pytest.fixture
+def token_payload():
+  return {
+    "sub": "1",
+    "role": "user",
+    "exp": 1,
+    "jti": "1234",
+    "refresh": True 
+  }
+
+@pytest.fixture
+def encoded_tokens():
+  return {
+    "access_token": "encoded_access_token",
+    "refresh_token": "encoded_refresh_token"
+  }

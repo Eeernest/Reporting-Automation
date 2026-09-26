@@ -13,25 +13,25 @@ async def test_login_success(
   mock_user_repo,
   mock_token_repo,
   unit_auth_service,
-  token_response_obj,
-  token_dict,
+  token_payload,
+  encoded_tokens,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = mock_user_obj
   mock_security.verify_password.return_value = True
-  mock_security.create_access_token_payload.return_value = token_dict
-  mock_security.create_refresh_token_payload.return_value = token_dict
+  mock_security.create_access_token_payload.return_value = token_payload
+  mock_security.create_refresh_token_payload.return_value = token_payload
   mock_token_repo.store_refresh_token.return_value = None
   mock_security.encode_jwt_token.side_effect = [
-    token_response_obj.access_token,
-    token_response_obj.refresh_token
+    encoded_tokens["access_token"],
+    encoded_tokens["refresh_token"]
   ]
 
   result = await unit_auth_service.login(mock_user_obj.username, "Password123")
 
-  assert result.access_token == token_response_obj.access_token
-  assert result.refresh_token == token_response_obj.refresh_token
-  assert result.token_type == token_response_obj.token_type
+  assert result["access_token"] == encoded_tokens["access_token"]
+  assert result["refresh_token"] == encoded_tokens["refresh_token"]
+  assert result["token_type"] == "bearer"
 
 @pytest.mark.anyio
 @pytest.mark.unit
@@ -108,13 +108,13 @@ async def test_login_redis_failure_error(
   mock_token_repo,
   mock_user_repo,
   unit_auth_service,
-  token_dict,
+  token_payload,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = mock_user_obj
   mock_security.verify_paassword.return_value = True
-  mock_security.create_access_token_payload.return_value = token_dict
-  mock_security.create_refresh_token_payload.return_value = token_dict
+  mock_security.create_access_token_payload.return_value = token_payload
+  mock_security.create_refresh_token_payload.return_value = token_payload
   mock_token_repo.store_refresh_token.side_effect = RedisError
 
   with pytest.raises(e.RedisFailureError) as exc:
@@ -132,22 +132,21 @@ async def test_logout_success(
   mock_security,
   mock_token_repo,
   unit_auth_service,
-  token_logout_obj,
-  token_dict
+  token_payload
 ):
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
   mock_token_repo.delete_refresh_token.return_value = None
 
-  result = await unit_auth_service.logout(token_logout_obj)
+  result = await unit_auth_service.logout("encoded_refresh_token")
 
   assert result == None
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_logout_pyjwterror(mock_security, unit_auth_service, token_logout_obj):
+async def test_logout_pyjwterror(mock_security, unit_auth_service):
   mock_security.decode_jwt_token.side_effect = PyJWTError
 
-  result = await unit_auth_service.logout(token_logout_obj)
+  result = await unit_auth_service.logout("encoded_refresh_token")
 
   assert result == None
 
@@ -161,39 +160,37 @@ async def test_restore_tokens_success(
   mock_token_repo,
   mock_user_repo,
   unit_auth_service,
-  token_restore_obj,
-  token_response_obj,
-  token_dict,
+  token_payload,
+  encoded_tokens,
   mock_user_obj
 ):
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
   mock_token_repo.delete_refresh_token.return_value = None
   mock_user_repo.get_by_id.return_value = mock_user_obj
-  mock_security.create_access_token_payload.return_value = token_dict
-  mock_security.create_refresh_token_payload.return_value = token_dict
+  mock_security.create_access_token_payload.return_value = token_payload
+  mock_security.create_refresh_token_payload.return_value = token_payload
   mock_token_repo.store_refresh_token.return_value = None
   mock_security.encode_jwt_token.side_effect = [
-    token_response_obj.access_token,
-    token_response_obj.refresh_token
+    encoded_tokens["access_token"],
+    encoded_tokens["refresh_token"]
   ]
 
-  result = await unit_auth_service.restore_tokens(token_restore_obj)
+  result = await unit_auth_service.restore_tokens("encoded_refresh_token")
 
-  assert result.access_token == token_response_obj.access_token
-  assert result.refresh_token == token_response_obj.refresh_token
-  assert result.token_type == token_response_obj.token_type
+  assert result["access_token"] == encoded_tokens["access_token"]
+  assert result["refresh_token"] == encoded_tokens["refresh_token"]
+  assert result["token_type"] == "bearer"
 
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_restore_tokens_expired_signature_error(
   mock_security,
   unit_auth_service,
-  token_restore_obj
 ):
   mock_security.decode_jwt_token.side_effect = ExpiredSignatureError()
 
   with pytest.raises(e.TokenExpiredError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refresh_tokoen")
 
   assert exc.value.status_code == e.TokenExpiredError.status_code
   assert exc.value.detail == e.TokenExpiredError.detail
@@ -203,12 +200,11 @@ async def test_restore_tokens_expired_signature_error(
 async def test_restore_tokens_pyjwterror(
   mock_security,
   unit_auth_service,
-  token_restore_obj
 ):
   mock_security.decode_jwt_token.side_effect = PyJWTError()
 
   with pytest.raises(e.InvalidCredentialsError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refrsh_token")
 
   assert exc.value.status_code == e.InvalidCredentialsError.status_code
   assert exc.value.detail == e.InvalidCredentialsError.detail
@@ -218,15 +214,14 @@ async def test_restore_tokens_pyjwterror(
 async def test_restore_tokens_false_refresh_token(
   mock_security,
   unit_auth_service,
-  token_restore_obj,
-  token_dict
+  token_payload
 ):
-  token_dict["refresh"] = False
+  token_payload["refresh"] = False
   
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
 
   with pytest.raises(e.InvalidTokenError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refresh_token")
 
   assert exc.value.status_code == e.InvalidTokenError.status_code
   assert exc.value.detail == e.InvalidTokenError.detail
@@ -237,14 +232,13 @@ async def test_restore_tokens_redis_delete_failure(
   mock_security,
   mock_token_repo,
   unit_auth_service,
-  token_restore_obj,
-  token_dict
+  token_payload
 ):
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
   mock_token_repo.delete_refresh_token.side_effect = RedisError
 
   with pytest.raises(e.RedisFailureError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refresh_token")
 
   assert exc.value.status_code == e.RedisFailureError.status_code
   assert exc.value.detail == e.RedisFailureError.detail
@@ -276,19 +270,18 @@ async def test_restore_tokens_redis_store_error(
   mock_token_repo,
   mock_user_repo,
   unit_auth_service,
-  token_restore_obj,
-  token_dict,
+  token_payload,
   mock_user_obj 
 ):
-  mock_security.decode_jwt_token.return_value = token_dict
+  mock_security.decode_jwt_token.return_value = token_payload
   mock_token_repo.delete_refresh_token.return_value = None
   mock_user_repo.get_by_id.return_value = mock_user_obj
-  mock_security.create_access_token_payload.return_value = token_dict
-  mock_security.create_refresh_token_payload.return_value = token_dict
+  mock_security.create_access_token_payload.return_value = token_payload
+  mock_security.create_refresh_token_payload.return_value = token_payload
   mock_token_repo.store_refresh_token.side_effect = RedisError
 
   with pytest.raises(e.RedisFailureError) as exc:
-    await unit_auth_service.restore_tokens(token_restore_obj)
+    await unit_auth_service.restore_tokens("encoded_refresh_token")
 
   assert exc.value.status_code == e.RedisFailureError.status_code
   assert exc.value.detail == e.RedisFailureError.detail

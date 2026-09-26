@@ -7,8 +7,10 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_login_success(mock_auth_service, unit_auth_client, token_response_obj):
-  mock_auth_service.login.return_value = token_response_obj
+async def test_login_success(mock_auth_service, unit_auth_client, encoded_tokens):
+  encoded_tokens["token_type"] = "bearer"
+
+  mock_auth_service.login.return_value = encoded_tokens
 
   result = await unit_auth_client.post("/login", data={
     "username": "user1",
@@ -18,9 +20,9 @@ async def test_login_success(mock_auth_service, unit_auth_client, token_response
   data = result.json()
 
   assert result.status_code == status.HTTP_200_OK
-  assert data["access_token"] == token_response_obj.access_token
-  assert data["refresh_token"] == token_response_obj.refresh_token
-  assert data["token_type"] == token_response_obj.token_type
+  assert data["access_token"] == encoded_tokens["access_token"]
+  assert data["refresh_token"] == encoded_tokens["refresh_token"]
+  assert data["token_type"] == encoded_tokens["token_type"]
 
 @pytest.mark.anyio
 @pytest.mark.unit
@@ -57,9 +59,11 @@ async def test_logout_success(mock_auth_service, unit_auth_client):
 async def test_restore_tokens_success(
   mock_auth_service,
   unit_auth_client,
-  token_response_obj
+  encoded_tokens
 ):
-  mock_auth_service.restore_tokens.return_value = token_response_obj
+  encoded_tokens["token_type"] = "bearer"
+  
+  mock_auth_service.restore_tokens.return_value = encoded_tokens
 
   result = await unit_auth_client.post(
     "/restore_tokens",
@@ -69,6 +73,6 @@ async def test_restore_tokens_success(
   data = result.json()
 
   assert result.status_code == status.HTTP_200_OK
-  assert data["access_token"] == token_response_obj.access_token
-  assert data["refresh_token"] == token_response_obj.refresh_token
-  assert data["token_type"] == token_response_obj.token_type
+  assert data["access_token"] == encoded_tokens["access_token"]
+  assert data["refresh_token"] == encoded_tokens["refresh_token"]
+  assert data["token_type"] == encoded_tokens["token_type"]
