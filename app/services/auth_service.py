@@ -7,7 +7,6 @@ from app.core.security import Security
 from app.models.user_model import User
 from app.repositories.token_repository import TokenRepository
 from app.repositories.user_repository import UserRepository
-from app.schemas.token_schema import TokenLogoutRequest, TokenRestoreRequest, TokenResponse
 
 class AuthService:
   def __init__(
@@ -22,7 +21,7 @@ class AuthService:
 
   # Main Methods
 
-  async def login(self, username: str, password: str) -> TokenResponse:
+  async def login(self, username: str, password: str) -> dict[str, str]:
     user_obj = await self._verify_user_credentials(username, password)
 
     self._verify_user_status(user_obj)
@@ -39,23 +38,23 @@ class AuthService:
     encoded_access_token = self.security.encode_jwt_token(access_token_payload)
     encoded_refresh_token = self.security.encode_jwt_token(refresh_token_payload)
 
-    return TokenResponse(
-      access_token=encoded_access_token,
-      refresh_token=encoded_refresh_token,
-      token_type="bearer"
-    )
+    return {
+      "access_token": encoded_access_token,
+      "refresh_token": encoded_refresh_token,
+      "token_type": "bearer"
+    }
 
-  async def logout(self, logout_request: TokenLogoutRequest) -> None:
+  async def logout(self, encoded_refresh_token: str) -> None:
     try:
-      decoded_refresh_token = self.security.decode_jwt_token(logout_request.refresh_token)
+      decoded_refresh_token = self.security.decode_jwt_token(encoded_refresh_token)
 
       await self.token_repo.delete_refresh_token(decoded_refresh_token["jti"])
 
     except PyJWTError:
       pass
 
-  async def restore_tokens(self, restore_request: TokenRestoreRequest) -> TokenResponse:
-    decoded_refresh_token = self._try_decode_jwt_token(restore_request.refresh_token)
+  async def restore_tokens(self, encoded_refresh_token: str) -> dict[str, str]:
+    decoded_refresh_token = self._try_decode_jwt_token(encoded_refresh_token)
 
     self._validate_refresh_token(decoded_refresh_token["refresh"])
 
@@ -75,11 +74,11 @@ class AuthService:
     encoded_access_token = self.security.encode_jwt_token(access_token_payload)
     encoded_refresh_token = self.security.encode_jwt_token(refresh_token_payload)
 
-    return TokenResponse(
-      access_token=encoded_access_token,
-      refresh_token=encoded_refresh_token,
-      token_type="bearer"
-    )
+    return {
+      "access_token": encoded_access_token,
+      "refresh_token": encoded_refresh_token,
+      "token_type": "bearer"
+    }
 
 
   # Helper Methods
