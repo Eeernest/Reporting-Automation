@@ -6,6 +6,7 @@ import jwt
 from pwdlib import PasswordHash
 
 from app.core.config import settings
+from app.core.security_types import AccessTokenPayload, RefreshTokenPayload
 
 class Security:
   def __init__(self):
@@ -19,31 +20,32 @@ class Security:
   async def verify_password(self, password: str, hashed_password: str) -> bool:
     return await run_in_threadpool(self.hasher.verify, password, hashed_password)
 
-  def create_access_token_payload(self, user_data: dict) -> dict:
-    expires = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+  def create_access_token_payload(self, user_data: dict[str, str]) -> AccessTokenPayload:
+    issued = datetime.now(timezone.utc)
+    expires = issued + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-    access_token_payload = {
-      "sub": str(user_data["sub"]),
-      "role": user_data["role"],
-      "exp": int(expires.timestamp()),
-      "jti": str(uuid.uuid4()),
-      "refresh": False
-    }
+    return AccessTokenPayload(
+      iss=settings.ISS,
+      sub=user_data["sub"],
+      role=user_data["role"],
+      aud=settings.AUD,
+      iat=int(issued.timestamp()),
+      exp=int(expires.timestamp()),
+      jti=str(uuid.uuid4())
+    )
 
-    return access_token_payload
+  def create_refresh_token_payload(self, user_id: str) -> RefreshTokenPayload:
+    issued = datetime.now(timezone.utc)
+    expires = issued + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
-  def create_refresh_token_payload(self, user_data: dict) -> dict:
-    expires = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-
-    refresh_token_payload = {
-      "sub": str(user_data["sub"]),
-      "role": user_data["role"],
-      "exp": int(expires.timestamp()),
-      "jti": str(uuid.uuid4()),
-      "refresh": True
-    }
-
-    return refresh_token_payload
+    return RefreshTokenPayload(
+      iss=settings.ISS,
+      sub=user_id,
+      aud=settings.AUD,
+      iat=int(issued.timestamp()),
+      exp=int(expires.timestamp()),
+      jti=str(uuid.uuid4())
+    )
 
   def encode_jwt_token(self, token_payload: dict) -> str:
     return jwt.encode(token_payload, settings.SECRET_KEY, settings.ALGORITHM)
