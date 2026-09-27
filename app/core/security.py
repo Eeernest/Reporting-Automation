@@ -8,6 +8,10 @@ from pwdlib import PasswordHash
 from app.core.config import settings
 from app.core.security_types import AccessTokenPayload, RefreshTokenPayload
 
+access_token_header = {"typ": "at+jwt"}
+refresh_token_header = {"typ": "rt+jwt"}
+
+
 class Security:
   def __init__(self):
     self.hasher = PasswordHash.recommended()
@@ -47,8 +51,18 @@ class Security:
       jti=str(uuid.uuid4())
     )
 
-  def encode_jwt_token(self, token_payload: dict) -> str:
-    return jwt.encode(token_payload, settings.SECRET_KEY, settings.ALGORITHM)
+  def encode_access_token(self, access_token_payload: AccessTokenPayload) -> str:
+    return jwt.encode(
+      payload=access_token_payload,
+      key=settings.SECRET_KEY,
+      algorithm=settings.ALGORITHM,
+      headers=access_token_header
+    )
 
-  def decode_jwt_token(self, encoded_token: str) -> dict:
-    return jwt.decode(encoded_token, settings.SECRET_KEY, settings.ALGORITHM)
+  def encode_refresh_token(self, refresh_token_payload: RefreshTokenPayload) -> str:
+    return jwt.encode(
+      payload=refresh_token_payload,
+      key=settings.SECRET_KEY,
+      algorithm=settings.ALGORITHM,
+      headers=refresh_token_header 
+    )
