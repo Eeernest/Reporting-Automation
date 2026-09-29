@@ -14,6 +14,7 @@ from app.schemas.user_schema import UserRole
 pytest_plugins = [
   "anyio",
   "tests.fixtures.auth_fixture",
+  "tests.fixtures.security_fixture",
   "tests.fixtures.token_fixture",
   "tests.fixtures.user_fixture",
 ]
@@ -95,8 +96,10 @@ def mock_security():
   mock = AsyncMock()
   mock.create_access_token_payload = Mock()
   mock.create_refresh_token_payload = Mock()
-  mock.encode_jwt_token = Mock()
-  mock.decode_jwt_token = Mock()
+  mock.get_encoded_access_token = Mock()
+  mock.get_encoded_refresh_token = Mock()
+  mock.get_decoded_access_token = Mock()
+  mock.get_decoded_refresh_token = Mock()
 
   return mock
 
