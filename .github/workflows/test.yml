@@ -13,7 +13,7 @@ jobs:
 
       DUMMY_PASSWORD: "DUMMY_PASSWORD"
       SECRET_KEY: "SECRET_KEY"
-      ALGORITHM: "ALGORITHM"
+      ALGORITHM: ${{ secrets.ALGORITHM }}
 
       ISS: "ISS"
       AUD: "AUD"
