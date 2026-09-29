@@ -7,7 +7,7 @@ class AccessTokenPayload(TypedDict):
   aud: str
   iat: int
   exp: int
-  jti: int
+  jti: str
 
 class RefreshTokenPayload(TypedDict):
   iss: str
