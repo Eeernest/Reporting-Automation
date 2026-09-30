@@ -26,14 +26,14 @@ class Security:
   async def verify_password(self, password: str, hashed_password: str) -> bool:
     return await run_in_threadpool(self.hasher.verify, password, hashed_password)
 
-  def create_access_token_payload(self, user_data: dict[str, str]) -> AccessTokenPayload:
+  def create_access_token_payload(self, user_id: int, user_role: str) -> AccessTokenPayload:
     issued = datetime.now(timezone.utc)
     expires = issued + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     return AccessTokenPayload(
       iss=settings.ISS,
-      sub=user_data["sub"],
-      role=user_data["role"],
+      sub=str(user_id),
+      role=user_role,
       aud=settings.AUD,
       iat=int(issued.timestamp()),
       exp=int(expires.timestamp()),
