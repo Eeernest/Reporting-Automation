@@ -13,12 +13,7 @@ def token_repo(redis_container):
 # Payload
 
 @pytest.fixture()
-def refresh_token_payload():
+def refresh_token_payload(mock_user_obj):
   security = Security()
 
-  user_data = {
-    "sub": "1",
-    "role": "user"
-  }
-
-  return security.create_access_token_payload(user_data)
+  return security.create_refresh_token_payload(mock_user_obj.id)
