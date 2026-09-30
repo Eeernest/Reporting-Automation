@@ -26,13 +26,14 @@ async def test_password_hashing_wrong_password(unit_security):
 # create_access_token_payload
 
 @pytest.mark.unit
-def test_create_access_token_payload_succss(unit_security):
-  user_data = {"sub": "1", "role": "user"}
-  
-  result = unit_security.create_access_token_payload(user_data)
+def test_create_access_token_payload_succss(unit_security, mock_user_obj):
+  result = unit_security.create_access_token_payload(
+    mock_user_obj.id,
+    mock_user_obj.user_role
+  )
 
-  assert result["sub"] == user_data["sub"]
-  assert result["role"] == user_data["role"]
+  assert result["sub"] == str(mock_user_obj.id)
+  assert result["role"] == mock_user_obj.user_role
   assert result["jti"] is not None
 
 
@@ -86,9 +87,9 @@ def test_get_decoded_access_token_invalid_token_error(unit_security):
 @pytest.mark.unit
 def test_get_decoded_access_token_wrong_header_error(
   unit_security,
-  refresh_token_payload
+  refresh_payload_obj
 ):
-  encoded_ref_token = unit_security.get_encoded_refresh_token(refresh_token_payload)
+  encoded_ref_token = unit_security.get_encoded_refresh_token(refresh_payload_obj)
 
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_access_token(encoded_ref_token)

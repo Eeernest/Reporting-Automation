@@ -18,8 +18,11 @@ def unit_security():
 # Access Token
 
 @pytest.fixture
-def access_payload_obj(unit_security) -> AccessTokenPayload:
-  return unit_security.create_access_token_payload({"sub": "2", "role": "user"})
+def access_payload_obj(unit_security, mock_user_obj) -> AccessTokenPayload:
+  return unit_security.create_access_token_payload(
+    mock_user_obj.id,
+    mock_user_obj.user_role
+  )
 
 @pytest.fixture
 def expired_access_payload_obj(access_payload_obj) -> AccessTokenPayload:
