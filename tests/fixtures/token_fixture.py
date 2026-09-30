@@ -1,5 +1,3 @@
-from datetime import datetime, timezone, timedelta
-
 import pytest
 
 from app.core.security import Security
@@ -23,4 +21,4 @@ def refresh_token_payload():
     "role": "user"
   }
 
-  return security.create_refresh_token_payload(user_data)
+  return security.create_access_token_payload(user_data)
