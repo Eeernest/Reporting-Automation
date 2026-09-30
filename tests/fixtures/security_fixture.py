@@ -37,8 +37,8 @@ def expired_access_payload_obj(access_payload_obj) -> AccessTokenPayload:
 # Refresh Token
 
 @pytest.fixture
-def refresh_payload_obj(unit_security) -> RefreshTokenPayload:
-  return unit_security.create_refresh_token_payload("2")
+def refresh_payload_obj(unit_security, mock_user_obj) -> RefreshTokenPayload:
+  return unit_security.create_refresh_token_payload(mock_user_obj)
 
 @pytest.fixture
 def expired_refresh_payload_obj(refresh_payload_obj) -> RefreshTokenPayload:
