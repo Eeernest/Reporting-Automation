@@ -40,13 +40,13 @@ class Security:
       jti=str(uuid.uuid4())
     )
 
-  def create_refresh_token_payload(self, user_id: str) -> RefreshTokenPayload:
+  def create_refresh_token_payload(self, user_id: int) -> RefreshTokenPayload:
     issued = datetime.now(timezone.utc)
     expires = issued + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     return RefreshTokenPayload(
       iss=settings.ISS,
-      sub=user_id,
+      sub=str(user_id),
       aud=settings.AUD,
       iat=int(issued.timestamp()),
       exp=int(expires.timestamp()),
