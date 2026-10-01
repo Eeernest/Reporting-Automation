@@ -13,7 +13,7 @@ from app.schemas.user_schema import UserRole
 
 pytest_plugins = [
   "anyio",
-  "tests.fixtures.auth_fixture",
+  # "tests.fixtures.auth_fixture",
   "tests.fixtures.security_fixture",
   "tests.fixtures.token_fixture",
   "tests.fixtures.user_fixture",
