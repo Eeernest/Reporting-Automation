@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock
 from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.core.security import Security
 from app.dependencies.user_dependency import get_user_service
 from app.main import app
 from app.models.user_model import User
@@ -15,6 +16,21 @@ from app.services.user_service import UserService
 @pytest.fixture
 def integ_user_repo(db_session):
   return UserRepository(db_session)
+
+@pytest.fixture
+def integ_user_service(integ_user_repo):
+  security = Security()
+
+  return UserService(security, integ_user_repo)
+
+@pytest.fixture
+async def integ_user_client(integ_user_service):
+  app.dependency_overrides[get_user_service] = lambda: integ_user_service
+
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+    yield c
+
+  app.dependency_overrides.clear()
 
 
 # Unit
@@ -52,7 +68,7 @@ async def saved_user_obj(integ_user_repo, user_obj):
   return await integ_user_repo.save(user_obj)
 
 @pytest.fixture
-def user_request_data():
+def user_register_request():
   return RegisterRequest(
     username="user1",
     email="user1@example.com",
