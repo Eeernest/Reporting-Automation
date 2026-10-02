@@ -4,8 +4,8 @@ import pytest
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_save_user_obj_success(user_db_repo, user_obj):
-  result = await user_db_repo.save(user_obj)
+async def test_save_user_obj_success(integ_user_repo, user_obj):
+  result = await integ_user_repo.save(user_obj)
 
   assert result.id is not None
   assert result.username == user_obj.username
@@ -16,15 +16,15 @@ async def test_save_user_obj_success(user_db_repo, user_obj):
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_id_success(user_db_repo, saved_user_obj):
-  result = await user_db_repo.get_by_id(saved_user_obj.id)
+async def test_get_by_id_success(integ_user_repo, saved_user_obj):
+  result = await integ_user_repo.get_by_id(saved_user_obj.id)
 
   assert result == saved_user_obj
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_id_return_none_success(user_db_repo):
-  result = await user_db_repo.get_by_id(14)
+async def test_get_by_id_return_none_success(integ_user_repo):
+  result = await integ_user_repo.get_by_id(14)
 
   assert result == None
 
@@ -33,15 +33,15 @@ async def test_get_by_id_return_none_success(user_db_repo):
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_username_success(user_db_repo, saved_user_obj):
-  result = await user_db_repo.get_by_username(saved_user_obj.username)
+async def test_get_by_username_success(integ_user_repo, saved_user_obj):
+  result = await integ_user_repo.get_by_username(saved_user_obj.username)
 
   assert result == saved_user_obj
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_username_return_none_success(user_db_repo):
-  result = await user_db_repo.get_by_username("user2")
+async def test_get_by_username_return_none_success(integ_user_repo):
+  result = await integ_user_repo.get_by_username("user2")
 
   assert result == None
 
@@ -50,14 +50,14 @@ async def test_get_by_username_return_none_success(user_db_repo):
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_email_success(user_db_repo, saved_user_obj):
-  result = await user_db_repo.get_by_email(saved_user_obj.email)
+async def test_get_by_email_success(integ_user_repo, saved_user_obj):
+  result = await integ_user_repo.get_by_email(saved_user_obj.email)
 
   assert result == saved_user_obj
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_by_email_return_none_success(user_db_repo):
-  result = await user_db_repo.get_by_email("user2@example.com")
+async def test_get_by_email_return_none_success(integ_user_repo):
+  result = await integ_user_repo.get_by_email("user2@example.com")
 
   assert result == None

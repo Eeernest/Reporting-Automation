@@ -13,7 +13,7 @@ from app.services.user_service import UserService
 # Integration
 
 @pytest.fixture
-def user_db_repo(db_session):
+def integ_user_repo(db_session):
   return UserRepository(db_session)
 
 
@@ -48,8 +48,8 @@ def user_obj():
   )
 
 @pytest.fixture
-async def saved_user_obj(user_db_repo, user_obj):
-  return await user_db_repo.save(user_obj)
+async def saved_user_obj(integ_user_repo, user_obj):
+  return await integ_user_repo.save(user_obj)
 
 @pytest.fixture
 def user_request_data():
