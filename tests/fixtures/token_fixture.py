@@ -1,19 +1,22 @@
+from unittest.mock import AsyncMock
+
 import pytest
 
-from app.core.security import Security
 from app.repositories.token_repository import TokenRepository
 
 # Integration
 
-@pytest.fixture()
-def token_repo(redis_container):
+@pytest.fixture
+def int_token_repo(redis_container):
   return TokenRepository(redis_container)
 
 
-# Payload
+# Unit
 
-@pytest.fixture()
-def refresh_token_payload(mock_user_obj):
-  security = Security()
+@pytest.fixture
+def mock_redis_client():
+  return AsyncMock()
 
-  return security.create_refresh_token_payload(mock_user_obj.id)
+@pytest.fixture
+def unit_token_repo(mock_redis_client):
+  return TokenRepository(mock_redis_client)
