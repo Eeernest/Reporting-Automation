@@ -11,7 +11,7 @@ async def test_create_account_success(
   mock_security,
   mock_user_repo,
   unit_user_service,
-  user_request_data,
+  user_register_request,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = None
@@ -20,9 +20,9 @@ async def test_create_account_success(
   mock_user_repo.save.return_value = mock_user_obj
 
   result = await unit_user_service.create_account(
-    user_request_data.username,
-    user_request_data.email,
-    user_request_data.password
+    user_register_request.username,
+    user_register_request.email,
+    user_register_request.password
   )
 
   assert result == mock_user_obj
@@ -33,16 +33,16 @@ async def test_create_account_success(
 async def test_create_account_username_unavailable_error(
   mock_user_repo,
   unit_user_service,
-  user_request_data,
+  user_register_request,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = mock_user_obj
 
   with pytest.raises(e.UsernameUnavailableError) as exc:
     await unit_user_service.create_account(
-      user_request_data.username,
-      user_request_data.email,
-      user_request_data.password
+      user_register_request.username,
+      user_register_request.email,
+      user_register_request.password
     )
 
   assert exc.value.status_code == e.UsernameUnavailableError.status_code
@@ -53,7 +53,7 @@ async def test_create_account_username_unavailable_error(
 async def test_create_account_email_unavailable_error(
   mock_user_repo,
   unit_user_service,
-  user_request_data,
+  user_register_request,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = None
@@ -62,9 +62,9 @@ async def test_create_account_email_unavailable_error(
 
   with pytest.raises(e.EmailUnavailableError) as exc:
     await unit_user_service.create_account(
-      user_request_data.username,
-      user_request_data.email,
-      user_request_data.password
+      user_register_request.username,
+      user_register_request.email,
+      user_register_request.password
     )
 
   assert exc.value.status_code == e.EmailUnavailableError.status_code
@@ -76,7 +76,7 @@ async def test_create_account_username_race_condition(
   mock_security,
   mock_user_repo,
   unit_user_service,
-  user_request_data,
+  user_register_request,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = None
@@ -86,9 +86,9 @@ async def test_create_account_username_race_condition(
 
   with pytest.raises(e.UsernameUnavailableError) as exc:
     await unit_user_service.create_account(
-      user_request_data.username,
-      user_request_data.email,
-      user_request_data.password
+      user_register_request.username,
+      user_register_request.email,
+      user_register_request.password
     )
 
   assert exc.value.status_code == e.UsernameUnavailableError.status_code
@@ -100,7 +100,7 @@ async def test_create_account_email_race_condition(
   mock_security,
   mock_user_repo,
   unit_user_service,
-  user_request_data,
+  user_register_request,
   mock_user_obj
 ):
   mock_user_repo.get_by_username.return_value = None
@@ -110,9 +110,9 @@ async def test_create_account_email_race_condition(
 
   with pytest.raises(e.EmailUnavailableError) as exc:
     await unit_user_service.create_account(
-      user_request_data.username,
-      user_request_data.email,
-      user_request_data.password
+      user_register_request.username,
+      user_register_request.email,
+      user_register_request.password
     )
 
   assert exc.value.status_code == e.EmailUnavailableError.status_code
