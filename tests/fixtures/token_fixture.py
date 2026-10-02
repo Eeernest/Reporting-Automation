@@ -7,7 +7,7 @@ from app.repositories.token_repository import TokenRepository
 # Integration
 
 @pytest.fixture
-def int_token_repo(redis_container):
+def integ_token_repo(redis_container):
   return TokenRepository(redis_container)
 
 

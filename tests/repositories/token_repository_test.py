@@ -29,14 +29,14 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_store_refresh_token_success(int_token_repo, refresh_payload_obj):
-  await int_token_repo.store_refresh_token(
+async def test_store_refresh_token_success(integ_token_repo, refresh_payload_obj):
+  await integ_token_repo.store_refresh_token(
     refresh_payload_obj["jti"],
     refresh_payload_obj["sub"],
     refresh_payload_obj["exp"]
   )
 
-  result = await int_token_repo.get_sub_by_jti(refresh_payload_obj["jti"])
+  result = await integ_token_repo.get_sub_by_jti(refresh_payload_obj["jti"])
 
   assert result == refresh_payload_obj["sub"]
 
@@ -64,16 +64,16 @@ async def test_store_refresh_token_redis_error(
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_delete_refresh_token_success(int_token_repo, refresh_payload_obj):
-  await int_token_repo.store_refresh_token(
+async def test_delete_refresh_token_success(integ_token_repo, refresh_payload_obj):
+  await integ_token_repo.store_refresh_token(
       refresh_payload_obj["jti"],
       refresh_payload_obj["sub"],
       refresh_payload_obj["exp"]
     )
 
-  await int_token_repo.delete_refresh_token(refresh_payload_obj["jti"])
+  await integ_token_repo.delete_refresh_token(refresh_payload_obj["jti"])
 
-  result = await int_token_repo.get_sub_by_jti(refresh_payload_obj["jti"])
+  result = await integ_token_repo.get_sub_by_jti(refresh_payload_obj["jti"])
 
   assert result == None
 
