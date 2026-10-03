@@ -54,8 +54,50 @@ class AuthService:
     except (e.InvalidTokenError, e.TokenExpiredError):
       pass
 
+  async def refresh(self, refresh_token: str) -> dict[str, str]:
+    decoded_refresh_token = self.security.get_decoded_refresh_token(refresh_token)
+
+    await self.token_repo.delete_refresh_token(decoded_refresh_token["jti"])
+
+    user_obj = await self._try_get_user_by_id(int(decoded_refresh_token["sub"]))
+
+    self._verify_user_status(user_obj)
+
+    access_token_payload = self.security.create_access_token_payload(
+      user_obj.id,
+      user_obj.user_role
+    )
+
+    refresh_token_payload = self.security.create_refresh_token_payload(user_obj.id)
+
+    await self.token_repo.store_refresh_token(
+      refresh_token_payload["jti"],
+      refresh_token_payload["sub"],
+      refresh_token_payload["exp"]
+    )
+
+    encoded_access_token = self.security.get_encoded_access_token(access_token_payload)
+    encoded_refresh_token = self.security.get_encoded_refresh_token(refresh_token_payload)
+
+    return {
+      "access_token": encoded_access_token,
+      "refresh_token": encoded_refresh_token,
+      "token_type": "bearer"
+    }
+
 
   # Helper Methods
+
+  # user_repo
+
+  async def _try_get_user_by_id(self, id: int) -> User:
+    user_obj = await self.user_repo.get_by_id(id)
+
+    if not user_obj:
+      raise e.InvalidTokenError()
+
+    return user_obj
+
 
   # Mixed Dependencies
 
