@@ -65,8 +65,8 @@ def auth_logout_handler(args: Namespace) -> None:
     if response.content:
       print(f"Detail: {response.text}")
 
-def auth_restore_tokens_handler(args: Namespace) -> None:
-  endpoint_url = f"{APP_URL}/restore_tokens"
+def auth_refresh_handler(args: Namespace) -> None:
+  endpoint_url = f"{APP_URL}/refresh"
 
   token_data = _load_tokens()
 
