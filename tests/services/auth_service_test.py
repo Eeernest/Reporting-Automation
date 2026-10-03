@@ -1,3 +1,4 @@
+from jwt import PyJWTError
 import pytest
 
 import app.core.exceptions as e
@@ -99,3 +100,39 @@ async def test_login_user_deleted(
 
   assert exc.value.status_code == e.UserDeletedError.status_code
   assert exc.value.detail == e.UserDeletedError.detail
+
+
+# logout method
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_sucecess(
+  mock_security,
+  mock_token_repo,
+  unit_auth_service,
+  refresh_payload_obj
+):
+  mock_security.get_decoded_refresh_token.return_value = refresh_payload_obj
+  mock_token_repo.delete_refresh_token.return_valu = None
+
+  result = await unit_auth_service.logout("encoded_refresh_token")
+
+  assert result == None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_pinvalid_token_error(mock_security, unit_auth_service):
+  mock_security.get_decoded_refresh_token.side_effect = e.InvalidTokenError()
+
+  result = await unit_auth_service.logout("encoded_refersh_token")
+
+  assert result == None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_logout_token_expired_error(mock_security, unit_auth_service):
+  mock_security.get_decoded_refresh_token.side_effect = e.TokenExpiredError()
+
+  result = await unit_auth_service.logout("encoded_refresh_token")
+
+  assert result == None
