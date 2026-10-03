@@ -41,17 +41,23 @@ async def test_login_(integ_user_client, integ_auth_client, user_register_reques
 async def test_logout_success(
   integ_user_client,
   integ_auth_client,
-  user_register_request,
-  auth_logout_request
+  user_register_request
 ):
   await integ_user_client.post("/register", json=user_register_request.model_dump())
   
-  await integ_auth_client.post("/login", data={
+  login = await integ_auth_client.post("/login", data={
     "username": user_register_request.username,
     "password": user_register_request.password
   })
 
-  result = await integ_auth_client.post("/logout", json=auth_logout_request.model_dump())
+  login_data = login.json()
+
+  refresh_token = login_data["refresh_token"]
+
+  result = await integ_auth_client.post(
+    "/logout",
+    json=s.LogoutRequest(refresh_token=refresh_token).model_dump()
+  )
 
   assert result.status_code == status.HTTP_204_NO_CONTENT
 
@@ -63,7 +69,7 @@ async def test_logout_success(
 async def test_refresh_success(
   integ_user_client,
   integ_auth_client,
-  user_register_request,
+  user_register_request
 ):
   await integ_user_client.post("/register", json=user_register_request.model_dump())
     
