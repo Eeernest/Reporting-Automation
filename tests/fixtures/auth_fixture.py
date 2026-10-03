@@ -30,3 +30,10 @@ async def integ_auth_client(integ_auth_service):
 @pytest.fixture
 def unit_auth_service(mock_security, mock_token_repo, mock_user_repo):
   return AuthService(mock_security, mock_token_repo, mock_user_repo)
+
+
+# Objects
+
+@pytest.fixture
+def auth_logout_request():
+  return s.LogoutRequest(refresh_token="encoded_refresh_token")
