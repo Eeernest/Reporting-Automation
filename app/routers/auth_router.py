@@ -16,3 +16,11 @@ async def login(
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(service: AuthServiceDep, logout_request: s.LogoutRequest):
   return await service.logout(logout_request.refresh_token)
+
+@router.post(
+  "/refresh",
+  response_model=s.RefreshResponse,
+  status_code=status.HTTP_200_OK
+)
+async def refresh(service: AuthServiceDep, refresh_request: s.RefreshRequest):
+  return await service.refresh(refresh_request.refresh_token)
