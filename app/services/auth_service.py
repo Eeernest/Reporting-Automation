@@ -45,6 +45,15 @@ class AuthService:
       "token_type": "bearer"
     }
 
+  async def logout(self, encoded_refresh_token: str) -> None:
+    try:
+      decoded_refresh_token = self.security.get_decoded_refresh_token(encoded_refresh_token)
+
+      await self.token_repo.delete_refresh_token(decoded_refresh_token["jti"])
+
+    except (e.InvalidTokenError, e.TokenExpiredError):
+      pass
+
 
   # Helper Methods
 
