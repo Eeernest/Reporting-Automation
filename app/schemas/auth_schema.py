@@ -10,7 +10,7 @@ class AuthBase(BaseModel):
 class LogoutRequest(BaseModel):
   refresh_token: str
 
-class RestoreTokensRequest(BaseModel):
+class RefreshRequest(BaseModel):
   refresh_token: str
 
 
@@ -19,5 +19,5 @@ class RestoreTokensRequest(BaseModel):
 class LoginResponse(AuthBase):
   pass
 
-class RestoreTokensResponse(AuthBase):
+class RefreshResponse(AuthBase):
   pass
