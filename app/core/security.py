@@ -3,12 +3,15 @@ from typing import Any
 import uuid
 
 from fastapi.concurrency import run_in_threadpool
+from fastapi.security import OAuth2PasswordBearer
 import jwt
 from pwdlib import PasswordHash
 
 from app.core.config import settings
 import app.core.exceptions as e
 from app.core.security_types import AccessTokenPayload, RefreshTokenPayload
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 access_token_header = {"typ": "at+jwt"}
 refresh_token_header = {"typ": "rt+jwt"}
