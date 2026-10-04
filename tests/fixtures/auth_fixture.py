@@ -4,7 +4,6 @@ import pytest
 from app.core.security import Security
 from app.dependencies.auth_dependency import get_auth_service
 from app.main import app
-import app.schemas.auth_schema as s
 from app.services.auth_service import AuthService
 
 # Integration
