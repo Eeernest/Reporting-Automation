@@ -27,20 +27,10 @@ async def test_login_success(
 @pytest.mark.anyio
 @pytest.mark.integration
 async def test_logout_success(
-  integ_user_client,
   integ_auth_client,
-  user_register_request
+  loggedin_user
 ):
-  await integ_user_client.post("/register", json=user_register_request.model_dump())
-  
-  login = await integ_auth_client.post("/login", data={
-    "username": user_register_request.username,
-    "password": user_register_request.password
-  })
-
-  login_data = login.json()
-
-  refresh_token = login_data["refresh_token"]
+  refresh_token = loggedin_user["refresh_token"]
 
   result = await integ_auth_client.post(
     "/logout",
@@ -55,20 +45,10 @@ async def test_logout_success(
 @pytest.mark.anyio
 @pytest.mark.integration
 async def test_refresh_success(
-  integ_user_client,
   integ_auth_client,
-  user_register_request
+  loggedin_user
 ):
-  await integ_user_client.post("/register", json=user_register_request.model_dump())
-    
-  login = await integ_auth_client.post("/login", data={
-    "username": user_register_request.username,
-    "password": user_register_request.password
-  })
-
-  login_data = login.json()
-
-  refresh_token = login_data["refresh_token"]
+  refresh_token = loggedin_user["refresh_token"]
 
   result = await integ_auth_client.post(
     "refresh",
