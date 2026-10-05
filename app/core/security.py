@@ -16,10 +16,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 access_token_header = {"typ": "at+jwt"}
 refresh_token_header = {"typ": "rt+jwt"}
 
+_global_hasher = PasswordHash.recommended()
+
 
 class Security:
   def __init__(self):
-    self.hasher = PasswordHash.recommended()
+    self.hasher = _global_hasher
 
   # Main Methods
 
