@@ -88,39 +88,3 @@ async def db_session(test_engine, setup_database):
       await session.close()
       await trans.rollback()
       await conn.close()
-
-
-# Dependency Mocks
-
-@pytest.fixture
-def mock_security():
-  mock = AsyncMock()
-  mock.create_access_token_payload = Mock()
-  mock.create_refresh_token_payload = Mock()
-  mock.get_encoded_access_token = Mock()
-  mock.get_encoded_refresh_token = Mock()
-  mock.get_decoded_access_token = Mock()
-  mock.get_decoded_refresh_token = Mock()
-
-  return mock
-
-@pytest.fixture
-def mock_user_repo():
-  return AsyncMock()
-
-@pytest.fixture
-def mock_token_repo():
-  return AsyncMock()
-
-@pytest.fixture
-def mock_user_obj():
-  user = MagicMock(spec=User)
-  user.id = 1
-  user.username = "user1"
-  user.email = "user1@example.com"
-  user.hashed_password = "Hashedpassword123"
-  user.user_role = UserRole.user
-  user.is_active = True
-  user.is_deleted = False
-
-  return user

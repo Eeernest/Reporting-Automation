@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock, Mock
+
 from datetime import datetime, timezone, timedelta
 
 import pytest
@@ -7,6 +9,18 @@ from app.core.security import Security
 from app.core.security_types import AccessTokenPayload, RefreshTokenPayload
 
 # Unit
+
+@pytest.fixture
+def mock_security():
+  mock = AsyncMock()
+  mock.create_access_token_payload = Mock()
+  mock.create_refresh_token_payload = Mock()
+  mock.get_encoded_access_token = Mock()
+  mock.get_encoded_refresh_token = Mock()
+  mock.get_decoded_access_token = Mock()
+  mock.get_decoded_refresh_token = Mock()
+
+  return mock
 
 @pytest.fixture()
 def unit_security():

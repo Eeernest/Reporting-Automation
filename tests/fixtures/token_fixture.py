@@ -14,6 +14,10 @@ def integ_token_repo(redis_container):
 # Unit
 
 @pytest.fixture
+def mock_token_repo():
+  return AsyncMock()
+
+@pytest.fixture
 def mock_redis_client():
   return AsyncMock()
 

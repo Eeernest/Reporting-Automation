@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 from httpx import AsyncClient, ASGITransport
 import pytest
@@ -36,6 +36,10 @@ async def integ_user_client(integ_user_service):
 # Unit
 
 @pytest.fixture
+def mock_user_repo():
+  return AsyncMock()
+
+@pytest.fixture
 def unit_user_service(mock_security, mock_user_repo):
   return UserService(mock_security, mock_user_repo)
 
@@ -53,6 +57,19 @@ async def unit_user_client(mock_user_service):
   app.dependency_overrides.clear()
 
 # Objects
+
+@pytest.fixture
+def mock_user_obj():
+  user = MagicMock(spec=User)
+  user.id = 1
+  user.username = "user1"
+  user.email = "user1@example.com"
+  user.hashed_password = "Hashedpassword123"
+  user.user_role = UserRole.user
+  user.is_active = True
+  user.is_deleted = False
+
+  return user
 
 @pytest.fixture
 def user_obj():
