@@ -8,10 +8,10 @@ class Client(Base):
   __tablename__ = "clients"
 
   id = Column(Integer, primary_key=True, index=True)
-  name = Column(String, nullable=False, index=True)
-  company = Column(String)
-  email = Column(String)
-  phone_number = Column(Integer, nullable=False)
+  name = Column(String, nullable=False, unique=True, index=True)
+  company = Column(String, unique=True)
+  email = Column(String, unique=True)
+  phone_number = Column(Integer, nullable=False, unique=True)
   created_at = Column(DateTime, default=datetime.now(timezone.utc))
   updated_at = Column(
     DateTime,
