@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
 
@@ -16,3 +17,5 @@ class User(Base):
   is_deleted = Column(Boolean, default=False)
   created_at = Column(DateTime, default=datetime.utcnow)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+  user_clients = Relationship("Client", back_populates="user", cascade="all, delete-orphan")
