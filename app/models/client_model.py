@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, UniqueConstraint, Index
 from sqlalchemy.orm import Relationship
@@ -15,12 +15,8 @@ class Client(Base):
   email = Column(String)
   phone_number = Column(String, nullable=False)
   notes = Column(String)
-  created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-  updated_at = Column(
-    DateTime,
-    default=lambda: datetime.now(timezone.utc),
-    onupdate=lambda: datetime.now(timezone.utc)
-  )
+  created_at = Column(DateTime, default=datetime.utcnow)
+  updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
   user = Relationship("User", back_populates="user_clients")
 
