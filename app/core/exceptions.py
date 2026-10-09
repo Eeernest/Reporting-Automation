@@ -38,8 +38,17 @@ class UsernameTooLongError(ValidationError):
 class ConflictError(AppError):
   status_code = 409
 
+class CompanyUnavailableError(ConflictError):
+  detail = "Company name is already in use"
+
 class EmailUnavailableError(ConflictError):
   detail = "Email is already in use"
+
+class NameUnavailableError(ConflictError):
+  detail = "Name is already in use"
+
+class PhoneUnavailableError(ConflictError):
+  detail = "Phone number is already in use"
 
 class UsernameUnavailableError(ConflictError):
   detail = "Username is already in use"
