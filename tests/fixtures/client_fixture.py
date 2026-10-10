@@ -32,7 +32,6 @@ def unit_client_repo(mock_client_session):
 @pytest.fixture
 def integ_client_obj(saved_user_obj):
   return Client(
-    id=1,
     user_id=saved_user_obj.id,
     name="client1",
     company="company1",
