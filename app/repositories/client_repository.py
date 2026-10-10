@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,6 +8,8 @@ from app.models.client_model import Client
 class ClientRepository:
   def __init__(self, session: AsyncSession):
     self.session = session
+
+  # Main Methods
 
   async def save_client(self, client_obj: Client) -> Client:
     try:
@@ -30,3 +33,8 @@ class ClientRepository:
 
       if "phone_number" in exc.orig:
         raise e.PhoneUnavailableError()
+
+  async def get_by_name(self, name: str) -> Client | None:
+    result = await self.session.execute(select(Client).where(Client.name == name))
+
+    return result.scalar_one_or_none()
