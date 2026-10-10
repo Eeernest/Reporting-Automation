@@ -107,3 +107,20 @@ async def test_get_by_company_return_none_success(integ_client_repo):
   result = await integ_client_repo.get_by_company("company")
 
   assert result == None
+
+
+# get_by_email
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_email_return_obj_success(integ_client_repo, saved_client_obj):
+  result = await integ_client_repo.get_by_email(saved_client_obj.email)
+
+  assert result == saved_client_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_email_return_none_success(integ_client_repo):
+  result = await integ_client_repo.get_by_email("email")
+
+  assert result == None
