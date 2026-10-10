@@ -41,6 +41,10 @@ def integ_client_obj(saved_user_obj):
   )
 
 @pytest.fixture
+async def saved_client_obj(integ_client_repo, integ_client_obj):
+  return await integ_client_repo.save_client(integ_client_obj)
+
+@pytest.fixture
 def unit_client_obj():
   return Client(
     id=1,
