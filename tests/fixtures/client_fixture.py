@@ -4,6 +4,7 @@ import pytest
 
 from app.models.client_model import Client
 from app.repositories.client_repository import ClientRepository
+from app.services.client_service import ClientService
 
 # Integration
 
@@ -25,6 +26,10 @@ def mock_client_session():
 @pytest.fixture
 def unit_client_repo(mock_client_session):
   return ClientRepository(mock_client_session)
+
+@pytest.fixture
+def unit_client_service(mock_client_repo):
+  return ClientService(mock_client_repo)
 
 
 # Object
