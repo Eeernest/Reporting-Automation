@@ -22,17 +22,20 @@ class ClientRepository:
     except IntegrityError as exc:
       await self.session.rollback()
 
-      if "name" in exc.orig:
-        raise e.NameUnavailableError()
+      err_msg = str(exc.orig).lower()
 
-      if "company" in exc.orig:
-        raise e.CompanyUnavailableError()
+      constraint_map = {
+        "user_client_name": e.NameUnavailableError,
+        "user_client_company": e.CompanyUnavailableError,
+        "user_client_email": e.EmailUnavailableError,
+        "user_client_phone_number": e.PhoneUnavailableError
+      }
 
-      if "email" in exc.orig:
-        raise e.EmailUnavailableError()
+      for partial_msg, exc_class in constraint_map.items():
+        if partial_msg in err_msg:
+          raise exc_class() from exc
 
-      if "phone_number" in exc.orig:
-        raise e.PhoneUnavailableError()
+      raise e.DatabaseIntegrityError() from exc
 
   async def get_by_name(self, name: str) -> Client | None:
     result = await self.session.execute(select(Client).where(Client.name == name))
