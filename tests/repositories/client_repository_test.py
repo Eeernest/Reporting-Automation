@@ -14,6 +14,7 @@ async def test_save_client_success(integ_client_repo, integ_client_obj):
   assert result.name == integ_client_obj.name
   assert result.phone_number == integ_client_obj.phone_number
 
+
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_save_client_name_error(
@@ -21,7 +22,11 @@ async def test_save_client_name_error(
   unit_client_repo,
   unit_client_obj
 ):
-  mock_client_session.commit.side_effect = IntegrityError("stmt", "params", "name")
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_name"
+  )
 
   with pytest.raises(e.NameUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
@@ -36,7 +41,11 @@ async def test_save_client_company_error(
   unit_client_repo,
   unit_client_obj
 ):
-  mock_client_session.commit.side_effect = IntegrityError("stmt", "params", "company")
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_company"
+  )
 
   with pytest.raises(e.CompanyUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
@@ -51,7 +60,11 @@ async def test_save_client_email_error(
   unit_client_repo,
   unit_client_obj
 ):
-  mock_client_session.commit.side_effect = IntegrityError("stmt", "params", "email")
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_email"
+  )
 
   with pytest.raises(e.EmailUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
@@ -66,13 +79,32 @@ async def test_save_client_phone_number_error(
   unit_client_repo,
   unit_client_obj
 ):
-  mock_client_session.commit.side_effect = IntegrityError("stmt", "params", "phone_number")
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_phone_number"
+  )
 
   with pytest.raises(e.PhoneUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
   assert exc.value.status_code == e.PhoneUnavailableError.status_code
   assert exc.value.detail == e.PhoneUnavailableError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_save_client_database_integrity_error(
+  mock_client_session,
+  unit_client_repo,
+  unit_client_obj
+):
+  mock_client_session.commit.side_effect = IntegrityError("stmt", "params", "unknown")
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_client_repo.save_client(unit_client_obj)
+
+  assert exc.value.status_code == e.DatabaseIntegrityError.status_code
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
 # get_by_name
