@@ -14,6 +14,14 @@ async def test_save_client_success(integ_client_repo, integ_client_obj):
   assert result.name == integ_client_obj.name
   assert result.phone_number == integ_client_obj.phone_number
 
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_save_client_duplicate_name_error(integ_client_repo, duplicate_client_obj):
+  with pytest.raises(e.NameUnavailableError) as exc:
+    await integ_client_repo.save_client(duplicate_client_obj)
+
+  assert exc.value.status_code == e.NameUnavailableError.status_code
+  assert exc.value.detail == e.NameUnavailableError.detail
 
 @pytest.mark.anyio
 @pytest.mark.unit

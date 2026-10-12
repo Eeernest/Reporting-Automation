@@ -50,6 +50,14 @@ async def saved_client_obj(integ_client_repo, integ_client_obj):
   return await integ_client_repo.save_client(integ_client_obj)
 
 @pytest.fixture
+def duplicate_client_obj(saved_user_obj, saved_client_obj):
+  return Client(
+    user_id=saved_user_obj.id,
+    name=saved_client_obj.name,
+    phone_number="+48000000000"
+  )
+
+@pytest.fixture
 def unit_client_obj():
   return Client(
     id=1,
