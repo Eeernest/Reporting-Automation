@@ -37,11 +37,6 @@ class ClientRepository:
 
       raise e.DatabaseIntegrityError() from exc
 
-  async def get_by_name(self, name: str) -> Client | None:
-    result = await self.session.execute(select(Client).where(Client.name == name))
-
-    return result.scalar_one_or_none()
-
   async def get_by_company(self, company: str) -> Client | None:
     result = await self.session.execute(select(Client).where(Client.company == company))
 
