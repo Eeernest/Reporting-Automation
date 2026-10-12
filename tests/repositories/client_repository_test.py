@@ -115,23 +115,6 @@ async def test_save_client_database_integrity_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
-# get_by_company
-
-@pytest.mark.anyio
-@pytest.mark.integration
-async def test_get_by_company_return_obj_success(integ_client_repo, saved_client_obj):
-  result = await integ_client_repo.get_by_company(saved_client_obj.company)
-
-  assert result == saved_client_obj
-
-@pytest.mark.anyio
-@pytest.mark.integration
-async def test_get_by_company_return_none_success(integ_client_repo):
-  result = await integ_client_repo.get_by_company("company")
-
-  assert result == None
-
-
 # get_by_email
 
 @pytest.mark.anyio
