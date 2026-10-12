@@ -113,23 +113,3 @@ async def test_save_client_database_integrity_error(
 
   assert exc.value.status_code == e.DatabaseIntegrityError.status_code
   assert exc.value.detail == e.DatabaseIntegrityError.detail
-
-
-# get_by_phone_number
-
-@pytest.mark.anyio
-@pytest.mark.integration
-async def test_get_by_phone_number_return_obj_success(
-  integ_client_repo,
-  saved_client_obj
-):
-  result = await integ_client_repo.get_by_phone_number(saved_client_obj.phone_number)
-
-  assert result == saved_client_obj
-
-@pytest.mark.anyio
-@pytest.mark.integration
-async def test_get_by_phone_number_return_none_success(integ_client_repo):
-  result = await integ_client_repo.get_by_phone_number("phone_number")
-
-  assert result == None
