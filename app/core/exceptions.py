@@ -12,6 +12,15 @@ class RedisFailureError(ServiceUnavailableError):
   detail = "Redis operation failed"
 
 
+# Server Error (500)
+
+class ServerError(AppError):
+  pass
+
+class DatabaseIntegrityError(ServerError):
+  detail = "A database integrity error occured"
+  
+
 # Validation Errors (422)
 
 class ValidationError(AppError):
