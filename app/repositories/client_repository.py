@@ -36,10 +36,3 @@ class ClientRepository:
           raise exc_class() from exc
 
       raise e.DatabaseIntegrityError() from exc
-
-  async def get_by_phone_number(self, phone_number: str) -> Client | None:
-    result = await self.session.execute(
-      select(Client).where(Client.phone_number == phone_number)
-    )
-
-    return result.scalar_one_or_none()
