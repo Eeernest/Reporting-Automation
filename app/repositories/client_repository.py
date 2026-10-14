@@ -1,4 +1,3 @@
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,15 +23,21 @@ class ClientRepository:
 
       err_msg = str(exc.orig).lower()
 
-      constraint_map = {
-        "user_client_name": e.NameUnavailableError,
-        "user_client_company": e.CompanyUnavailableError,
-        "user_client_email": e.EmailUnavailableError,
-        "user_client_phone_number": e.PhoneUnavailableError
-      }
+      self._refine_integrity_error(err_msg, exc)
 
-      for partial_msg, exc_class in constraint_map.items():
-        if partial_msg in err_msg:
-          raise exc_class() from exc
 
-      raise e.DatabaseIntegrityError() from exc
+  # Helper Methods
+
+  def _refine_integrity_error(self, err_msg: str, exc: Exception):
+    constraint_map = {
+      "user_client_name": e.NameUnavailableError,
+      "user_client_company": e.CompanyUnavailableError,
+      "user_client_email": e.EmailUnavailableError,
+      "user_client_phone_number": e.PhoneUnavailableError
+    }
+
+    for partial_msg, exc_class in constraint_map.items():
+      if partial_msg in err_msg:
+        raise exc_class() from exc
+
+    raise e.DatabaseIntegrityError() from exc
