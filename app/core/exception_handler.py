@@ -2,16 +2,25 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
-from app.core.exceptions import AppError
+import app.core.exceptions as e
 
-def custom_exc_handler(request: Request, exc: AppError):
+# Main functions
+
+def custom_exc_handler(request: Request, exc: e.AppError):
+  http_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+  for exc_class, status_code in HTTP_STATUS_MAP.items():
+    if isinstance(exc, exc_class):
+      http_status = status_code
+      break
+  
   headers = {}
 
-  if exc.status_code == status.HTTP_401_UNAUTHORIZED:
+  if http_status == status.HTTP_401_UNAUTHORIZED:
     headers["WWW-Authenticate"] = "Bearer"
 
   return JSONResponse(
-    status_code=exc.status_code,
+    status_code=http_status,
     content={"detail": exc.detail},
     headers=headers
   )
@@ -24,3 +33,15 @@ def validation_exc_handler(request: Request, exc: RequestValidationError):
       "errors": exc.errors()
     }
   )
+
+
+# Maps
+
+HTTP_STATUS_MAP = {
+  e.ServiceUnavailableError: status.HTTP_503_SERVICE_UNAVAILABLE,
+  e.ServerError: status.HTTP_500_INTERNAL_SERVER_ERROR,
+  e.ValidationError: status.HTTP_422_UNPROCESSABLE_CONTENT,
+  e.ConflictError: status.HTTP_409_CONFLICT,
+  e.ForbiddenError: status.HTTP_403_FORBIDDEN,
+  e.UnauthorizedError: status.HTTP_401_UNAUTHORIZED
+}
