@@ -1,12 +1,11 @@
 class AppError(Exception):
-  status_code = 500
   detail = "An error occurred"
 
 
 # Service Unavailable Errors (503)
 
 class ServiceUnavailableError(AppError):
-  status_code = 503
+  pass
 
 class RedisFailureError(ServiceUnavailableError):
   detail = "Redis operation failed"
@@ -24,7 +23,7 @@ class DatabaseIntegrityError(ServerError):
 # Validation Errors (422)
 
 class ValidationError(AppError):
-  status_code = 422
+  pass
 
 class EmailTooLongError(ValidationError):
   detail = "Email should be shorter than 320 characters"
@@ -45,7 +44,7 @@ class UsernameTooLongError(ValidationError):
 # Conflict Errors (409)
 
 class ConflictError(AppError):
-  status_code = 409
+  pass
 
 class CompanyUnavailableError(ConflictError):
   detail = "Company name is already in use"
@@ -66,7 +65,7 @@ class UsernameUnavailableError(ConflictError):
 # Forbidden Errors (403)
 
 class ForbiddenError(AppError):
-  status_code = 403
+  pass
 
 class UserInactiveError(ForbiddenError):
   detail = "User account is inactive"
@@ -75,7 +74,7 @@ class UserInactiveError(ForbiddenError):
 # Unauthorized Errors (401)
 
 class UnauthorizedError(AppError):
-  status_code = 401
+  pass
 
 class InvalidCredentialsError(UnauthorizedError):
   detail = "Incorrect username or password"
