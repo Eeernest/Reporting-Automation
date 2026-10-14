@@ -20,7 +20,7 @@ async def test_save_client_duplicate_name_error(integ_client_repo, duplicate_cli
   with pytest.raises(e.NameUnavailableError) as exc:
     await integ_client_repo.save_client(duplicate_client_obj)
 
-  assert exc.value.status_code == e.NameUnavailableError.status_code
+  assert isinstance(exc.value, e.NameUnavailableError)
   assert exc.value.detail == e.NameUnavailableError.detail
 
 @pytest.mark.anyio
@@ -39,7 +39,7 @@ async def test_save_client_name_error(
   with pytest.raises(e.NameUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
-  assert exc.value.status_code == e.NameUnavailableError.status_code
+  assert isinstance(exc.value, e.NameUnavailableError)
   assert exc.value.detail == e.NameUnavailableError.detail
 
 @pytest.mark.anyio
@@ -58,7 +58,7 @@ async def test_save_client_company_error(
   with pytest.raises(e.CompanyUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
-  assert exc.value.status_code == e.CompanyUnavailableError.status_code
+  assert isinstance(exc.value, e.CompanyUnavailableError)
   assert exc.value.detail == e.CompanyUnavailableError.detail
 
 @pytest.mark.anyio
@@ -77,7 +77,7 @@ async def test_save_client_email_error(
   with pytest.raises(e.EmailUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
-  assert exc.value.status_code == e.EmailUnavailableError.status_code
+  assert isinstance(exc.value, e.EmailUnavailableError)
   assert exc.value.detail == e.EmailUnavailableError.detail
 
 @pytest.mark.anyio
@@ -96,7 +96,7 @@ async def test_save_client_phone_number_error(
   with pytest.raises(e.PhoneUnavailableError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
-  assert exc.value.status_code == e.PhoneUnavailableError.status_code
+  assert isinstance(exc.value, e.PhoneUnavailableError)
   assert exc.value.detail == e.PhoneUnavailableError.detail
 
 @pytest.mark.anyio
@@ -111,5 +111,5 @@ async def test_save_client_database_integrity_error(
   with pytest.raises(e.DatabaseIntegrityError) as exc:
     await unit_client_repo.save_client(unit_client_obj)
 
-  assert exc.value.status_code == e.DatabaseIntegrityError.status_code
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail

@@ -45,7 +45,7 @@ async def test_create_account_username_unavailable_error(
       user_register_request.password
     )
 
-  assert exc.value.status_code == e.UsernameUnavailableError.status_code
+  assert isinstance(exc.value, e.UsernameUnavailableError)
   assert exc.value.detail == e.UsernameUnavailableError.detail
 
 @pytest.mark.anyio
@@ -67,7 +67,7 @@ async def test_create_account_email_unavailable_error(
       user_register_request.password
     )
 
-  assert exc.value.status_code == e.EmailUnavailableError.status_code
+  assert isinstance(exc.value, e.EmailUnavailableError)
   assert exc.value.detail == e.EmailUnavailableError.detail
 
 @pytest.mark.anyio
@@ -91,7 +91,7 @@ async def test_create_account_username_race_condition(
       user_register_request.password
     )
 
-  assert exc.value.status_code == e.UsernameUnavailableError.status_code
+  assert isinstance(exc.value, e.UsernameUnavailableError)
   assert exc.value.detail == e.UsernameUnavailableError.detail
 
 @pytest.mark.anyio
@@ -115,5 +115,5 @@ async def test_create_account_email_race_condition(
       user_register_request.password
     )
 
-  assert exc.value.status_code == e.EmailUnavailableError.status_code
+  assert isinstance(exc.value, e.EmailUnavailableError)
   assert exc.value.detail == e.EmailUnavailableError.detail

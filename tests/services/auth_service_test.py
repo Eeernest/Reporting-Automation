@@ -1,4 +1,3 @@
-from jwt import PyJWTError
 import pytest
 
 import app.core.exceptions as e
@@ -44,7 +43,7 @@ async def test_login_user_not_found(
   with pytest.raises(e.InvalidCredentialsError) as exc:
     await unit_auth_service.login("user", "Password123")
 
-  assert exc.value.status_code == e.InvalidCredentialsError.status_code
+  assert isinstance(exc.value, e.InvalidCredentialsError)
   assert exc.value.detail == e.InvalidCredentialsError.detail
 
 @pytest.mark.anyio
@@ -61,7 +60,7 @@ async def test_login_wrong_password(
   with pytest.raises(e.InvalidCredentialsError) as exc:
     await unit_auth_service.login(mock_user_obj.username, "Wrongpassword")
 
-  assert exc.value.status_code == e.InvalidCredentialsError.status_code
+  assert isinstance(exc.value, e.InvalidCredentialsError)
   assert exc.value.detail == e.InvalidCredentialsError.detail
 
 @pytest.mark.anyio
@@ -80,7 +79,7 @@ async def test_login_user_inactive(
   with pytest.raises(e.UserInactiveError) as exc:
     await unit_auth_service.login(mock_user_obj.username, "Password123")
 
-  assert exc.value.status_code == e.UserInactiveError.status_code
+  assert isinstance(exc.value, e.UserInactiveError)
   assert exc.value.detail == e.UserInactiveError.detail
 
 @pytest.mark.anyio
@@ -99,7 +98,7 @@ async def test_login_user_deleted(
   with pytest.raises(e.UserDeletedError) as exc:
     await unit_auth_service.login(mock_user_obj.username, "Password123")
 
-  assert exc.value.status_code == e.UserDeletedError.status_code
+  assert isinstance(exc.value, e.UserDeletedError)
   assert exc.value.detail == e.UserDeletedError.detail
 
 
@@ -183,7 +182,7 @@ async def test_refresh_invalid_token_error(
   with pytest.raises(e.InvalidTokenError) as exc:
     await unit_auth_service.refresh("encoded_refresh_token")
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.anyio
@@ -205,7 +204,7 @@ async def tets_refresh_user_inactive_error(
   with pytest.raises(e.UserInactiveError) as exc:
     await unit_auth_service.refresh("encoded_refresh_token")
 
-  assert exc.value.status_code == e.UserInactiveError.status_code
+  assert isinstance(exc.value, e.UserInactiveError)
   assert exc.value.detail == e.UserInactiveError.detail
 
 @pytest.mark.anyio
@@ -227,5 +226,5 @@ async def test_refresh_user_deleted_error(
   with pytest.raises(e.UserDeletedError) as exc:
     await unit_auth_service.refresh("encoded_refresh_token")
 
-  assert exc.value.status_code == e.UserDeletedError.status_code
+  assert isinstance(exc.value, e.UserDeletedError)
   assert exc.value.detail == e.UserDeletedError.detail

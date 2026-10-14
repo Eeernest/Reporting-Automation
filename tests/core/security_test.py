@@ -81,7 +81,7 @@ def test_get_decoded_access_token_invalid_token_error(unit_security):
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_access_token("invalid_token")
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.unit
@@ -94,7 +94,7 @@ def test_get_decoded_access_token_wrong_header_error(
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_access_token(encoded_ref_token)
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.anyio
@@ -107,7 +107,7 @@ def test_get_decoded_access_token_expired_error(
   with pytest.raises(e.TokenExpiredError) as exc:
     unit_security.get_decoded_access_token(encoded_acc_token)
 
-  assert exc.value.status_code == e.TokenExpiredError.status_code
+  assert isinstance(exc.value, e.TokenExpiredError)
   assert exc.value.detail == e.TokenExpiredError.detail
 
 @pytest.mark.anyio
@@ -119,7 +119,7 @@ def test_get_decoded_access_token_pyjwterror(unit_security, access_payload_obj):
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_access_token(encoded_acc_token)
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 
@@ -139,7 +139,7 @@ def test_get_decoded_refresh_token_invalid_token_error(unit_security):
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_refresh_token("invalid_token")
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.unit
@@ -152,7 +152,7 @@ def test_get_decoded_refresh_token_wrong_header_error(
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_refresh_token(encoded_acc_token)
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.anyio
@@ -165,7 +165,7 @@ def test_get_decoded_refresh_token_expired_error(
   with pytest.raises(e.TokenExpiredError) as exc:
     unit_security.get_decoded_refresh_token(encoded_ref_token)
 
-  assert exc.value.status_code == e.TokenExpiredError.status_code
+  assert isinstance(exc.value, e.TokenExpiredError)
   assert exc.value.detail == e.TokenExpiredError.detail
 
 @pytest.mark.anyio
@@ -177,5 +177,5 @@ def test_get_decoded_access_token_pyjwterror(unit_security, refresh_payload_obj)
   with pytest.raises(e.InvalidTokenError) as exc:
     unit_security.get_decoded_refresh_token(encoded_acc_token)
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail

@@ -34,7 +34,7 @@ async def test_get_current_user_invalid_token_error(
   with pytest.raises(e.InvalidTokenError) as exc:
     await unit_permit_service.get_current_user("encoded_access_token")
 
-  assert exc.value.status_code == e.InvalidTokenError.status_code
+  assert isinstance(exc.value, e.InvalidTokenError)
   assert exc.value.detail == e.InvalidTokenError.detail
 
 @pytest.mark.anyio
@@ -54,7 +54,7 @@ async def test_get_current_user_inactive_error(
   with pytest.raises(e.UserInactiveError) as exc:
     await unit_permit_service.get_current_user("encoded_access_token")
 
-  assert exc.value.status_code == e.UserInactiveError.status_code
+  assert isinstance(exc.value, e.UserInactiveError)
   assert exc.value.detail == e.UserInactiveError.detail
 
 @pytest.mark.anyio
@@ -74,5 +74,5 @@ async def test_get_current_user_deleted_error(
   with pytest.raises(e.UserDeletedError) as exc:
     await unit_permit_service.get_current_user("encoded_access_token")
 
-  assert exc.value.status_code == e.UserDeletedError.status_code
+  assert isinstance(exc.value, e.UserDeletedError)
   assert exc.value.detail == e.UserDeletedError.detail

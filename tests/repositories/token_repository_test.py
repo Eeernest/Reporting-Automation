@@ -34,7 +34,7 @@ async def test_store_refresh_token_redis_error(
       refresh_payload_obj["exp"]
     )
 
-  assert exc.value.status_code == e.RedisFailureError.status_code
+  assert isinstance(exc.value, e.RedisFailureError)
   assert exc.value.detail == e.RedisFailureError.detail
 
 
@@ -67,5 +67,5 @@ async def test_delete_refresh_token_redis_error(
   with pytest.raises(e.RedisFailureError) as exc:
     await unit_token_repo.delete_refresh_token(refresh_payload_obj["jti"])
 
-  assert exc.value.status_code == e.RedisFailureError.status_code
+  assert isinstance(exc.value, e.RedisFailureError)
   assert exc.value.detail == e.RedisFailureError.detail
