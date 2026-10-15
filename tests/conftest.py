@@ -9,7 +9,6 @@ from testcontainers.redis import RedisContainer
 
 from app.db.database import Base
 from app.models.user_model import User
-from app.schemas.user_schema import UserRole
 
 pytest_plugins = [
   "anyio",
