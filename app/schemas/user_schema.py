@@ -12,26 +12,17 @@ class UserBase(BaseModel):
 
   @field_validator("username")
   def valid_username(cls, v: str) -> str:
-    v.strip()
+    v = v.strip()
 
     if len(v) > 32:
       raise e.UsernameTooLongError()
 
     return v
 
-  @field_validator("email")
-  def valid_email(cls, v: EmailStr) -> EmailStr:
-    v.lower().strip()
-
-    if len(v) > 320:
-      raise e.EmailTooLongError()
-
-    return v
-
 
 # Requests
 
-class RegisterRequest(UserBase):
+class RegisterUserRequest(UserBase):
   password: str
 
   @field_validator("password")
@@ -50,5 +41,5 @@ class RegisterRequest(UserBase):
 
 # Responses
 
-class RegisterResponse(UserBase):
+class RegisterUserResponse(UserBase):
   id: int
