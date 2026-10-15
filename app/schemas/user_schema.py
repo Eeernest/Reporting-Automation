@@ -1,16 +1,8 @@
-from enum import Enum
 import re
 
 from pydantic import BaseModel, EmailStr, field_validator
 
 import app.core.exceptions as e
-
-# Enums
-
-class UserRole(str, Enum):
-  user = "ROLE_USER"
-  admin = "ROLE_ADMIN"
-
 
 # Schemas
 
