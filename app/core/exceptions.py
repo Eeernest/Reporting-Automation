@@ -25,9 +25,6 @@ class DatabaseIntegrityError(ServerError):
 class ValidationError(AppError):
   pass
 
-class EmailTooLongError(ValidationError):
-  detail = "Email should be shorter than 320 characters"
-
 class PasswordNoUppercaseError(ValidationError):
   detail = "Password should have at least one big letter"
 
