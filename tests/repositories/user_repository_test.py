@@ -7,12 +7,12 @@ import app.core.exceptions as e
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_save_user_success(integ_user_repo, user_obj):
-  result = await integ_user_repo.save_user(user_obj)
+async def test_save_user_success(integ_user_repo, integ_user_obj):
+  result = await integ_user_repo.save_user(integ_user_obj)
 
   assert result.id is not None
-  assert result.username == user_obj.username
-  assert result.email == user_obj.email
+  assert result.username == integ_user_obj.username
+  assert result.email == integ_user_obj.email
 
 @pytest.mark.anyio
 @pytest.mark.integration
