@@ -6,9 +6,9 @@ import pytest
 from app.core.security import Security
 from app.dependencies.user_dependency import get_user_service
 from app.main import app
-from app.models.user_model import User
+from app.models.user_model import UserRole, User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user_schema import UserRole, RegisterRequest
+from app.schemas.user_schema import RegisterRequest
 from app.services.user_service import UserService
 
 # Integration
@@ -80,7 +80,7 @@ def mock_user_obj():
   return user
 
 @pytest.fixture
-def user_obj():
+def integ_user_obj():
   return User(
     username="user1",
     email="user1@example.com",
@@ -89,8 +89,8 @@ def user_obj():
   )
 
 @pytest.fixture
-async def saved_user_obj(integ_user_repo, user_obj):
-  return await integ_user_repo.save_user(user_obj)
+async def saved_user_obj(integ_user_repo, integ_user_obj):
+  return await integ_user_repo.save_user(integ_user_obj)
 
 @pytest.fixture
 def duplicate_user_obj(saved_user_obj):
