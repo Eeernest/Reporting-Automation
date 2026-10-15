@@ -1,10 +1,20 @@
 from datetime import datetime
+from enum import Enum
 
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
 from app.models.client_model import Client
+
+# Enums
+
+class UserRole(str, Enum):
+  user = "ROLE_USER"
+  admin = "ROLE_ADMIN"
+
+
+# Models
 
 class User(Base):
   __tablename__ = "users"
