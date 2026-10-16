@@ -23,20 +23,20 @@ async def test_login_success(
 
 # logout function
 
-# @pytest.mark.anyio
-# @pytest.mark.integration
-# async def test_logout_success(
-#   integ_auth_client,
-#   loggedin_user
-# ):
-#   refresh_token = loggedin_user["refresh_token"]
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_logout_success(
+  integ_auth_client,
+  loggedin_user_response
+):
+  refresh_token = loggedin_user_response["refresh_token"]
 
-#   result = await integ_auth_client.post(
-#     "/logout",
-#     json=s.LogoutRequest(refresh_token=refresh_token).model_dump()
-#   )
+  result = await integ_auth_client.post(
+    "/logout",
+    json=s.LogoutRequest(refresh_token=refresh_token).model_dump()
+  )
 
-#   assert result.status_code == status.HTTP_204_NO_CONTENT
+  assert result.status_code == status.HTTP_204_NO_CONTENT
 
 
 # # refresh function
