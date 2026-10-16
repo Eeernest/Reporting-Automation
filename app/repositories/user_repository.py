@@ -26,6 +26,11 @@ class UserRepository:
 
       self._refine_integrity_error(err_msg, exc)
 
+  async def get_by_id(self, id: int) -> User | None:
+    result = await self.session.execute(select(User).where(User.id == id))
+
+    return result.scalar_one_or_none()
+
 
   # Helper Methods
 
