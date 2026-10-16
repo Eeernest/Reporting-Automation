@@ -86,3 +86,18 @@ def duplicate_user_obj(saved_user_obj):
     hashed_password="HashedPassword123",
     user_role=UserRole.user
   )
+
+
+# Helpers
+
+# router
+
+@pytest.fixture
+async def registered_user_response(integ_user_router):
+  request = {
+    "username": "user1",
+    "email": "user1@example.com",
+    "password": "Password123"
+  }
+
+  return await integ_user_router.post("/register_user", json=request)
