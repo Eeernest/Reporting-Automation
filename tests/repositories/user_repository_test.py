@@ -63,3 +63,20 @@ async def test_save_user_email_error(
 
   assert isinstance(exc.value, e.EmailUnavailableError)
   assert exc.value.detail == e.EmailUnavailableError.detail
+
+
+# get_by_id
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_id_return_obj_success(integ_user_repo, saved_user_obj):
+  result = await integ_user_repo.get_by_id(saved_user_obj.id)
+
+  assert result == saved_user_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_by_id_return_none(integ_user_repo):
+  result = await integ_user_repo.get_by_id(1)
+
+  assert result == None
