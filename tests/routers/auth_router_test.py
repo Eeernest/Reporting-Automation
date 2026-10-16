@@ -41,20 +41,20 @@ async def test_logout_success(
 
 # # refresh function
 
-# @pytest.mark.anyio
-# @pytest.mark.integration
-# async def test_refresh_success(
-#   integ_auth_client,
-#   loggedin_user
-# ):
-#   refresh_token = loggedin_user["refresh_token"]
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_refresh_success(
+  integ_auth_client,
+  loggedin_user_response
+):
+  refresh_token = loggedin_user_response["refresh_token"]
 
-#   result = await integ_auth_client.post(
-#     "refresh",
-#     json=s.RefreshRequest(refresh_token=refresh_token).model_dump()
-#   )
+  result = await integ_auth_client.post(
+    "refresh",
+    json=s.RefreshRequest(refresh_token=refresh_token).model_dump()
+  )
 
-#   result_data = result.json()
+  result_data = result.json()
 
-#   assert result.status_code == status.HTTP_200_OK
-#   assert result_data["token_type"] == "bearer"
+  assert result.status_code == status.HTTP_200_OK
+  assert result_data["token_type"] == "bearer"
