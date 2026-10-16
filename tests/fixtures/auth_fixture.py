@@ -34,16 +34,15 @@ def unit_auth_service(mock_security, mock_token_repo, mock_user_repo):
 # Helpers
 
 @pytest.fixture
-async def loggedin_user(
-  integ_user_client,
+async def loggedin_user_response(
   integ_auth_client,
-  user_register_request
+  registered_user_response
 ):
-  await integ_user_client.post("/register", json=user_register_request.model_dump())
+  user = registered_user_response.json()
 
   login_data = await integ_auth_client.post("/login", data={
-    "username": user_register_request.username,
-    "password": user_register_request.password
+    "username": user["username"],
+    "password": "Password123"
   })
 
   return login_data.json()
