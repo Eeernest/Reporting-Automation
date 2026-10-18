@@ -43,9 +43,6 @@ class UsernameTooLongError(ValidationError):
 class ConflictError(AppError):
   pass
 
-class CompanyUnavailableError(ConflictError):
-  detail = "Company name is already in use"
-
 class EmailUnavailableError(ConflictError):
   detail = "Email is already in use"
 
