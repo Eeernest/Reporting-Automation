@@ -11,7 +11,6 @@ class Client(Base):
   id = Column(Integer, primary_key=True, index=True)
   user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
   name = Column(String, nullable=False, index=True)
-  company = Column(String)
   email = Column(String)
   phone_number = Column(String, nullable=False)
   notes = Column(String)
@@ -24,14 +23,6 @@ class Client(Base):
   __table_args__ = (
     UniqueConstraint("user_id", "name", name="user_client_name"),
     UniqueConstraint("user_id", "phone_number", name="user_client_phone_number"),
-
-    Index(
-      "user_client_company",
-      "user_id",
-      "company",
-      unique=True,
-      postgresql_where=Column("company").is_not(None)
-    ),
 
     Index(
       "user_client_email",
