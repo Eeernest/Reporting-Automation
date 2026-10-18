@@ -31,7 +31,6 @@ class ClientRepository:
   def _refine_integrity_error(self, err_msg: str, exc: Exception):
     constraint_map = {
       "user_client_name": e.NameUnavailableError,
-      "user_client_company": e.CompanyUnavailableError,
       "user_client_email": e.EmailUnavailableError,
       "user_client_phone_number": e.PhoneUnavailableError
     }
