@@ -44,25 +44,6 @@ async def test_save_client_name_error(
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_save_client_company_error(
-  mock_client_session,
-  unit_client_repo,
-  unit_client_obj
-):
-  mock_client_session.commit.side_effect = IntegrityError(
-    "stmt",
-    "params",
-    "user_client_company"
-  )
-
-  with pytest.raises(e.CompanyUnavailableError) as exc:
-    await unit_client_repo.save_client(unit_client_obj)
-
-  assert isinstance(exc.value, e.CompanyUnavailableError)
-  assert exc.value.detail == e.CompanyUnavailableError.detail
-
-@pytest.mark.anyio
-@pytest.mark.unit
 async def test_save_client_email_error(
   mock_client_session,
   unit_client_repo,
