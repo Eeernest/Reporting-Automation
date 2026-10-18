@@ -12,7 +12,6 @@ class ClientService:
     user_id: int,
     name: str,
     phone_number: str,
-    company: str | None = None,
     email: str | None = None,
     notes: str | None = None
   ):
@@ -20,7 +19,6 @@ class ClientService:
       user_id=user_id,
       name=name,
       phone_number=phone_number,
-      company=company,
       email=email,
       notes=notes
     )
