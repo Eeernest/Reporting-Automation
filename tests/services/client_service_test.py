@@ -15,13 +15,11 @@ async def test_reister_client_all_arguments_success(
     user_id=unit_client_obj.user_id,
     name=unit_client_obj.name,
     phone_number=unit_client_obj.phone_number,
-    company=unit_client_obj.company,
     email=unit_client_obj.email,
     notes=unit_client_obj.notes
   )
 
   assert result == unit_client_obj
-  assert result.company
   assert result.email
   assert result.notes
 
@@ -32,7 +30,6 @@ async def test_reister_client_only_needed_arguments_success(
   unit_client_service,
   unit_client_obj
 ):
-  unit_client_obj.company = None
   unit_client_obj.email = None
   unit_client_obj.notes = None
 
@@ -45,6 +42,5 @@ async def test_reister_client_only_needed_arguments_success(
   )
 
   assert result == unit_client_obj
-  assert not result.company
   assert not result.email
   assert not result.notes
