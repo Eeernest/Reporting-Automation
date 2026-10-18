@@ -39,7 +39,6 @@ def integ_client_obj(saved_user_obj):
   return Client(
     user_id=saved_user_obj.id,
     name="client1",
-    company="company1",
     email="company1@example.com",
     phone_number="+4812345678",
     notes="notes",
@@ -63,7 +62,6 @@ def unit_client_obj():
     id=1,
     user_id=1,
     name="client1",
-    company="company1",
     email="company1@example.com",
     phone_number="+4812345678",
     notes="notes",
