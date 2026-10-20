@@ -11,7 +11,7 @@ from app.core.config import settings
 import app.core.exceptions as e
 from app.core.security_types import AccessTokenPayload, RefreshTokenPayload
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 access_token_header = {"typ": "at+jwt"}
 refresh_token_header = {"typ": "rt+jwt"}
