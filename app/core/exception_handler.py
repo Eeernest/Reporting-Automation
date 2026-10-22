@@ -26,12 +26,20 @@ def custom_exc_handler(request: Request, exc: e.AppError):
   )
 
 def validation_exc_handler(request: Request, exc: RequestValidationError):
+  error_list = []
+
+  for error in exc.errors():
+    error_list.append(
+      {
+        "type": error["type"],
+        "field_name": str(error["loc"][-1]) if error["loc"] else "unknown",
+        "msg": error["msg"]
+      }
+    )
+
   return JSONResponse(
     status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-    content={
-      "detail": "Wrong input data",
-      "errors": exc.errors()
-    }
+    content={"detail": error_list}
   )
 
 
