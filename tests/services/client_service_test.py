@@ -1,46 +1,127 @@
-# import pytest
+import pytest
+from sqlalchemy.exc import IntegrityError
 
-# # register_client
+import app.core.exceptions as e
 
-# @pytest.mark.anyio
-# @pytest.mark.unit
-# async def test_reister_client_all_arguments_success(
-#   mock_client_repo,
-#   unit_client_service,
-#   unit_client_obj
-# ):
-#   mock_client_repo.save_client.return_value = unit_client_obj
+# register_client
 
-#   result = await unit_client_service.register_client(
-#     user_id=unit_client_obj.user_id,
-#     name=unit_client_obj.name,
-#     phone_number=unit_client_obj.phone_number,
-#     email=unit_client_obj.email,
-#     notes=unit_client_obj.notes
-#   )
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_register_client_succness(
+  mock_client_repo,
+  mock_client_session,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.add_client.return_value = unit_client_obj
+  mock_client_session.commit.return_value = None
 
-#   assert result == unit_client_obj
-#   assert result.email
-#   assert result.notes
+  result = await unit_client_service.register_client(
+    user_id=unit_client_obj.user_id,
+    name=unit_client_obj.name,
+    phone_number=unit_client_obj.phone_number,
+    email=unit_client_obj.email,
+    notes=unit_client_obj.notes
+  )
 
-# @pytest.mark.anyio
-# @pytest.mark.unit
-# async def test_reister_client_only_needed_arguments_success(
-#   mock_client_repo,
-#   unit_client_service,
-#   unit_client_obj
-# ):
-#   unit_client_obj.email = None
-#   unit_client_obj.notes = None
+  assert result == unit_client_obj
 
-#   mock_client_repo.save_client.return_value = unit_client_obj
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_register_client_name_error(
+  mock_client_repo,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.add_client.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_name"
+  )
 
-#   result = await unit_client_service.register_client(
-#     user_id=unit_client_obj.user_id,
-#     name=unit_client_obj.name,
-#     phone_number=unit_client_obj.phone_number,
-#   )
+  with pytest.raises(e.NameUnavailableError) as exc:
+    await unit_client_service.register_client(
+      user_id=unit_client_obj.user_id,
+      name=unit_client_obj.name,
+      phone_number=unit_client_obj.phone_number,
+      email=unit_client_obj.email,
+      notes=unit_client_obj.notes
+    )
 
-#   assert result == unit_client_obj
-#   assert not result.email
-#   assert not result.notes
+  assert isinstance(exc.value, e.NameUnavailableError)
+  assert exc.value.detail == e.NameUnavailableError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_register_client_email_error(
+  mock_client_repo,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.add_client.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_email"
+  )
+
+  with pytest.raises(e.EmailUnavailableError) as exc:
+    await unit_client_service.register_client(
+      user_id=unit_client_obj.user_id,
+      name=unit_client_obj.name,
+      phone_number=unit_client_obj.phone_number,
+      email=unit_client_obj.email,
+      notes=unit_client_obj.notes
+    )
+
+  assert isinstance(exc.value, e.EmailUnavailableError)
+  assert exc.value.detail == e.EmailUnavailableError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_register_client_phone_number_error(
+  mock_client_repo,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.add_client.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_phone_number"
+  )
+
+  with pytest.raises(e.PhoneUnavailableError) as exc:
+    await unit_client_service.register_client(
+      user_id=unit_client_obj.user_id,
+      name=unit_client_obj.name,
+      phone_number=unit_client_obj.phone_number,
+      email=unit_client_obj.email,
+      notes=unit_client_obj.notes
+    )
+
+  assert isinstance(exc.value, e.PhoneUnavailableError)
+  assert exc.value.detail == e.PhoneUnavailableError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_register_client_database_error(
+  mock_client_repo,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.add_client.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "unknown"
+  )
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_client_service.register_client(
+      user_id=unit_client_obj.user_id,
+      name=unit_client_obj.name,
+      phone_number=unit_client_obj.phone_number,
+      email=unit_client_obj.email,
+      notes=unit_client_obj.notes
+    )
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
