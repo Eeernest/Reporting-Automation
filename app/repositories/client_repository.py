@@ -1,7 +1,5 @@
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import app.core.exceptions as e
 from app.models.client_model import Client
 
 class ClientRepository:
@@ -10,33 +8,8 @@ class ClientRepository:
 
   # Main Methods
 
-  async def save_client(self, client_obj: Client) -> Client:
-    try:
-      self.session.add(client_obj)
-      await self.session.commit()
-      await self.session.refresh(client_obj)
+  async def add_client(self, client_obj: Client) -> Client:
+    self.session.add(client_obj)
+    await self.session.flush()
 
-      return client_obj
-
-    except IntegrityError as exc:
-      await self.session.rollback()
-
-      err_msg = str(exc.orig).lower()
-
-      self._refine_integrity_error(err_msg, exc)
-
-
-  # Helper Methods
-
-  def _refine_integrity_error(self, err_msg: str, exc: Exception):
-    constraint_map = {
-      "user_client_name": e.NameUnavailableError,
-      "user_client_email": e.EmailUnavailableError,
-      "user_client_phone_number": e.PhoneUnavailableError
-    }
-
-    for partial_msg, exc_class in constraint_map.items():
-      if partial_msg in err_msg:
-        raise exc_class() from exc
-
-    raise e.DatabaseIntegrityError() from exc
+    return client_obj
