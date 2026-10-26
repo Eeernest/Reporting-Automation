@@ -4,7 +4,7 @@ import pytest
 
 from app.models.client_model import Client
 from app.repositories.client_repository import ClientRepository
-from app.services.client_service import ClientService
+# from app.services.client_service import ClientService
 
 # Integration
 
@@ -27,9 +27,9 @@ def mock_client_session():
 def unit_client_repo(mock_client_session):
   return ClientRepository(mock_client_session)
 
-@pytest.fixture
-def unit_client_service(mock_client_repo):
-  return ClientService(mock_client_repo)
+# @pytest.fixture
+# def unit_client_service(mock_client_repo):
+#   return ClientService(mock_client_repo)
 
 
 # Object
@@ -44,17 +44,17 @@ def integ_client_obj(saved_user_obj):
     notes="notes",
   )
 
-@pytest.fixture
-async def saved_client_obj(integ_client_repo, integ_client_obj):
-  return await integ_client_repo.save_client(integ_client_obj)
+# @pytest.fixture
+# async def saved_client_obj(integ_client_repo, integ_client_obj):
+#   return await integ_client_repo.save_client(integ_client_obj)
 
-@pytest.fixture
-def duplicate_client_obj(saved_user_obj, saved_client_obj):
-  return Client(
-    user_id=saved_user_obj.id,
-    name=saved_client_obj.name,
-    phone_number="+48000000000"
-  )
+# @pytest.fixture
+# def duplicate_client_obj(saved_user_obj, saved_client_obj):
+#   return Client(
+#     user_id=saved_user_obj.id,
+#     name=saved_client_obj.name,
+#     phone_number="+48000000000"
+#   )
 
 @pytest.fixture
 def unit_client_obj():
