@@ -43,12 +43,8 @@ def mock_user_session():
   return AsyncMock()
 
 @pytest.fixture
-def unit_user_repo(mock_user_session):
-  return UserRepository(mock_user_session)
-
-@pytest.fixture
-def unit_user_service(mock_security, mock_user_repo):
-  return UserService(mock_security, mock_user_repo)
+def unit_user_service(mock_security, mock_user_session, mock_user_repo):
+  return UserService(mock_security, mock_user_session, mock_user_repo)
 
 # Objects
 
@@ -75,16 +71,15 @@ def integ_user_obj():
   )
 
 @pytest.fixture
-async def saved_user_obj(integ_user_repo, integ_user_obj):
-  return await integ_user_repo.save_user(integ_user_obj)
+async def saved_user_obj(integ_user_repo, integ_user_obj, db_session):
+  security = Security()
 
-@pytest.fixture
-def duplicate_user_obj(saved_user_obj):
-  return User(
-    username=saved_user_obj.username,
-    email="user2@example.com",
-    hashed_password="HashedPassword123",
-    user_role=UserRole.user
+  user_service = UserService(security, db_session, integ_user_repo)
+
+  return await user_service.register_user(
+    username=integ_user_obj.username,
+    email=integ_user_obj.email,
+    password="Password123"
   )
 
 
