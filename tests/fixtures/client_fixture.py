@@ -1,7 +1,11 @@
 from unittest.mock import AsyncMock
 
+from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.dependencies.client_dependency import get_client_service
+from app.dependencies.permit_dependency import get_current_user
+from app.main import app
 from app.models.client_model import Client
 from app.repositories.client_repository import ClientRepository
 from app.services.client_service import ClientService
@@ -11,6 +15,20 @@ from app.services.client_service import ClientService
 @pytest.fixture
 def integ_client_repo(db_session):
   return ClientRepository(db_session)
+
+@pytest.fixture
+def integ_client_service(integ_client_repo, db_session):
+  return ClientService(integ_client_repo, db_session)
+
+@pytest.fixture
+async def integ_client_router(integ_client_service, saved_user_obj):
+  app.dependency_overrides[get_current_user] = lambda: saved_user_obj
+  app.dependency_overrides[get_client_service] = lambda: integ_client_service
+
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+    yield c
+
+  app.dependency_overrides.clear()
 
 
 # Unit
