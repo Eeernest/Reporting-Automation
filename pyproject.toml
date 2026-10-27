@@ -17,6 +17,7 @@ dependencies = [
   "fastapi>=0.136.0",
   "pydantic[email]>=2.13.1",
   "pydantic_settings>=2.14.1",
+  "pydantic-extra-types[phonenumbers]>=2.10.0",
   "python-dotenv>=1.2.2",
   "redis>=7.4.0",
   "slowapi>=0.1.9",
