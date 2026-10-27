@@ -3,8 +3,6 @@ from typing import Annotated
 from pydantic import BaseModel, EmailStr, StringConstraints
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
-import app.core.exceptions as e
-
 # Requests
 
 class RegisterClientRequest(BaseModel):
