@@ -17,10 +17,10 @@ def integ_user_repo(db_session):
   return UserRepository(db_session)
 
 @pytest.fixture
-def integ_user_service(integ_user_repo):
+def integ_user_service(integ_user_repo, db_session):
   security = Security()
 
-  return UserService(security, integ_user_repo)
+  return UserService(security, db_session, integ_user_repo)
 
 @pytest.fixture
 async def integ_user_router(integ_user_service):
@@ -71,12 +71,8 @@ def integ_user_obj():
   )
 
 @pytest.fixture
-async def saved_user_obj(integ_user_repo, integ_user_obj, db_session):
-  security = Security()
-
-  user_service = UserService(security, db_session, integ_user_repo)
-
-  return await user_service.register_user(
+async def saved_user_obj(integ_user_service, integ_user_obj):
+  return await integ_user_service.register_user(
     username=integ_user_obj.username,
     email=integ_user_obj.email,
     password="Password123"
