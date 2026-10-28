@@ -1,28 +1,15 @@
 import re
+from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, StringConstraints, field_validator
 
 import app.core.exceptions as e
 
-# Schemas
-
-class UserBase(BaseModel):
-  username: str
-  email: EmailStr
-
-  @field_validator("username")
-  def valid_username(cls, v: str) -> str:
-    v = v.strip()
-
-    if len(v) > 32:
-      raise e.UsernameTooLongError()
-
-    return v
-
-
 # Requests
 
-class RegisterUserRequest(UserBase):
+class RegisterUserRequest(BaseModel):
+  username: ValidUsername
+  email: EmailStr
   password: str
 
   @field_validator("password")
@@ -41,5 +28,18 @@ class RegisterUserRequest(UserBase):
 
 # Responses
 
-class RegisterUserResponse(UserBase):
+class RegisterUserResponse(BaseModel):
   id: int
+  username: ValidUsername
+  email: EmailStr
+
+
+# Validated Type
+
+ValidUsername = Annotated[
+  str,
+  StringConstraints(
+    min_length=1,
+    max_length=30
+  )
+]
