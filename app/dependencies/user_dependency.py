@@ -11,6 +11,6 @@ def get_user_service(session: SessionDep):
   security = Security()
   user_repo = UserRepository(session)
 
-  return UserService(security, user_repo)
+  return UserService(security, session, user_repo)
 
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
