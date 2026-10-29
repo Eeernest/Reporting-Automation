@@ -1,8 +1,10 @@
 from pydantic import BaseModel, EmailStr
 
+import app.core.types as t
+
 # Responses
 
 class GetCurrentUserResponse(BaseModel):
   id: int
-  username: str
+  username: t.ValidUsername
   email: EmailStr
