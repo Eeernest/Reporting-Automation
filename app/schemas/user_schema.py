@@ -1,14 +1,14 @@
 import re
-from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, StringConstraints, field_validator
+from pydantic import BaseModel, EmailStr, field_validator
 
 import app.core.exceptions as e
+import app.core.types as t
 
 # Requests
 
 class RegisterUserRequest(BaseModel):
-  username: ValidUsername
+  username: t.ValidUsername
   email: EmailStr
   password: str
 
@@ -30,16 +30,5 @@ class RegisterUserRequest(BaseModel):
 
 class RegisterUserResponse(BaseModel):
   id: int
-  username: ValidUsername
+  username: t.ValidUsername
   email: EmailStr
-
-
-# Validated Type
-
-ValidUsername = Annotated[
-  str,
-  StringConstraints(
-    min_length=1,
-    max_length=30
-  )
-]
