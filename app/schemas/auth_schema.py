@@ -1,23 +1,24 @@
 from pydantic import BaseModel
 
-class AuthBase(BaseModel):
-  access_token: str
-  refresh_token: str
-  token_type: str
+import app.core.types as t
 
 # Requests
 
 class LogoutRequest(BaseModel):
-  refresh_token: str
+  refresh_token: t.ValidJWTToken
 
 class RefreshRequest(BaseModel):
-  refresh_token: str
+  refresh_token: t.ValidJWTToken
 
 
 # Responses
 
-class LoginResponse(AuthBase):
-  pass
+class LoginResponse(BaseModel):
+  access_token: t.ValidJWTToken
+  refresh_token: t.ValidJWTToken
+  token_type: t.ValidJWTTokenType
 
-class RefreshResponse(AuthBase):
-  pass
+class RefreshResponse(BaseModel):
+  access_token: t.ValidJWTToken
+  refresh_token: t.ValidJWTToken
+  token_type: t.ValidJWTTokenType
