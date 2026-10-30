@@ -15,7 +15,7 @@ def integ_permit_service(integ_user_repo) -> PermitService:
   return PermitService(security, integ_user_repo)
 
 @pytest.fixture
-async def integ_permit_client(integ_permit_service):
+async def integ_permit_router(integ_permit_service):
   app.dependency_overrides[get_permit_service] = lambda: integ_permit_service
 
   async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
