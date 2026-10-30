@@ -15,7 +15,7 @@ def integ_auth_service(integ_token_repo, integ_user_repo):
   return AuthService(security, integ_token_repo, integ_user_repo)
 
 @pytest.fixture
-async def integ_auth_client(integ_auth_service):
+async def integ_auth_router(integ_auth_service):
   app.dependency_overrides[get_auth_service] = lambda: integ_auth_service
 
   async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
@@ -35,12 +35,12 @@ def unit_auth_service(mock_security, mock_token_repo, mock_user_repo):
 
 @pytest.fixture
 async def loggedin_user_response(
-  integ_auth_client,
+  integ_auth_router,
   registered_user_response
 ):
   user = registered_user_response.json()
 
-  login_data = await integ_auth_client.post("/login", data={
+  login_data = await integ_auth_router.post("/login", data={
     "username": user["username"],
     "password": "Password123"
   })
