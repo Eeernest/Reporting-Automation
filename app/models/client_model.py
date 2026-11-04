@@ -4,6 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, UniqueCons
 from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
+from app.models.project_model import Project
 
 class Client(Base):
   __tablename__ = "clients"
@@ -17,8 +18,14 @@ class Client(Base):
   created_at = Column(DateTime, default=datetime.utcnow)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-  user = Relationship("User", back_populates="user_clients")
 
+  # Relationships 
+
+  user = Relationship("User", back_populates="user_clients")
+  client_projects = Relationship("Project", back_populates="client", cascade="all, delete-orphan")
+
+
+  # Table arguments
 
   __table_args__ = (
     UniqueConstraint("user_id", "name", name="user_client_name"),
