@@ -15,6 +15,7 @@ pytest_plugins = [
   "tests.fixtures.auth_fixture",
   "tests.fixtures.client_fixture",
   "tests.fixtures.permit_fixture",
+  "tests.fixtures.project_fixture",
   "tests.fixtures.security_fixture",
   "tests.fixtures.token_fixture",
   "tests.fixtures.user_fixture",
