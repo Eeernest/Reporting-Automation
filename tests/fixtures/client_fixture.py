@@ -59,6 +59,16 @@ def integ_client_obj(saved_user_obj):
   )
 
 @pytest.fixture
+async def registered_client_obj(integ_client_service, integ_client_obj):
+  return await integ_client_service.register_client(
+    user_id=integ_client_obj.user_id,
+    name=integ_client_obj.name,
+    email=integ_client_obj.email,
+    phone_number=integ_client_obj.phone_number,
+    notes=integ_client_obj.notes
+  )
+
+@pytest.fixture
 def unit_client_obj():
   return Client(
     id=1,
