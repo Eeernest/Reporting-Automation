@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr
-from pydantic_extra_types.phone_numbers import PhoneNumber
 
 import app.core.types as t
 
