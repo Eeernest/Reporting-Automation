@@ -25,8 +25,8 @@ def mock_project_session():
   return AsyncMock()
 
 @pytest.fixture
-def unit_project_service(mock_project_repo, mock_project_session):
-  return ProjectService(mock_project_repo, mock_project_session)
+def unit_project_service(mock_client_repo, mock_project_repo, mock_project_session):
+  return ProjectService(mock_client_repo, mock_project_repo, mock_project_session)
 
 
 # Object
