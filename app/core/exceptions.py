@@ -56,6 +56,15 @@ class UsernameUnavailableError(ConflictError):
   detail = "Username is already in use"
 
 
+# Not Found Errors (404)
+
+class NotFoundError(AppError):
+  pass
+
+class ClientNotFoundError(NotFoundError):
+  detail = "Client not found"
+
+
 # Forbidden Errors (403)
 
 class ForbiddenError(AppError):
