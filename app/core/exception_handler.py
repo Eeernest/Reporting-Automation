@@ -50,6 +50,7 @@ HTTP_STATUS_MAP = {
   e.ServerError: status.HTTP_500_INTERNAL_SERVER_ERROR,
   e.ValidationError: status.HTTP_422_UNPROCESSABLE_CONTENT,
   e.ConflictError: status.HTTP_409_CONFLICT,
+  e.NotFoundError: status.HTTP_404_NOT_FOUND,
   e.ForbiddenError: status.HTTP_403_FORBIDDEN,
   e.UnauthorizedError: status.HTTP_401_UNAUTHORIZED
 }
