@@ -6,10 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import app.core.exceptions as e
 from app.models.project_model import Project
+from app.repositories.client_repository import ClientRepository
 from app.repositories.project_repository import ProjectRepository
 
 class ProjectService:
-  def __init__(self, project_repo: ProjectRepository, session: AsyncSession):
+  def __init__(self, client_repo: ClientRepository, project_repo: ProjectRepository, session: AsyncSession):
+    self.client_repo = client_repo
     self.project_repo = project_repo
     self.session = session
 
@@ -17,6 +19,7 @@ class ProjectService:
 
   async def register_project(
     self,
+    user_id: int,
     client_id: int,
     name: str,
     location: str | None = None,
@@ -24,6 +27,8 @@ class ProjectService:
     est_end_date: date | None = None,
     act_end_date: date | None = None
   ) -> Project:
+    await self._check_client_obj_existance(client_id, user_id)
+    
     project_obj = Project(
       client_id=client_id,
       name=name,
@@ -37,6 +42,15 @@ class ProjectService:
 
 
   # Helper Methods
+
+  # client_repo
+
+  async def _check_client_obj_existance(self, client_id: int, user_id: int) -> None:
+    client_obj = await self.client_repo.get_by_id_and_user_id(client_id, user_id)
+
+    if not client_obj:
+      raise e.ClientNotFoundError()
+
 
   # project_repo and session
 
