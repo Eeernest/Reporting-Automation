@@ -17,6 +17,15 @@ ValidJWTToken = Annotated[str, StringConstraints(min_length=1)]
 ValidJWTTokenType = Literal["bearer"]
 
 
+# Project Model related types
+
+ValidProjectName = Annotated[str, StringConstraints(min_length=1, max_length=100)]
+
+ValidProjectLocation = Annotated[str, StringConstraints(min_length=1, max_length=255)]
+
+ValidProjectDescription = Annotated[str, StringConstraints(min_length=1, max_length=300)]
+
+
 # User Model related types
 
 ValidUsername = Annotated[str, StringConstraints(min_length=1, max_length=30)]
