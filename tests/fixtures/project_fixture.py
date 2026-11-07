@@ -1,8 +1,12 @@
 from datetime import date
 from unittest.mock import AsyncMock
 
+from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.dependencies.permit_dependency import get_current_user
+from app.dependencies.project_dependency import get_project_service
+from app.main import app
 from app.models.project_model import Project
 from app.repositories.project_repository import ProjectRepository
 from app.services.project_service import ProjectService
@@ -12,6 +16,20 @@ from app.services.project_service import ProjectService
 @pytest.fixture
 def integ_project_repo(db_session):
   return ProjectRepository(db_session)
+
+@pytest.fixture
+def integ_project_service(integ_client_repo, integ_project_repo, db_session):
+  return ProjectService(integ_client_repo, integ_project_repo, db_session)
+
+@pytest.fixture
+async def integ_project_router(integ_project_service, saved_user_obj):
+  app.dependency_overrides[get_current_user] = lambda: saved_user_obj
+  app.dependency_overrides[get_project_service] = lambda: integ_project_service
+
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+    yield c
+
+  app.dependency_overrides.clear()
 
 
 # Unit
