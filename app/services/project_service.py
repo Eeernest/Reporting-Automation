@@ -31,6 +31,7 @@ class ProjectService:
     
     project_obj = Project(
       client_id=client_id,
+      user_id=user_id,
       name=name,
       location=location,
       description=description,
