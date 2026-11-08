@@ -29,4 +29,8 @@ class User(Base):
   created_at = Column(DateTime, default=datetime.utcnow)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
+  # Relationships
+
   user_clients = Relationship("Client", back_populates="user", cascade="all, delete-orphan")
+  user_project = Relationship("Project", back_populates="user", cascade="all, delete-orphan")

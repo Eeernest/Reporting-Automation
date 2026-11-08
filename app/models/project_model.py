@@ -10,6 +10,7 @@ class Project(Base):
 
   id = Column(Integer, primary_key=True, index=True)
   client_id = Column(Integer, ForeignKey("clients.id"), nullable=False, index=True)
+  user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
   name = Column(String, nullable=False)
   location = Column(String)
   description = Column(String)
@@ -21,4 +22,5 @@ class Project(Base):
 
   # Relationships
 
-  client = Relationship("Client", back_populates="client_projects") 
+  client = Relationship("Client", back_populates="client_projects")
+  user = Relationship("User", back_populates="user_project")
