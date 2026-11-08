@@ -50,9 +50,10 @@ def unit_project_service(mock_client_repo, mock_project_repo, mock_project_sessi
 # Object
 
 @pytest.fixture
-def integ_project_obj(registered_client_obj):
+def integ_project_obj(saved_user_obj, registered_client_obj):
   return Project(
     client_id=registered_client_obj.id,
+    user_id=saved_user_obj.id,
     name="project name",
     location="location 123",
     description="Description",
@@ -65,6 +66,7 @@ def unit_project_obj():
   return Project(
     id=11,
     client_id=12,
+    user_id=13,
     name="project name",
     location="location 123",
     description="Description",
