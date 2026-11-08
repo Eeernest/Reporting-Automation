@@ -7,6 +7,7 @@ import app.core.types as t
 # Requests
 
 class RegisterProjectRequest(BaseModel):
+  user_id: int
   client_id: int
   name: t.ValidProjectName
   location: t.ValidProjectLocation | None = None
@@ -19,5 +20,6 @@ class RegisterProjectRequest(BaseModel):
 
 class RegisterProjectResponse(BaseModel):
   id: int
+  user_id: int
   client_id: int
   name: t.ValidProjectName
