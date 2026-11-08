@@ -9,8 +9,8 @@ class Project(Base):
   __tablename__ = "projects"
 
   id = Column(Integer, primary_key=True, index=True)
-  client_id = Column(Integer, ForeignKey("clients.id"), nullable=False, index=True)
   user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+  client_id = Column(Integer, ForeignKey("clients.id"), nullable=False, index=True)
   name = Column(String, nullable=False)
   location = Column(String)
   description = Column(String)

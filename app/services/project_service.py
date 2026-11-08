@@ -30,8 +30,8 @@ class ProjectService:
     await self._check_client_obj_existance(client_id, user_id)
     
     project_obj = Project(
-      client_id=client_id,
       user_id=user_id,
+      client_id=client_id,
       name=name,
       location=location,
       description=description,
