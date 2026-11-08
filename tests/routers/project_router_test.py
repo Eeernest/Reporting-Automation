@@ -7,6 +7,7 @@ import app.core.exceptions as e
 @pytest.mark.integration
 async def test_register_project_success(integ_project_router, registered_client_obj):
   request = {
+    "user_id": registered_client_obj.user_id,
     "client_id": registered_client_obj.id,
     "name": "test project"
   }
@@ -17,6 +18,7 @@ async def test_register_project_success(integ_project_router, registered_client_
 
   assert result.status_code == status.HTTP_201_CREATED
   assert data["id"]
+  assert data["user_id"]
   assert data["client_id"]
   assert data["name"]
 
@@ -27,6 +29,7 @@ async def test_register_project_credentials_validation_error(
   registered_client_obj
 ):
   request = {
+    "user_id": registered_client_obj.user_id,
     "client_id": registered_client_obj.id,
     "name": "a" * 101,
     "location": "b" * 256,
@@ -46,6 +49,7 @@ async def test_register_project_credentials_validation_error(
 @pytest.mark.integration
 async def test_register_project_client_not_found_error(integ_project_router):
   request = {
+    "user_id": 123,
     "client_id": 12345,
     "name": "test project"
   }
