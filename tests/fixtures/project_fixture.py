@@ -62,6 +62,14 @@ def integ_project_obj(saved_user_obj, registered_client_obj):
   )
 
 @pytest.fixture
+async def registered_project_obj(integ_project_service, integ_project_obj):
+  return await integ_project_service.register_project(
+    user_id=integ_project_obj.user_id,
+    client_id=integ_project_obj.client_id,
+    name=integ_project_obj.name
+  )
+
+@pytest.fixture
 def unit_project_obj():
   return Project(
     id=11,
