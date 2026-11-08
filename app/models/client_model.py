@@ -4,7 +4,6 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, UniqueCons
 from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
-from app.models.project_model import Project
 
 class Client(Base):
   __tablename__ = "clients"

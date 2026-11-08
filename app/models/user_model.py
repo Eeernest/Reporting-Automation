@@ -5,7 +5,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
-from app.models.client_model import Client
 
 # Enums
 
