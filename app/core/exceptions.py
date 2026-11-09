@@ -64,6 +64,9 @@ class NotFoundError(AppError):
 class ClientNotFoundError(NotFoundError):
   detail = "Client not found"
 
+class ProjectNotFoundError(NotFoundError):
+  detail = "Project not found"
+
 
 # Forbidden Errors (403)
 
