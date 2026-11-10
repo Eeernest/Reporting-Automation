@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.item_model import Item
@@ -13,3 +14,10 @@ class ItemRepository:
     await self.session.flush()
 
     return item_obj
+
+  async def get_by_id_and_project_id(self, item_id: int, project_id: int) -> Item | None:
+    result = await self.session.execute(
+      select(Item).where(Item.id == item_id, Item.project_id == project_id)
+    )
+
+    return result.scalar_one_or_none()
