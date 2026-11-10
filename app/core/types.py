@@ -10,6 +10,13 @@ ValidClientName = Annotated[str, StringConstraints(min_length=1, max_length=32)]
 ValidClientNotes = Annotated[str, StringConstraints(min_length=1, max_length=300)]
 
 
+# Item Model related types
+
+ValidItemName = Annotated[str, StringConstraints(min_length=1, max_length=100)]
+
+ValidItemDescription = Annotated[str, StringConstraints(min_length=1, max_length=300)]
+
+
 # JWT token related types
 
 ValidJWTToken = Annotated[str, StringConstraints(min_length=1)]
