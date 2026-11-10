@@ -10,6 +10,7 @@ from app.core.exceptions import AppError
 from app.core.exception_handler import custom_exc_handler, validation_exc_handler
 from app.routers.auth_router import router as auth_router
 from app.routers.client_router import router as client_router
+from app.routers.item_router import router as item_router
 from app.routers.permit_router import router as permit_router
 from app.routers.project_router import router as project_router
 from app.routers.user_router import router as user_router
@@ -29,6 +30,7 @@ app.add_exception_handler(RequestValidationError, validation_exc_handler)
 
 app.include_router(auth_router)
 app.include_router(client_router)
+app.include_router(item_router)
 app.include_router(permit_router)
 app.include_router(project_router)
 app.include_router(user_router)
