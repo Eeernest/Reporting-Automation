@@ -1,8 +1,12 @@
 from unittest.mock import AsyncMock
 
+from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.dependencies.item_dependency import get_item_service
+from app.dependencies.permit_dependency import get_current_user
 from app.enums.item_enum import ItemStatus, ItemType
+from app.main import app
 from app.models.item_model import Item
 from app.repositories.item_repository import ItemRepository
 from app.services.item_service import ItemService
@@ -12,6 +16,20 @@ from app.services.item_service import ItemService
 @pytest.fixture
 def integ_item_repo(db_session):
   return ItemRepository(db_session)
+
+@pytest.fixture
+def integ_item_service(integ_item_repo, integ_project_repo, db_session):
+  return ItemService(integ_item_repo, integ_project_repo, db_session)
+
+@pytest.fixture
+async def integ_item_router(integ_item_service, saved_user_obj):
+  app.dependency_overrides[get_current_user] = lambda: saved_user_obj
+  app.dependency_overrides[get_item_service] = lambda: integ_item_service
+
+  async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+    yield c
+
+  app.dependency_overrides.clear()
 
 
 # Unit
