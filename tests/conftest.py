@@ -14,6 +14,7 @@ pytest_plugins = [
   "anyio",
   "tests.fixtures.auth_fixture",
   "tests.fixtures.client_fixture",
+  "tests.fixtures.expense_fixture",
   "tests.fixtures.item_fixture",
   "tests.fixtures.permit_fixture",
   "tests.fixtures.project_fixture",
