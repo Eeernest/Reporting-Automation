@@ -23,5 +23,6 @@ class Project(Base):
   # Relationships
 
   client = Relationship("Client", back_populates="client_projects")
+  project_expense = Relationship("Expense", back_populates="project", cascade="all, delete-orphan")
   project_item = Relationship("Item", back_populates="project", cascade="all, delete-orphan")
   user = Relationship("User", back_populates="user_project")
