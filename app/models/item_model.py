@@ -22,4 +22,5 @@ class Item(Base):
 
   # Relationship
 
+  item_expense = Relationship("Expense", back_populates="item", cascade="all, delete-orphan")
   project = Relationship("Project", back_populates="project_item")
