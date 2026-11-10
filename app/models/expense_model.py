@@ -11,7 +11,7 @@ class Expense(Base):
   id = Column(Integer, primary_key=True, index=True)
   project_id = Column(Integer, ForeignKey("projects.id"), nullable=False, index=True)
   item_id = Column(Integer, ForeignKey("items.id"), index=True)
-  expense_type = Column(String, index=True)
+  expense_type = Column(String, nullable=False, index=True)
   amount = Column(Float)
   created_at = Column(DateTime, default=datetime.utcnow)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
