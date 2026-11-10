@@ -10,6 +10,8 @@ from alembic import context
 from app.core.config import settings
 from app.db.database import Base
 from app.models.client_model import Client
+from app.models.item_model import Item
+from app.models.project_model import Project
 from app.models.user_model import User
 
 # this is the Alembic Config object, which provides
