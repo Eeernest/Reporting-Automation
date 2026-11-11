@@ -69,3 +69,31 @@ async def test_register_client_name_unavailable_error(integ_client_router):
 
   assert result.status_code == status.HTTP_409_CONFLICT
   assert data["detail"] == e.NameUnavailableError.detail
+
+
+# get_client
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_client_success(integ_client_router, registered_client_obj):
+  result = await integ_client_router.get(f"/clients/{registered_client_obj.id}")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"] == registered_client_obj.id
+  assert data["user_id"] == registered_client_obj.user_id
+  assert data["name"] == registered_client_obj.name
+  assert data["email"] == registered_client_obj.email
+  assert data["phone_number"] == registered_client_obj.phone_number
+  assert data["notes"] == registered_client_obj.notes
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_client_not_found_error(integ_client_router):
+  result = await integ_client_router.get(f"/clients/{1}")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_404_NOT_FOUND
+  assert data["detail"] == e.ClientNotFoundError.detail
