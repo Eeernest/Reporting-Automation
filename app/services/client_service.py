@@ -29,14 +29,28 @@ class ClientService:
       notes=notes
     )
 
-    return await self._commit_client_obj_or_raise(client_obj)
+    return await self._commit_client_or_raise(client_obj)
+
+  async def get_client(self, client_id: int, user_id: int) -> Client:
+    return await self._get_client_or_raise(client_id, user_id)
 
 
   # Helper Methods
 
+  # client_repo
+
+  async def _get_client_or_raise(self, client_id: int, user_id: int) -> Client:
+    client_obj = await self.client_repo.get_by_id_and_user_id(client_id, user_id)
+
+    if not client_obj:
+      raise e.ClientNotFoundError()
+
+    return client_obj
+
+
   # client_repo and session
 
-  async def _commit_client_obj_or_raise(self, client_obj: Client) -> Client:
+  async def _commit_client_or_raise(self, client_obj: Client) -> Client:
     try:
       added_client_obj = await self.client_repo.add_client(client_obj)
 
