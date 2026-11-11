@@ -7,7 +7,7 @@ import app.schemas.client_schema as s
 router = APIRouter()
 
 @router.post(
-  "/register_client",
+  "/clients",
   response_model=s.RegisterClinetResponse,
   status_code=status.HTTP_201_CREATED
 )
