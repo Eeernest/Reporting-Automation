@@ -10,7 +10,7 @@ import app.core.exceptions as e
 async def test_register_client_success(integ_client_router):
   
   result = await integ_client_router.post(
-    "/register_client",
+    "/clients",
     json={
       "name": "test client",
       "email": "testclient@example.com",
@@ -31,7 +31,7 @@ async def test_register_client_success(integ_client_router):
 @pytest.mark.integration
 async def test_register_client_credentials_validation_error(integ_client_router):
   result = await integ_client_router.post(
-    "/register_client",
+    "/clients",
     json={
       "name": "a" * 33,
       "phone_number": "123",
@@ -56,14 +56,14 @@ async def test_register_client_name_unavailable_error(integ_client_router):
     "phone_number": "+48123456789",
   }
 
-  await integ_client_router.post("/register_client", json=request)
+  await integ_client_router.post("/clients", json=request)
 
   bad_request = {
     "name": "test client",
     "phone_number": "+48456765412",
   }
 
-  result = await integ_client_router.post("/register_client", json=bad_request)
+  result = await integ_client_router.post("/clients", json=bad_request)
 
   data = result.json()
 
