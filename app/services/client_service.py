@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import app.core.exceptions as e
 import app.core.exception_mapper as exc_map
 from app.models.client_model import Client
 from app.repositories.client_repository import ClientRepository
@@ -28,12 +29,14 @@ class ClientService:
       notes=notes
     )
 
-    return await self._try_commit_client_obj(client_obj)
+    return await self._commit_client_obj_or_raise(client_obj)
 
 
   # Helper Methods
 
-  async def _try_commit_client_obj(self, client_obj: Client) -> Client:
+  # client_repo and session
+
+  async def _commit_client_obj_or_raise(self, client_obj: Client) -> Client:
     try:
       added_client_obj = await self.client_repo.add_client(client_obj)
 
