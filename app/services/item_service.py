@@ -20,7 +20,6 @@ class ItemService:
 
   async def register_item(
     self,
-    user_id: int,
     project_id: int,
     name: str,
     item_type: ItemType,
