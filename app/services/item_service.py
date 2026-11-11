@@ -11,11 +11,9 @@ class ItemService:
   def __init__(
     self,
     item_repo: ItemRepository,
-    project_repo: ProjectRepository,
     session: AsyncSession
   ):
     self.item_repo = item_repo
-    self.project_repo = project_repo
     self.session = session
 
   # Main Methods
@@ -29,8 +27,6 @@ class ItemService:
     item_status: ItemStatus,
     description: str | None = None
   ) -> Item:
-    await self._check_project_obj_existance(project_id, user_id)
-
     item_obj = Item(
       project_id=project_id,
       name=name,
@@ -39,14 +35,14 @@ class ItemService:
       description=description
     )
 
-    return await self._try_commit_item_obj(item_obj)
+    return await self._commit_item_or_raise(item_obj)
 
 
   # Helper Methods
 
   # item_repo and session
 
-  async def _try_commit_item_obj(self, item_obj: Item) -> Item:
+  async def _commit_item_or_raise(self, item_obj: Item) -> Item:
     try:
       added_item_obj = await self.item_repo.add_item(item_obj)
 
@@ -58,12 +54,3 @@ class ItemService:
       await self.session.rollback()
 
       raise e.DatabaseIntegrityError() from exc
-
-
-  # project_repo
-
-  async def _check_project_obj_existance(self, project_id: int, user_id: int) -> None:
-    project_obj = await self.project_repo.get_by_id_and_user_id(project_id, user_id)
-
-    if not project_obj:
-      raise e.ProjectNotFoundError()
