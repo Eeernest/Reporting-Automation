@@ -72,7 +72,6 @@ async def registered_item_obj(
   registered_project_obj
 ):
   return await integ_item_service.register_item(
-    user_id=registered_project_obj.user_id,
     project_id=registered_project_obj.id,
     name=integ_item_obj.name,
     item_type=integ_item_obj.item_type,
