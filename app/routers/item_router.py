@@ -19,7 +19,6 @@ async def register_item(
   request: s.RegisterItemRequest,
 ):
   return await service.register_item(
-    user_id=current_user.id,
     project_id=project.id,
     name=request.name,
     item_type=request.item_type,
