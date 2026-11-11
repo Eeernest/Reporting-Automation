@@ -5,7 +5,6 @@ import app.core.exceptions as e
 from app.enums.item_enum import ItemStatus, ItemType
 from app.models.item_model import Item
 from app.repositories.item_repository import ItemRepository
-from app.repositories.project_repository import ProjectRepository
 
 class ItemService:
   def __init__(
@@ -36,8 +35,22 @@ class ItemService:
 
     return await self._commit_item_or_raise(item_obj)
 
+  async def get_item(self, item_id: int, project_id: int) -> Item:
+    return await self._get_item_or_raise(item_id, project_id)
+
 
   # Helper Methods
+
+  # item_repo
+
+  async def _get_item_or_raise(self, item_id: int, project_id: int) -> Item:
+    item_obj = await self.item_repo.get_by_id_and_project_id(item_id, project_id)
+
+    if not item_obj:
+      raise e.ItemNotFoundError()
+
+    return item_obj
+
 
   # item_repo and session
 
