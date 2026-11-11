@@ -86,3 +86,36 @@ async def test_register_client_database_integrity_error(
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# get_project
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_project_success(
+  mock_project_repo,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_repo.get_by_id_and_user_id.return_value = unit_project_obj
+
+  result = await unit_project_service.get_project(
+    unit_project_obj.id,
+    unit_project_obj.user_id
+  )
+
+  assert result == unit_project_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_project_return_none_success(
+  mock_project_repo,
+  unit_project_service,
+):
+  mock_project_repo.get_by_id_and_user_id.return_value = None
+
+  with pytest.raises(e.ProjectNotFoundError) as exc:
+    await unit_project_service.get_project(1, 12)
+
+  assert isinstance(exc.value, e.ProjectNotFoundError)
+  assert exc.value.detail == e.ProjectNotFoundError.detail
