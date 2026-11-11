@@ -27,3 +27,15 @@ async def register_project(
     est_end_date=request.est_end_date,
     act_end_date=request.act_end_date
   )
+
+@router.get(
+  "/projects/{project_id}",
+  response_model=s.GetProjectResposne,
+  status_code=status.HTTP_200_OK
+)
+async def get_project(
+  current_user: CurrentUserDep,
+  project_id: int,
+  service: ProjectServiceDep
+):
+  return await service.get_project(project_id, current_user.id)
