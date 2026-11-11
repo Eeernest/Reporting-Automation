@@ -18,8 +18,8 @@ def integ_project_repo(db_session):
   return ProjectRepository(db_session)
 
 @pytest.fixture
-def integ_project_service(integ_client_repo, integ_project_repo, db_session):
-  return ProjectService(integ_client_repo, integ_project_repo, db_session)
+def integ_project_service(integ_project_repo, db_session):
+  return ProjectService(integ_project_repo, db_session)
 
 @pytest.fixture
 async def integ_project_router(integ_project_service, saved_user_obj):
