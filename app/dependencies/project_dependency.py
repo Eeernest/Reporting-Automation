@@ -5,7 +5,6 @@ from fastapi import Depends
 from app.db.database import SessionDep
 from app.dependencies.permit_dependency import CurrentUserDep
 from app.models.project_model import Project
-from app.repositories.client_repository import ClientRepository
 from app.repositories.project_repository import ProjectRepository
 from app.services.project_service import ProjectService
 

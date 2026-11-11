@@ -21,3 +21,12 @@ class RegisterProjectResponse(BaseModel):
   user_id: int
   client_id: int
   name: t.ValidProjectName
+
+class GetProjectResposne(BaseModel):
+  id: int
+  user_id: int
+  client_id: int
+  name: t.ValidProjectName
+  description: t.ValidProjectDescription | None
+  est_end_date: date | None
+  act_end_date: date | None
