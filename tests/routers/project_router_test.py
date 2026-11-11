@@ -6,13 +6,12 @@ import app.core.exceptions as e
 @pytest.mark.anyio
 @pytest.mark.integration
 async def test_register_project_success(integ_project_router, registered_client_obj):
-  request = {
-    "user_id": registered_client_obj.user_id,
-    "client_id": registered_client_obj.id,
-    "name": "test project"
-  }
+  request = {"name": "test project"}
   
-  result = await integ_project_router.post("/register_project", json=request)
+  result = await integ_project_router.post(
+    f"/clients/{registered_client_obj.id}/projects",
+    json=request
+  )
 
   data = result.json()
 
@@ -29,14 +28,15 @@ async def test_register_project_credentials_validation_error(
   registered_client_obj
 ):
   request = {
-    "user_id": registered_client_obj.user_id,
-    "client_id": registered_client_obj.id,
     "name": "a" * 101,
     "location": "b" * 256,
     "description": "c" * 301
   }
 
-  result = await integ_project_router.post("/register_project", json=request)
+  result = await integ_project_router.post(
+    f"/clients/{registered_client_obj.id}/projects",
+    json=request
+  )
 
   data = result.json()
 
@@ -44,19 +44,3 @@ async def test_register_project_credentials_validation_error(
   assert data["detail"][0]["field_name"] == "name"
   assert data["detail"][1]["field_name"] == "location"
   assert data["detail"][2]["field_name"] == "description"
-
-@pytest.mark.anyio
-@pytest.mark.integration
-async def test_register_project_client_not_found_error(integ_project_router):
-  request = {
-    "user_id": 123,
-    "client_id": 12345,
-    "name": "test project"
-  }
-
-  result = await integ_project_router.post("/register_project", json=request)
-
-  data = result.json()
-
-  assert result.status_code == status.HTTP_404_NOT_FOUND
-  assert data["detail"] == e.ClientNotFoundError.detail
