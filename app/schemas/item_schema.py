@@ -18,3 +18,11 @@ class RegisterItemResponse(BaseModel):
   id: int
   project_id: int
   name: t.ValidItemName
+
+class GetItemResponse(BaseModel):
+  id: int
+  project_id: int
+  name: t.ValidItemName
+  item_type: ItemType
+  item_status: ItemStatus
+  description: t.ValidItemDescription | None
