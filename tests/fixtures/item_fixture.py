@@ -18,8 +18,8 @@ def integ_item_repo(db_session):
   return ItemRepository(db_session)
 
 @pytest.fixture
-def integ_item_service(integ_item_repo, integ_project_repo, db_session):
-  return ItemService(integ_item_repo, integ_project_repo, db_session)
+def integ_item_service(integ_item_repo, db_session):
+  return ItemService(integ_item_repo, db_session)
 
 @pytest.fixture
 async def integ_item_router(integ_item_service, saved_user_obj):
@@ -43,8 +43,8 @@ def mock_item_session():
   return AsyncMock()
 
 @pytest.fixture
-def unit_item_service(mock_item_repo, mock_project_repo, mock_item_session):
-  return ItemService(mock_item_repo, mock_project_repo, mock_item_session)
+def unit_item_service(mock_item_repo, mock_item_session):
+  return ItemService(mock_item_repo, mock_item_session)
 
 
 # Objects
