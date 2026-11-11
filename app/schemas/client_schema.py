@@ -18,4 +18,12 @@ class RegisterClinetResponse(BaseModel):
   user_id: int
   name: t.ValidClientName
   phone_number: t.PolishNumber
-  email: EmailStr | None = None
+  email: EmailStr | None
+
+class GetClientResponse(BaseModel):
+  id: int
+  user_id: int
+  name: t.ValidClientName
+  email: EmailStr | None
+  phone_number: t.PolishNumber
+  notes: t.ValidClientNotes | None
