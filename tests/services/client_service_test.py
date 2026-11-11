@@ -125,3 +125,29 @@ async def test_register_client_database_error(
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# get_client
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_client_success(mock_client_repo, unit_client_service, unit_client_obj):
+  mock_client_repo.get_by_id_and_user_id.return_value = unit_client_obj
+
+  result = await unit_client_service.get_client(
+    unit_client_obj.id,
+    unit_client_obj.user_id
+  )
+
+  assert result == unit_client_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_client_return_none_success(mock_client_repo, unit_client_service):
+  mock_client_repo.get_by_id_and_user_id.return_value = None
+
+  with pytest.raises(e.ClientNotFoundError) as exc:
+    await unit_client_service.get_client(1, 12)
+
+  assert isinstance(exc.value, e.ClientNotFoundError)
+  assert exc.value.detail == e.ClientNotFoundError.detail
