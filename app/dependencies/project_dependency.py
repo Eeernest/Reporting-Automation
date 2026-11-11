@@ -12,10 +12,9 @@ from app.services.project_service import ProjectService
 # Main Functions
 
 def get_project_service(session: SessionDep):
-  client_repo = ClientRepository(session)
   project_repo = ProjectRepository(session)
 
-  return ProjectService(client_repo, project_repo, session)
+  return ProjectService(project_repo, session)
 
 async def get_verified_project(
   project_id: int,
