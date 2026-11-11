@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock
 from httpx import AsyncClient, ASGITransport
 import pytest
 
+from app.dependencies.client_dependency import get_verified_client
 from app.dependencies.permit_dependency import get_current_user
 from app.dependencies.project_dependency import get_project_service
 from app.main import app
@@ -22,8 +23,13 @@ def integ_project_service(integ_project_repo, db_session):
   return ProjectService(integ_project_repo, db_session)
 
 @pytest.fixture
-async def integ_project_router(integ_project_service, saved_user_obj):
+async def integ_project_router(
+  integ_project_service,
+  saved_user_obj,
+  registered_client_obj
+):
   app.dependency_overrides[get_current_user] = lambda: saved_user_obj
+  app.dependency_overrides[get_verified_client] = lambda: registered_client_obj
   app.dependency_overrides[get_project_service] = lambda: integ_project_service
 
   async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
