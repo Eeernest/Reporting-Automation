@@ -35,16 +35,16 @@ class ItemService:
 
     return await self._commit_item_or_raise(item_obj)
 
-  async def get_item(self, item_id: int, project_id: int) -> Item:
-    return await self._get_item_or_raise(item_id, project_id)
+  async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
+    return await self._get_item_or_raise(item_id, project_id, user_id)
 
 
   # Helper Methods
 
   # item_repo
 
-  async def _get_item_or_raise(self, item_id: int, project_id: int) -> Item:
-    item_obj = await self.item_repo.get_by_id_and_project_id(item_id, project_id)
+  async def _get_item_or_raise(self, item_id: int, project_id: int, user_id: int) -> Item:
+    item_obj = await self.item_repo.get_by_id_and_owner(item_id, project_id, user_id)
 
     if not item_obj:
       raise e.ItemNotFoundError()
