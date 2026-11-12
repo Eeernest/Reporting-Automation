@@ -53,3 +53,37 @@ async def test_register_item_credentials_validation_error(
   assert data["detail"][1]["field_name"] == "item_type"
   assert data["detail"][2]["field_name"] == "item_status"
   assert data["detail"][3]["field_name"] == "description"
+
+
+# get_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_item_success(
+  integ_item_router,
+  registered_item_obj,
+  registered_project_obj
+):
+  result = await integ_item_router.get(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"] == registered_item_obj.id
+  assert data["project_id"] == registered_item_obj.project_id
+  assert data["name"] == registered_item_obj.name
+  assert data["item_type"] == registered_item_obj.item_type
+  assert data["item_status"] == registered_item_obj.item_status
+  assert data["description"] == registered_item_obj.description
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_item_not_found_error(integ_item_router):
+  result = await integ_item_router.get(f"/projects/{1234}/items/{4321}")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_404_NOT_FOUND
+  assert data["detail"] == e.ItemNotFoundError.detail
