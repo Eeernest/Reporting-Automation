@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends
 
 from app.db.database import SessionDep
-from app.dependencies.permit_dependency import CurrentUserDep
+from app.dependencies.project_dependency import VerifiedProjectDep
 from app.models.item_model import Item
 from app.repositories.item_repository import ItemRepository
 from app.services.item_service import ItemService
@@ -17,10 +17,10 @@ def get_item_service(session: SessionDep):
 
 async def get_verified_item(
   item_id: int,
-  current_user: CurrentUserDep,
+  verified_project: VerifiedProjectDep,
   service: ItemServiceDep
 ) -> Item:
-  return await service.get_item(item_id, current_user.id)
+  return await service.get_item(item_id, verified_project.id)
 
 
 # Alias Variables
