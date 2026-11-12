@@ -1,7 +1,6 @@
 from fastapi import APIRouter, status
 
 from app.dependencies.item_dependency import ItemServiceDep
-from app.dependencies.permit_dependency import CurrentUserDep
 from app.dependencies.project_dependency import VerifiedProjectDep
 import app.schemas.item_schema as s
 
