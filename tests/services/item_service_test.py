@@ -59,12 +59,18 @@ async def test_register_item_database_error(
 
 @pytest.mark.anyio
 @pytest.mark.unit
-async def test_get_client_success(mock_item_repo, unit_item_service, unit_item_obj):
-  mock_item_repo.get_by_id_and_project_id.return_value = unit_item_obj
+async def test_get_client_success(
+  mock_item_repo,
+  unit_item_service,
+  unit_item_obj,
+  unit_project_obj
+):
+  mock_item_repo.get_by_id_and_owner.return_value = unit_item_obj
 
   result = await unit_item_service.get_item(
     unit_item_obj.id,
-    unit_item_obj.project_id
+    unit_project_obj.id,
+    unit_project_obj.user_id
   )
 
   assert result == unit_item_obj
@@ -72,10 +78,10 @@ async def test_get_client_success(mock_item_repo, unit_item_service, unit_item_o
 @pytest.mark.anyio
 @pytest.mark.unit
 async def test_get_client_not_found_error(mock_item_repo, unit_item_service):
-  mock_item_repo.get_by_id_and_project_id.return_value = None
+  mock_item_repo.get_by_id_and_owner.return_value = None
 
   with pytest.raises(e.ItemNotFoundError) as exc:
-    await unit_item_service.get_item(13213, 34)
+    await unit_item_service.get_item(13213, 34, 123321)
 
   assert isinstance(exc.value, e.ItemNotFoundError)
   assert exc.value.detail == e.ItemNotFoundError.detail
