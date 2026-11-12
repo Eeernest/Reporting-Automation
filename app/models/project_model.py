@@ -4,6 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Date, DateTime
 from sqlalchemy.orm import Relationship
 
 from app.db.database import Base
+from app.models.expense_model import Expense
 
 class Project(Base):
   __tablename__ = "projects"
