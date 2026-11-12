@@ -20,7 +20,7 @@ async def get_verified_item(
   verified_project: VerifiedProjectDep,
   service: ItemServiceDep
 ) -> Item:
-  return await service.get_item(item_id, verified_project.id)
+  return await service.get_item(item_id, verified_project.id, verified_project.user_id)
 
 
 # Alias Variables
