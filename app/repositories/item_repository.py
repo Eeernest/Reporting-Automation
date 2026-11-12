@@ -16,14 +16,6 @@ class ItemRepository:
 
     return item_obj
 
-  async def get_by_id_and_project_id(self, item_id: int, project_id: int) -> Item | None:
-    result = await self.session.execute(
-      select(Item).where(Item.id == item_id, Item.project_id == project_id)
-    )
-
-    return result.scalar_one_or_none()
-
-
   async def get_by_id_and_owner(
     self,
     item_id: int,
