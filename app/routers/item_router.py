@@ -13,7 +13,6 @@ router = APIRouter()
   status_code=status.HTTP_201_CREATED
 )
 async def register_item(
-  current_user: CurrentUserDep,
   project: VerifiedProjectDep,
   service: ItemServiceDep,
   request: s.RegisterItemRequest,
