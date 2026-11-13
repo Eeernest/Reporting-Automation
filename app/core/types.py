@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import StringConstraints
+from pydantic import Field, StringConstraints
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
 # Client Model related types
@@ -38,9 +38,11 @@ ValidProjectDescription = Annotated[str, StringConstraints(min_length=1, max_len
 ValidUsername = Annotated[str, StringConstraints(min_length=1, max_length=30)]
 
 
-# Classes
+# Global Types
 
 class PolishNumber(PhoneNumber):
   default_region_code = "PL"
   supported_regions = ["PL"]
   phone_format = "E164"
+
+ValidMoney = Annotated[float, Field(ge=0, decimal_places=2)]
