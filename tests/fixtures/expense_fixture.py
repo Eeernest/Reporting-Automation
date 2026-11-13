@@ -27,14 +27,10 @@ async def mock_expense_session():
 @pytest.fixture
 def unit_expense_service(
   mock_expense_repo,
-  mock_item_repo,
-  mock_project_repo,
   mock_expense_session
 ):
   return ExpenseService(
     mock_expense_repo,
-    mock_item_repo,
-    mock_project_repo,
     mock_expense_session
   ) 
 
