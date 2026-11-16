@@ -31,8 +31,38 @@ class ExpenseService:
 
     return await self._commit_expense_or_raise(expense_obj)
 
+  async def get_expense(
+    self,
+    expense_id: int,
+    project_id: int,
+    item_id: int | None = None
+  ) -> Expense:
+    return await self._get_expense_or_raise(expense_id, project_id, item_id)
+
 
   # Helper Methods
+
+  # expense_repo
+
+  async def _get_expense_or_raise(
+    self,
+    expense_id: int,
+    project_id: int,
+    item_id: int | None = None
+  ) -> Expense:
+    expense_obj = await self.expense_repo.get_by_id_and_owner(
+      expense_id,
+      project_id,
+      item_id
+    )
+
+    if not expense_obj:
+      raise e.ExpenseNotFoundError()
+
+    return expense_obj
+
+
+  # expense_repo and session
 
   async def _commit_expense_or_raise(self, expense_obj: Expense) -> Expense:
     try:
