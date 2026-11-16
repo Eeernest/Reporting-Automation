@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,9 +18,9 @@ class ExpenseService:
   async def register_expense(
     self,
     project_id: int,
-    item_id: int | None,
     expense_type: ExpenseType,
-    amount: float | None    
+    item_id: int | None = None,
+    amount: Decimal | None = None    
   ) -> Expense:
     expense_obj = Expense(
       project_id=project_id,
