@@ -71,6 +71,15 @@ def integ_expense_obj(registered_item_obj, registered_project_obj):
   )
 
 @pytest.fixture
+async def registered_expense_obj(integ_expense_service, integ_expense_obj):
+  return await integ_expense_service.register_expense(
+    project_id=integ_expense_obj.project_id,
+    item_id=integ_expense_obj.item_id,
+    expense_type=integ_expense_obj.expense_type,
+    amount=integ_expense_obj.amount
+  )
+
+@pytest.fixture
 def unit_expense_obj():
   return Expense(
     project_id=12,
