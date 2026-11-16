@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.expense_model import Expense
@@ -13,3 +14,22 @@ class ExpenseRepository:
     await self.session.flush()
 
     return expense_obj
+
+  async def get_by_id_and_owner(
+    self,
+    expense_id: int,
+    project_id: int,
+    item_id: int | None = None
+  ) -> Expense | None:
+    stmt = (
+      select(Expense)
+      .where(
+        Expense.id == expense_id,
+        Expense.project_id == project_id,
+        Expense.item_id == item_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return result.scalar_one_or_none()
