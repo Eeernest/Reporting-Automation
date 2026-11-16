@@ -7,7 +7,7 @@ from app.enums.expense_enum import ExpenseType
 
 class RegisterExpenseRequest(BaseModel):
   expense_type: ExpenseType
-  amount: t.ValidMoney
+  amount: t.ValidMoney | None = None
 
 
 # Responses
@@ -17,4 +17,4 @@ class RegisterExpenseResponse(BaseModel):
   project_id: int
   item_id: int | None
   expense_type: ExpenseType
-  amount: t.ValidMoney
+  amount: t.ValidMoney | None
