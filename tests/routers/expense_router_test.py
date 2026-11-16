@@ -103,3 +103,30 @@ async def test_register_expense_for_item_credentials_validation_error(
   assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
   assert data["detail"][0]["field_name"] == "expense_type"
   assert data["detail"][1]["field_name"] == "amount"
+
+
+# get_expesne_for_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_expense_for_project_success(
+  integ_expense_router,
+  registered_expense_obj,
+):
+  result = await integ_expense_router.get(
+    f"/projects/{registered_expense_obj.project_id}/expenses/{registered_expense_obj.id}"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_expense_not_found_error(integ_expense_router):
+  result = await integ_expense_router.get(f"/projects/{123}/expenses/{3213}")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_404_NOT_FOUND
+  assert data["detail"] == e.ExpenseNotFoundError.detail
