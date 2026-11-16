@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Annotated, Literal
 
 from pydantic import Field, StringConstraints
@@ -45,4 +46,4 @@ class PolishNumber(PhoneNumber):
   supported_regions = ["PL"]
   phone_format = "E164"
 
-ValidMoney = Annotated[float, Field(ge=0, decimal_places=2)]
+ValidMoney = Annotated[Decimal, Field(ge=0, max_digits=10, decimal_places=2)]
