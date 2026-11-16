@@ -51,3 +51,53 @@ async def test_register_expense_database_error(
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# get_expense
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_expense_success(
+  mock_expense_repo,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_repo.get_by_id_and_owner.return_value = unit_expense_obj
+
+  result = await unit_expense_service.get_expense(
+    unit_expense_obj.id,
+    unit_expense_obj.project_id,
+    unit_expense_obj.item_id
+  )
+
+  assert result == unit_expense_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_expense_no_item__id_success(
+  mock_expense_repo,
+  unit_expense_service,
+  unit_expense_obj
+):
+  unit_expense_obj.item_id = None
+  
+  mock_expense_repo.get_by_id_and_owner.return_value = unit_expense_obj
+
+  result = await unit_expense_service.get_expense(
+    unit_expense_obj.id,
+    unit_expense_obj.project_id,
+    unit_expense_obj.item_id
+  )
+
+  assert result == unit_expense_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_expense_not_found_error(mock_expense_repo, unit_expense_service):
+  mock_expense_repo.get_by_id_and_owner.return_value = None
+
+  with pytest.raises(e.ExpenseNotFoundError) as exc:
+    await unit_expense_service.get_expense(1231, 213, 12)
+
+  assert isinstance(exc.value, e.ExpenseNotFoundError)
+  assert exc.value.detail == e.ExpenseNotFoundError.detail
