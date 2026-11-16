@@ -120,11 +120,50 @@ async def test_get_expense_for_project_success(
   data = result.json()
 
   assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["project_id"]
+  assert data["item_id"]
+  assert data["expense_type"]
+  assert data["amount"]
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_expense_not_found_error(integ_expense_router):
+async def test_get_expense_for_project_not_found_error(integ_expense_router):
   result = await integ_expense_router.get(f"/projects/{123}/expenses/{3213}")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_404_NOT_FOUND
+  assert data["detail"] == e.ExpenseNotFoundError.detail
+
+
+# get_expesne_for_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_expense_for_item_success(
+  integ_expense_router,
+  registered_expense_obj,
+):
+  expense = registered_expense_obj
+  
+  result = await integ_expense_router.get(
+    f"/projects/{expense.project_id}/items/{expense.item_id}/expenses/{expense.id}"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["project_id"]
+  assert data["item_id"]
+  assert data["expense_type"]
+  assert data["amount"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_expense_for_item_not_found_error(integ_expense_router):
+  result = await integ_expense_router.get(f"/projects/{423}/items/{1}/expenses/{123}")
 
   data = result.json()
 
