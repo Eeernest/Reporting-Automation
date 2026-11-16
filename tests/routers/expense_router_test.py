@@ -35,7 +35,6 @@ async def test_register_expense_for_project_success(
 async def test_register_expense_for_project_credentials_validation_error(
   integ_expense_router,
   registered_project_obj,
-  registered_item_obj
 ):
   request = {
     "expense_type": "Invalid Expense",
@@ -44,6 +43,58 @@ async def test_register_expense_for_project_credentials_validation_error(
 
   result = await integ_expense_router.post(
     f"/projects/{registered_project_obj.id}/expenses",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+  assert data["detail"][0]["field_name"] == "expense_type"
+  assert data["detail"][1]["field_name"] == "amount"
+
+
+# register_expense_for_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_register_expense_for_item(
+  integ_expense_router,
+  registered_project_obj,
+  registered_item_obj
+):
+  request = {
+    "expense_type": "Hardware",
+    "amount": 3000.23
+  }
+
+  result = await integ_expense_router.post(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}/expenses",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_201_CREATED
+  assert data["id"]
+  assert data["project_id"]
+  assert data["item_id"]
+  assert data["expense_type"]
+  assert data["amount"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_register_expense_for_item_credentials_validation_error(
+  integ_expense_router,
+  registered_project_obj,
+  registered_item_obj
+):
+  request = {
+    "expense_type": "wrong_expense",
+    "amount": 0.001
+  }
+
+  result = await integ_expense_router.post(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}/expenses",
     json=request
   )
 
