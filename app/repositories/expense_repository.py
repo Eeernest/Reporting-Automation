@@ -26,9 +26,11 @@ class ExpenseRepository:
       .where(
         Expense.id == expense_id,
         Expense.project_id == project_id,
-        Expense.item_id == item_id
       )
     )
+
+    if item_id:
+      stmt.where(Expense.item_id == item_id)
 
     result = await self.session.execute(stmt)
 
