@@ -54,3 +54,19 @@ async def get_expense_for_project(
     expense_id=expense_id,
     project_id=project.id,
   )
+
+@router.get(
+  "/projects/{project_id}/items/{item_id}/expenses/{expense_id}",
+  response_model=s.GetExpenseResponse,
+  status_code=status.HTTP_200_OK
+)
+async def get_expense_for_item(
+  expense_id: int,
+  item: VerifiedItemDep,
+  service: ExpenseServiceDep
+):
+  return await service.get_expense(
+    expense_id=expense_id,
+    project_id=item.project_id,
+    item_id=item.id
+  )
