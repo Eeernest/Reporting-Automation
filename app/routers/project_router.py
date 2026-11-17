@@ -13,13 +13,12 @@ router = APIRouter()
   status_code=status.HTTP_201_CREATED
 )
 async def register_project(
-  current_user: CurrentUserDep,
   client: VerifiedClientDep,
   service: ProjectServiceDep,
   request: s.RegisterProjectRequest
 ):
   return await service.register_project(
-    user_id=current_user.id,
+    user_id=client.user_id,
     client_id=client.id,
     name=request.name,
     location=request.location,
