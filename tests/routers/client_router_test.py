@@ -97,3 +97,36 @@ async def test_get_client_not_found_error(integ_client_router):
 
   assert result.status_code == status.HTTP_404_NOT_FOUND
   assert data["detail"] == e.ClientNotFoundError.detail
+
+# get_all_clients
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_clients_success(integ_client_router):
+  request = {
+    "name": "test client",
+    "phone_number": "123123123",
+    "email": "testclient@example.com",
+    "notes": "test notes"
+  }
+
+  saved_client = await integ_client_router.post("/clients", json=request)
+
+  result = await integ_client_router.get("/clients")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 1
+  assert data[0]["id"] == saved_client.json()["id"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_clients(integ_client_router):
+  result = await integ_client_router.get("/clients")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 0
+  assert data == []
