@@ -34,6 +34,9 @@ class ClientService:
   async def get_client(self, client_id: int, user_id: int) -> Client:
     return await self._get_client_or_raise(client_id, user_id)
 
+  async def get_all_clients(self, user_id: int) -> list[Client]:
+    return await self.client_repo.get_all_by_owner(user_id)
+
 
   # Helper Methods
 
