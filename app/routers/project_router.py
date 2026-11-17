@@ -29,13 +29,13 @@ async def register_project(
   )
 
 @router.get(
-  "/projects/{project_id}",
+  "/clients/{client_id}/projects/{project_id}",
   response_model=s.GetProjectResposne,
   status_code=status.HTTP_200_OK
 )
 async def get_project(
-  current_user: CurrentUserDep,
   project_id: int,
+  client: VerifiedClientDep,
   service: ProjectServiceDep
 ):
-  return await service.get_project(project_id, current_user.id)
+  return await service.get_project(project_id, client.user_id, client.id)
