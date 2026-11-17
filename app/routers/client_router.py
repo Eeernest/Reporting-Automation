@@ -35,3 +35,11 @@ async def get_client(
   service: ClientServiceDep
 ):
   return await service.get_client(client_id, current_user.id)
+
+@router.get(
+  "/clients",
+  response_model=list[s.GetClientResponse],
+  status_code=status.HTTP_200_OK
+)
+async def get_all_clients(current_user: CurrentUserDep, service: ClientServiceDep):
+  return await service.get_all_clients(current_user.id)
