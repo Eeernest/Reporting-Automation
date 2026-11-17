@@ -97,11 +97,12 @@ async def test_get_project_success(
   unit_project_service,
   unit_project_obj
 ):
-  mock_project_repo.get_by_id_and_user_id.return_value = unit_project_obj
+  mock_project_repo.get_by_id_and_owner.return_value = unit_project_obj
 
   result = await unit_project_service.get_project(
     unit_project_obj.id,
-    unit_project_obj.user_id
+    unit_project_obj.user_id,
+    unit_project_obj.client_id
   )
 
   assert result == unit_project_obj
@@ -112,10 +113,10 @@ async def test_get_project_return_none_success(
   mock_project_repo,
   unit_project_service,
 ):
-  mock_project_repo.get_by_id_and_user_id.return_value = None
+  mock_project_repo.get_by_id_and_owner.return_value = None
 
   with pytest.raises(e.ProjectNotFoundError) as exc:
-    await unit_project_service.get_project(1, 12)
+    await unit_project_service.get_project(1311, 132, 33122)
 
   assert isinstance(exc.value, e.ProjectNotFoundError)
   assert exc.value.detail == e.ProjectNotFoundError.detail
