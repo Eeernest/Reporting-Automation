@@ -91,4 +91,4 @@ async def registered_user_response(integ_user_router):
     "password": "Password123"
   }
 
-  return await integ_user_router.post("/register_user", json=request)
+  return await integ_user_router.post("/users", json=request)

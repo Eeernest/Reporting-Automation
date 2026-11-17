@@ -14,7 +14,7 @@ async def test_register_user_success(integ_user_router):
     "password": "Password123"
   }
 
-  result = await integ_user_router.post("/register_user", json=request)
+  result = await integ_user_router.post("/users", json=request)
 
   data = result.json()
 
@@ -30,7 +30,7 @@ async def test_register_user_credentials_validation_error(integ_user_router):
     "password": "Password123"
   }
 
-  result = await integ_user_router.post("/register_user", json=request)
+  result = await integ_user_router.post("/users", json=request)
 
   data = result.json()
 
@@ -47,7 +47,7 @@ async def test_register_user_password_too_short_error(integ_user_router):
     "password": "Short1"
   }
 
-  result = await integ_user_router.post("/register_user", json=request)
+  result = await integ_user_router.post("/users", json=request)
 
   data = result.json()
 
@@ -63,7 +63,7 @@ async def test_register_user_password_uppercase_error(integ_user_router):
     "password": "nouppercase1"
   }
 
-  result = await integ_user_router.post("/register_user", json=request)
+  result = await integ_user_router.post("/users", json=request)
 
   data = result.json()
 
@@ -79,7 +79,7 @@ async def test_register_user_password_number_error(integ_user_router):
     "password": "Nonumbers"
   }
 
-  result = await integ_user_router.post("/register_user", json=request)
+  result = await integ_user_router.post("/users", json=request)
 
   data = result.json()
 
@@ -95,7 +95,7 @@ async def test_register_user_username_unavailable_error(integ_user_router):
     "password": "Password123"
   }
 
-  await integ_user_router.post("/register_user", json=request)
+  await integ_user_router.post("/users", json=request)
 
   bad_request = {
     "username": "user1",
@@ -103,7 +103,7 @@ async def test_register_user_username_unavailable_error(integ_user_router):
     "password": "Password123"
   }
 
-  result = await integ_user_router.post("/register_user", json=bad_request)
+  result = await integ_user_router.post("/users", json=bad_request)
 
   data = result.json()
 
