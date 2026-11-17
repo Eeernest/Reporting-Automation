@@ -151,3 +151,33 @@ async def test_get_client_return_none_success(mock_client_repo, unit_client_serv
 
   assert isinstance(exc.value, e.ClientNotFoundError)
   assert exc.value.detail == e.ClientNotFoundError.detail
+
+
+# get_all_clients
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_clients_success(
+  mock_client_repo,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.get_all_by_owner.return_value = [unit_client_obj]
+
+  result = await unit_client_service.get_all_clients(unit_client_obj.user_id)
+
+  assert len(result) == 1
+  assert result[0] == unit_client_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_clients_return_empty_list_success(
+  mock_client_repo,
+  unit_client_service
+):
+  mock_client_repo.get_all_by_owner.return_value = []
+
+  result = await unit_client_service.get_all_clients(11235813)
+
+  assert len(result) == 0
+  assert result == []
