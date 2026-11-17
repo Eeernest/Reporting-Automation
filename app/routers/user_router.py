@@ -6,7 +6,7 @@ import app.schemas.user_schema as s
 router = APIRouter()
 
 @router.post(
-  "/register_user",
+  "/users",
   response_model=s.RegisterUserResponse,
   status_code=status.HTTP_201_CREATED
 )
