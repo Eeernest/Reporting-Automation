@@ -59,7 +59,7 @@ class AuthService:
 
     await self.token_repo.delete_refresh_token(decoded_refresh_token["jti"])
 
-    user_obj = await self._try_get_user_by_id(int(decoded_refresh_token["sub"]))
+    user_obj = await self._get_user_or_raise(int(decoded_refresh_token["sub"]))
 
     self._verify_user_status(user_obj)
 
@@ -90,7 +90,7 @@ class AuthService:
 
   # user_repo
 
-  async def _try_get_user_by_id(self, id: int) -> User:
+  async def _get_user_or_raise(self, id: int) -> User:
     user_obj = await self.user_repo.get_by_id(id)
 
     if not user_obj:
