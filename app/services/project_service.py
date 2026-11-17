@@ -37,16 +37,25 @@ class ProjectService:
 
     return await self._commit_project_or_raise(project_obj)
 
-  async def get_project(self, project_id: int, user_id: int) -> Project:
-    return await self._get_project_or_raise(project_id, user_id)
+  async def get_project(self, project_id: int, user_id: int, client_id: int) -> Project:
+    return await self._get_project_or_raise(project_id, user_id, client_id)
 
 
   # Helper Methods
 
   # project_repo
 
-  async def _get_project_or_raise(self, project_id: int, user_id: int) -> Project:
-    project_obj = await self.project_repo.get_by_id_and_user_id(project_id, user_id)
+  async def _get_project_or_raise(
+    self,
+    project_id: int,
+    user_id: int,
+    client_id: int
+  ) -> Project:
+    project_obj = await self.project_repo.get_by_id_and_owner(
+      project_id,
+      user_id,
+      client_id
+    )
 
     if not project_obj:
       raise e.ProjectNotFoundError()
