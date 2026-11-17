@@ -29,14 +29,14 @@ class UserService:
       user_role=UserRole.user
     )
 
-    return await self._try_commit_user_obj(user_obj)
+    return await self._commit_user_or_raise(user_obj)
 
 
   # Helper Methods
 
   # session and user_repo
 
-  async def _try_commit_user_obj(self, user_obj: User) -> User:
+  async def _commit_user_or_raise(self, user_obj: User) -> User:
     try:
       added_user_obj = await self.user_repo.add_user(user_obj)
 
