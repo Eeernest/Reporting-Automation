@@ -40,7 +40,7 @@ class ClientService:
   # client_repo
 
   async def _get_client_or_raise(self, client_id: int, user_id: int) -> Client:
-    client_obj = await self.client_repo.get_by_id_and_user_id(client_id, user_id)
+    client_obj = await self.client_repo.get_by_id_and_owner(client_id, user_id)
 
     if not client_obj:
       raise e.ClientNotFoundError()
