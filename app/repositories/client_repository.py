@@ -27,3 +27,15 @@ class ClientRepository:
     result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
+
+  async def get_all_by_owner(self, user_id: int) -> list[Client]:
+    stmt = (
+      select(Client)
+      .where(
+        Client.user_id == user_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return list(result.scalars().all())
