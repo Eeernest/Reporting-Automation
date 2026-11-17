@@ -15,9 +15,15 @@ class ClientRepository:
 
     return client_obj
 
-  async def get_by_id_and_user_id(self, client_id: int, user_id: int) -> Client | None:
-    result = await self.session.execute(
-      select(Client).where(Client.id == client_id, Client.user_id == user_id)
+  async def get_by_id_and_owner(self, client_id: int, user_id: int) -> Client | None:
+    stmt = (
+      select(Client)
+      .where(
+        Client.id == client_id,
+        Client.user_id == user_id
+      )
     )
+
+    result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
