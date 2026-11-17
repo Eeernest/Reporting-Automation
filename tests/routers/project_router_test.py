@@ -50,7 +50,9 @@ async def test_register_project_credentials_validation_error(
 @pytest.mark.anyio
 @pytest.mark.integration
 async def test_get_project_success(integ_project_router, registered_project_obj):
-  result = await integ_project_router.get(f"/projects/{registered_project_obj.id}")
+  result = await integ_project_router.get(
+    f"/clients/{registered_project_obj.client_id}/projects/{registered_project_obj.id}"
+  )
 
   data = result.json()
 
@@ -66,7 +68,7 @@ async def test_get_project_success(integ_project_router, registered_project_obj)
 @pytest.mark.anyio
 @pytest.mark.integration
 async def test_get_project_not_found_error(integ_project_router):
-  result = await integ_project_router.get(f"/projects/{1}")
+  result = await integ_project_router.get(f"/clients/{321}/projects/{1}")
 
   data = result.json()
 
