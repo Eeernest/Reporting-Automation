@@ -15,9 +15,21 @@ class ProjectRepository:
 
     return project_obj
 
-  async def get_by_id_and_user_id(self, project_id: int, user_id: int) -> Project | None:
-    result = await self.session.execute(
-      select(Project).where(Project.id == project_id, Project.user_id == user_id)
+  async def get_by_id_and_owner(
+    self,
+    project_id: int,
+    user_id: int,
+    client_id: int
+  ) -> Project | None:
+    stmt = (
+      select(Project)
+      .where(
+        Project.id == project_id,
+        Project.user_id == user_id,
+        Project.client_id == client_id
+      )
     )
+
+    result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
