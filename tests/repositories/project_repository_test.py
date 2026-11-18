@@ -33,3 +33,25 @@ async def test_get_by_id_and_owner_none_success(integ_project_repo):
   result = await integ_project_repo.get_by_id_and_owner(123, 1234, 42)
 
   assert result == None
+
+
+# get_all_by_owner
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_by_owner_success(integ_project_repo, registered_project_obj):
+  result = await integ_project_repo.get_all_by_owner(
+    registered_project_obj.user_id,
+    registered_project_obj.client_id
+  )
+
+  assert len(result) == 1
+  assert result[0] == registered_project_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_by_owner_return_empty_list_success(integ_project_repo):
+  result = await integ_project_repo.get_all_by_owner(13, 21)
+
+  assert len(result) == 0
+  assert result == []
