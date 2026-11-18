@@ -122,7 +122,7 @@ async def test_get_all_clients_success(integ_client_router):
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_get_all_clients(integ_client_router):
+async def test_get_all_clients_return_empty_list_success(integ_client_router):
   result = await integ_client_router.get("/clients")
 
   data = result.json()
