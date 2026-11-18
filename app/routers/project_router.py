@@ -38,3 +38,11 @@ async def get_project(
   service: ProjectServiceDep
 ):
   return await service.get_project(project_id, client.user_id, client.id)
+
+@router.get(
+  "/clients/{client_id}/projects",
+  response_model=list[s.GetProjectResposne],
+  status_code=status.HTTP_200_OK
+)
+async def get_all_projects(client: VerifiedClientDep, service: ProjectServiceDep):
+  return await service.get_all_projects(client.user_id, client.id)
