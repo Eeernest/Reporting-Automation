@@ -120,3 +120,36 @@ async def test_get_project_return_none_success(
 
   assert isinstance(exc.value, e.ProjectNotFoundError)
   assert exc.value.detail == e.ProjectNotFoundError.detail
+
+
+# get_all_projects
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_projects_success(
+  mock_project_repo,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_repo.get_all_by_owner.return_value = [unit_project_obj]
+
+  result = await unit_project_service.get_all_projects(
+    unit_project_obj.user_id,
+    unit_project_obj.client_id
+  )
+
+  assert len(result) == 1
+  assert result[0] == unit_project_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_projects_return_empty_list_success(
+  mock_project_repo,
+  unit_project_service
+):
+  mock_project_repo.get_all_by_owner.return_value = []
+
+  result = await unit_project_service.get_all_projects(21, 34)
+
+  assert len(result) == 0
+  assert result == []
