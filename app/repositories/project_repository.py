@@ -33,3 +33,16 @@ class ProjectRepository:
     result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
+
+  async def get_all_by_owner(self, user_id: int, client_id: int) -> list[Project]:
+    stmt = (
+      select(Project)
+      .where(
+        Project.user_id == user_id,
+        Project.client_id == client_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return list(result.scalars().all())
