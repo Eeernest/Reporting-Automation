@@ -40,6 +40,9 @@ class ProjectService:
   async def get_project(self, project_id: int, user_id: int, client_id: int) -> Project:
     return await self._get_project_or_raise(project_id, user_id, client_id)
 
+  async def get_all_projects(self, user_id: int, client_id: int) -> list[Project]:
+    return await self.project_repo.get_all_by_owner(user_id, client_id)
+
 
   # Helper Methods
 
