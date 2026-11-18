@@ -74,3 +74,35 @@ async def test_get_project_not_found_error(integ_project_router):
 
   assert result.status_code == status.HTTP_404_NOT_FOUND
   assert data["detail"] == e.ProjectNotFoundError.detail
+
+
+# get_all_projects
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_projects_success(integ_project_router, registered_client_obj):
+  request = {"name": "test project"}
+    
+  saved_project = await integ_project_router.post(
+    f"/clients/{registered_client_obj.id}/projects",
+    json=request
+  )
+
+  result = await integ_project_router.get(f"/clients/{registered_client_obj.id}/projects")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 1
+  assert data[0]["id"] == saved_project.json()["id"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_projects_return_empty_list_success(integ_project_router):
+  result = await integ_project_router.get(f"/clients/{55}/projects")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 0
+  assert data == []
