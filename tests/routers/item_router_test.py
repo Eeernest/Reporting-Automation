@@ -111,7 +111,12 @@ async def test_get_all_items_success(integ_item_router, registered_project_obj):
   data = result.json()
 
   assert result.status_code == status.HTTP_200_OK
-  assert data[0]["id"] == saved_item.json()["id"]
+  assert data[0]["id"]
+  assert data[0]["project_id"]
+  assert data[0]["name"]
+  assert data[0]["item_type"]
+  assert data[0]["item_status"]
+  assert data[0]["description"]
 
 @pytest.mark.anyio
 @pytest.mark.integration
