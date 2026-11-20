@@ -87,3 +87,38 @@ async def test_get_item_not_found_error(integ_item_router):
 
   assert result.status_code == status.HTTP_404_NOT_FOUND
   assert data["detail"] == e.ItemNotFoundError.detail
+
+
+# get_all_items
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_items_success(integ_item_router, registered_project_obj):
+  request = {
+  "name": "test item",
+  "item_type": "Wardrobe",
+  "item_status": "Measurements",
+  "description": "test description"
+  }
+
+  saved_item = await integ_item_router.post(
+    f"/projects/{registered_project_obj.id}/items",
+    json=request
+  )
+
+  result = await integ_item_router.get(f"/projects/{registered_project_obj.id}/items")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data[0]["id"] == saved_item.json()["id"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_items_return_empty_success(integ_item_router):
+  result = await integ_item_router.get(f"/projects/{55}/items")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data == []
