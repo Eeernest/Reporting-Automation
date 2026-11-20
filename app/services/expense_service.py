@@ -39,6 +39,13 @@ class ExpenseService:
   ) -> Expense:
     return await self._get_expense_or_raise(expense_id, project_id, item_id)
 
+  async def get_all_expenses(
+    self,
+    project_id: int,
+    item_id: int | None = None
+  ) -> list[Expense]:
+    return await self.expense_repo.get_all_by_owner(project_id, item_id)
+
 
   # Helper Methods
 
