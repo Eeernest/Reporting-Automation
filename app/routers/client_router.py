@@ -42,4 +42,4 @@ async def get_client(
   status_code=status.HTTP_200_OK
 )
 async def get_all_clients(current_user: CurrentUserDep, service: ClientServiceDep):
-  return await service.get_all_clients(current_user.id)
+  return await service.get_all_clients(user_id=current_user.id)
