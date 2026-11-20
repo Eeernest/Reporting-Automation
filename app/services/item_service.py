@@ -38,6 +38,9 @@ class ItemService:
   async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
     return await self._get_item_or_raise(item_id, project_id, user_id)
 
+  async def get_all_items(self, project_id: int, user_id: int) -> list[Item]:
+    return await self.item_repo.get_all_by_owner(project_id, user_id)
+
 
   # Helper Methods
 
