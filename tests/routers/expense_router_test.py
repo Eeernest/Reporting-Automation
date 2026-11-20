@@ -215,3 +215,48 @@ async def test_get_all_expenses_for_project_return_empty_list_success(
   assert result.status_code == status.HTTP_200_OK
   assert len(data) == 0
   assert data == []
+
+
+# get_all_expenses_for_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_expenses_for_item_success(
+  integ_expense_router,
+  registered_project_obj,
+  registered_item_obj
+):
+  request = {
+    "expense_type": "Hardware",
+    "amount": 3000.23
+  }
+
+  await integ_expense_router.post(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}/expenses",
+    json=request
+  )
+
+  result = await integ_expense_router.get(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}/expenses"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 1
+  assert data[0]["id"]
+  assert data[0]["project_id"]
+  assert data[0]["item_id"]
+  assert data[0]["expense_type"]
+  assert data[0]["amount"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_expenses_for_item_return_empty_list_success(integ_expense_router):
+  result = await integ_expense_router.get(f"/projects/{13213}/items/{42341}/expenses")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 0
+  assert data == []
