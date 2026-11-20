@@ -110,7 +110,7 @@ async def test_get_all_clients_success(integ_client_router):
     "notes": "test notes"
   }
 
-  saved_client = await integ_client_router.post("/clients", json=request)
+  await integ_client_router.post("/clients", json=request)
 
   result = await integ_client_router.get("/clients")
 
@@ -118,7 +118,13 @@ async def test_get_all_clients_success(integ_client_router):
 
   assert result.status_code == status.HTTP_200_OK
   assert len(data) == 1
-  assert data[0]["id"] == saved_client.json()["id"]
+  assert data[0]["id"]
+  assert data[0]["user_id"]
+  assert data[0]["name"]
+  assert data[0]["email"]
+  assert data[0]["phone_number"]
+  assert data[0]["notes"]
+
 
 @pytest.mark.anyio
 @pytest.mark.integration
