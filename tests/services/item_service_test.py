@@ -85,3 +85,26 @@ async def test_get_client_not_found_error(mock_item_repo, unit_item_service):
 
   assert isinstance(exc.value, e.ItemNotFoundError)
   assert exc.value.detail == e.ItemNotFoundError.detail
+
+
+# get_all_items
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_items_success(mock_item_repo, unit_item_service, unit_item_obj):
+  mock_item_repo.get_all_by_owner.return_value = [unit_item_obj]
+
+  result = await unit_item_service.get_all_items(unit_item_obj.project_id, 3)
+
+  assert len(result) == 1
+  assert result[0] == unit_item_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_items_return_empty_list_success(mock_item_repo, unit_item_service):
+  mock_item_repo.get_all_by_owner.return_value = []
+
+  result = await unit_item_service.get_all_items(13, 21)
+
+  assert len(result) == 0
+  assert result == []
