@@ -31,10 +31,14 @@ async def register_item(
 )
 async def get_item(
   item_id: int,
-  verified_project: VerifiedProjectDep,
+  project: VerifiedProjectDep,
   service: ItemServiceDep
 ):
-  return await service.get_item(item_id, verified_project.id, verified_project.user_id)
+  return await service.get_item(
+    item_id=item_id,
+    project_id=project.id,
+    user_id=project.user_id
+  )
 
 @router.get(
   "/projects/{project_id}/items",
