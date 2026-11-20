@@ -46,4 +46,4 @@ async def get_item(
   status_code=status.HTTP_200_OK
 )
 async def get_all_items(project: VerifiedProjectDep, service: ItemServiceDep):
-  return await service.get_all_items(project.id, project.user_id)
+  return await service.get_all_items(project_id=project.id, user_id=project.user_id)
