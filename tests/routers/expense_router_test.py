@@ -169,3 +169,49 @@ async def test_get_expense_for_item_not_found_error(integ_expense_router):
 
   assert result.status_code == status.HTTP_404_NOT_FOUND
   assert data["detail"] == e.ExpenseNotFoundError.detail
+
+
+# get_all_expenses_for_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_expenses_for_project_success(
+  integ_expense_router,
+  registered_project_obj
+):
+  request = {
+    "expense_type": "Logistics",
+    "amount": 2585.23
+  }
+
+  await integ_expense_router.post(
+    f"/projects/{registered_project_obj.id}/expenses",
+    json=request
+  )
+  
+  result = await integ_expense_router.get(
+    f"/projects/{registered_project_obj.id}/expenses"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 1
+  assert data[0]["id"]
+  assert data[0]["project_id"]
+  assert data[0]["item_id"] is None
+  assert data[0]["expense_type"]
+  assert data[0]["amount"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_expenses_for_project_return_empty_list_success(
+  integ_expense_router
+):
+  result = await integ_expense_router.get(f"/projects/{12345}/expenses")
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert len(data) == 0
+  assert data == []
