@@ -35,3 +35,11 @@ async def get_item(
   service: ItemServiceDep
 ):
   return await service.get_item(item_id, verified_project.id, verified_project.user_id)
+
+@router.get(
+  "/projects/{project_id}/items",
+  response_model=list[s.GetItemResponse],
+  status_code=status.HTTP_200_OK
+)
+async def get_all_items(project: VerifiedProjectDep, service: ItemServiceDep):
+  return await service.get_all_items(project.id, project.user_id)
