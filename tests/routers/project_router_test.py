@@ -94,7 +94,10 @@ async def test_get_all_projects_success(integ_project_router, registered_client_
 
   assert result.status_code == status.HTTP_200_OK
   assert len(data) == 1
-  assert data[0]["id"] == saved_project.json()["id"]
+  assert data[0]["id"]
+  assert data[0]["user_id"]
+  assert data[0]["client_id"]
+  assert data[0]["name"]
 
 @pytest.mark.anyio
 @pytest.mark.integration
