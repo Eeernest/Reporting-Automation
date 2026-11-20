@@ -35,3 +35,22 @@ class ExpenseRepository:
     result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
+
+  async def get_all_by_owner(
+    self,
+    project_id: int,
+    item_id: int | None = None
+  ) -> list[Expense]:
+    stmt = (
+      select(Expense)
+      .where(
+        Expense.project_id == project_id
+      )
+    )
+
+    if item_id:
+      stmt.where(Expense.item_id == item_id)
+
+    result = await self.session.execute(stmt)
+
+    return list(result.scalars().all())
