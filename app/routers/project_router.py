@@ -45,4 +45,4 @@ async def get_project(
   status_code=status.HTTP_200_OK
 )
 async def get_all_projects(client: VerifiedClientDep, service: ProjectServiceDep):
-  return await service.get_all_projects(client.user_id, client.id)
+  return await service.get_all_projects(user_id=client.user_id, client_id=client.id)
