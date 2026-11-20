@@ -101,3 +101,20 @@ async def test_get_expense_not_found_error(mock_expense_repo, unit_expense_servi
 
   assert isinstance(exc.value, e.ExpenseNotFoundError)
   assert exc.value.detail == e.ExpenseNotFoundError.detail
+
+
+# get_all_expenses
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_expenses_success(
+  mock_expense_repo,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_repo.get_all_by_owner.return_value = [unit_expense_obj]
+
+  result = await unit_expense_service.get_all_expenses(unit_expense_obj.project_id)
+
+  assert len(result) == 1
+  assert result[0] == unit_expense_obj
