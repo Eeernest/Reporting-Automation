@@ -61,3 +61,38 @@ async def test_get_by_id_and_owner_return_none(integ_expense_repo):
   result = await integ_expense_repo.get_by_id_and_owner(1231, 4324, 1231)
 
   assert result is None
+
+
+# get_all_by_owner
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_by_owner_success(integ_expense_repo, registered_expense_obj):
+  result = await integ_expense_repo.get_all_by_owner(
+    registered_expense_obj.project_id,
+    registered_expense_obj.item_id
+  )
+
+  assert len(result) == 1
+  assert result[0] == registered_expense_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_by_owner_no_item_id_success(
+  integ_expense_repo,
+  registered_expense_obj
+):
+  registered_expense_obj.item_id = None
+  
+  result = await integ_expense_repo.get_all_by_owner(registered_expense_obj.project_id)
+
+  assert len(result) == 1
+  assert result[0] == registered_expense_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_by_owner_return_empty_list_success(integ_expense_repo):
+  result = await integ_expense_repo.get_all_by_owner(5, 8)
+
+  assert len(result) == 0
+  assert result == []
