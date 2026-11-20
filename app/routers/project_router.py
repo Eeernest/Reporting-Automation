@@ -37,7 +37,11 @@ async def get_project(
   client: VerifiedClientDep,
   service: ProjectServiceDep
 ):
-  return await service.get_project(project_id, client.user_id, client.id)
+  return await service.get_project(
+    project_id=project_id,
+    user_id=client.user_id,
+    client_id=client.id
+  )
 
 @router.get(
   "/clients/{client_id}/projects",
