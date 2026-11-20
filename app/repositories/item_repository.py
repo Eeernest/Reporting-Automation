@@ -35,3 +35,17 @@ class ItemRepository:
     result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
+
+  async def get_all_by_owner(self, project_id: int, user_id: int) -> list[Item]:
+    stmt = (
+      select(Item)
+      .join(Project, Item.project_id == Project.id)
+      .where(
+        Item.project_id == project_id,
+        Project.user_id == user_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return list(result.scalars().all())
