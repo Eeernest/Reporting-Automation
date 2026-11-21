@@ -88,6 +88,55 @@ async def test_register_client_database_integrity_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
+# update_project
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_project_success(
+  mock_project_session,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_session.commit.return_value = None
+
+  result = await unit_project_service.update_project(unit_project_obj, {"name": "updated name"})
+
+  assert result.name == "updated name"
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_project_no_field_provided_error(
+  unit_project_service,
+  unit_project_obj
+):
+  with pytest.raises(e.NoFieldProvidedError) as exc:
+    await unit_project_service.update_project(unit_project_obj, {})
+
+  assert isinstance(exc.value, e.NoFieldProvidedError)
+  assert exc.value.detail == e.NoFieldProvidedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_project_integrity_error(
+  mock_project_session,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_project_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_project_service.update_project(unit_project_obj, {"name": "test"})
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
 # get_project
 
 @pytest.mark.anyio
