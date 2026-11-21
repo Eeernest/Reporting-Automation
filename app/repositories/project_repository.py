@@ -15,6 +15,9 @@ class ProjectRepository:
 
     return project_obj
 
+  async def delete_project(self, project_obj: Project) -> None:
+    await self.session.delete(project_obj)
+
   async def get_by_id_and_owner(
     self,
     project_id: int,
