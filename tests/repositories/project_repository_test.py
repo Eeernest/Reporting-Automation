@@ -11,6 +11,25 @@ async def test_add_project(integ_project_repo, integ_project_obj):
   assert result == integ_project_obj
 
 
+# delete_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_delete_project_success(integ_project_repo, registered_project_obj, db_session):
+  result = await integ_project_repo.delete_project(registered_project_obj)
+
+  await db_session.commit()
+
+  still_exists = await integ_project_repo.get_by_id_and_owner(
+    project_id=registered_project_obj.id,
+    user_id=registered_project_obj.user_id,
+    client_id=registered_project_obj.client_id
+  )
+
+  assert result == None
+  assert still_exists is None
+
+
 # get_by_id_and_owner
 
 @pytest.mark.anyio
