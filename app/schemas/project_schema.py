@@ -13,6 +13,14 @@ class RegisterProjectRequest(BaseModel):
   est_end_date: date | None = None
   act_end_date: date | None = None
 
+class UpdateProjectRequest(BaseModel):
+  name: t.ValidProjectName | None = None
+  location: t.ValidProjectLocation | None = None
+  description: t.ValidProjectDescription | None = None
+  est_end_date: date | None = None
+  act_end_date: date | None = None
+
+
 
 # Responses
 
@@ -21,6 +29,17 @@ class RegisterProjectResponse(BaseModel):
   user_id: int
   client_id: int
   name: t.ValidProjectName
+
+class UpdateProjectResponse(BaseModel):
+  id: int
+  user_id: int
+  client_id: int
+  name: t.ValidProjectName | None = None
+  location: t.ValidProjectLocation | None = None
+  description: t.ValidProjectDescription | None = None
+  est_end_date: date | None = None
+  act_end_date: date | None = None
+
 
 class GetProjectResposne(BaseModel):
   id: int
