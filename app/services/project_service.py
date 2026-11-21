@@ -52,6 +52,11 @@ class ProjectService:
 
     return updated_project_obj
 
+  async def delete_project(self, project_obj: Project) -> None:
+    await self.project_repo.delete_project(project_obj)
+
+    await self._commit_project_or_raise(project_obj=None)
+
   async def get_project(self, project_id: int, user_id: int, client_id: int) -> Project:
     return await self._get_project_or_raise(project_id, user_id, client_id)
 
@@ -90,10 +95,12 @@ class ProjectService:
 
   # session
 
-  async def _commit_project_or_raise(self, project_obj: Project) -> None:
+  async def _commit_project_or_raise(self, project_obj: Project | None = None) -> None:
     try:
       await self.session.commit()
-      await self.session.refresh(project_obj)
+
+      if project_obj:
+        await self.session.refresh(project_obj)
 
     except IntegrityError as exc:
       await self.session.rollback()
