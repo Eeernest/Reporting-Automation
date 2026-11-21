@@ -99,3 +99,12 @@ class TokenExpiredError(UnauthorizedError):
 
 class UserDeletedError(UnauthorizedError):
   detail = "User account no longer exists"
+
+
+# Bad Request Error (400)
+
+class BadRequestError(AppError):
+  pass
+
+class NoFieldProvidedError(BadRequestError):
+  detail = "At least one field of input is required"
