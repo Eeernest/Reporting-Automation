@@ -45,6 +45,52 @@ async def test_register_project_credentials_validation_error(
   assert data["detail"][1]["field_name"] == "location"
   assert data["detail"][2]["field_name"] == "description"
 
+
+# update_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_project_success(
+  integ_project_router,
+  registered_project_obj,
+  registered_client_obj
+):
+  request = {"name": "updated name", "description": "updated detail"}
+
+  result = await integ_project_router.patch(
+    f"/clients/{registered_client_obj.id}/projects/{registered_project_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"] == registered_project_obj.id
+  assert data["user_id"] == registered_project_obj.user_id
+  assert data["client_id"] == registered_project_obj.client_id
+  assert data["name"] == request["name"]
+  assert data["description"] == request["description"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_project_no_field_provided_error(
+  integ_project_router,
+  registered_project_obj,
+  registered_client_obj
+):
+  request = {}
+
+  result = await integ_project_router.patch(
+    f"/clients/{registered_client_obj.id}/projects/{registered_project_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_400_BAD_REQUEST
+  assert data["detail"] == e.NoFieldProvidedError.detail
+
+
 # get_project
 
 @pytest.mark.anyio
