@@ -42,6 +42,13 @@ async def update_project(
     update_data=request.model_dump(exclude_unset=True)
   )
 
+@router.delete(
+  "/clients/{client_id}/projects/{project_id}",
+  status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_project(project: VerifiedProjectDep, service: ProjectServiceDep):
+  return await service.delete_project(project)
+
 @router.get(
   "/clients/{client_id}/projects/{project_id}",
   response_model=s.GetProjectResposne,
