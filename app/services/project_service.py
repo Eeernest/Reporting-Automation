@@ -35,7 +35,11 @@ class ProjectService:
       act_end_date=act_end_date
     )
 
-    return await self._commit_project_or_raise(project_obj)
+    added_project_obj = await self._add_project_or_raise(project_obj)
+
+    await self._commit_project_or_raise(added_project_obj)
+
+    return added_project_obj
 
   async def get_project(self, project_id: int, user_id: int, client_id: int) -> Project:
     return await self._get_project_or_raise(project_id, user_id, client_id)
@@ -47,6 +51,13 @@ class ProjectService:
   # Helper Methods
 
   # project_repo
+
+  async def _add_project_or_raise(self, project_obj: Project) -> Project:
+    try:
+      return await self.project_repo.add_project(project_obj)
+
+    except IntegrityError as exc:
+      raise e.DatabaseIntegrityError() from exc
 
   async def _get_project_or_raise(
     self,
@@ -66,15 +77,12 @@ class ProjectService:
     return project_obj
 
 
-  # project_repo and session
+  # session
 
-  async def _commit_project_or_raise(self, project_obj: Project) -> Project:
+  async def _commit_project_or_raise(self, project_obj: Project) -> None:
     try:
-      added_project_obj = await self.project_repo.add_project(project_obj)
-
       await self.session.commit()
-
-      return added_project_obj
+      await self.session.refresh(project_obj)
 
     except IntegrityError as exc:
       await self.session.rollback()
