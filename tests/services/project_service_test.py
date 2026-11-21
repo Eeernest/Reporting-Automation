@@ -1,3 +1,5 @@
+from tkinter import N
+
 from sqlalchemy.exc import IntegrityError
 
 import pytest
@@ -132,6 +134,47 @@ async def test_update_project_integrity_error(
 
   with pytest.raises(e.DatabaseIntegrityError) as exc:
     await unit_project_service.update_project(unit_project_obj, {"name": "test"})
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# delete_project
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_project_success(
+  mock_project_repo,
+  mock_project_session,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_repo.delete_project.return_value = None
+  mock_project_session.commit.return_value = None
+
+  result = await unit_project_service.delete_project(unit_project_obj)
+
+  assert result is None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_project_database_inegrity_error(
+  mock_project_repo,
+  mock_project_session,
+  unit_project_service,
+  unit_project_obj
+):
+  mock_project_repo.delete_project.return_value = None
+  mock_project_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_project_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_project_service.delete_project(unit_project_obj)
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
