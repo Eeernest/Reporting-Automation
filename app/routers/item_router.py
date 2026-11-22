@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.dependencies.item_dependency import ItemServiceDep
+from app.dependencies.item_dependency import ItemServiceDep, VerifiedItemDep
 from app.dependencies.project_dependency import VerifiedProjectDep
 import app.schemas.item_schema as s
 
@@ -22,6 +22,21 @@ async def register_item(
     item_type=request.item_type,
     item_status=request.item_status,
     description=request.description
+  )
+
+@router.patch(
+  "/projects/{project_id}/items/{item_id}",
+  response_model=s.UpdateItemResponse,
+  status_code=status.HTTP_200_OK
+)
+async def update_item(
+  item: VerifiedItemDep,
+  service: ItemServiceDep,
+  request: s.UpdateItemRequest
+):
+  return await service.update_item(
+    item_obj=item,
+    update_data=request.model_dump(exclude_unset=True)
   )
 
 @router.get(
