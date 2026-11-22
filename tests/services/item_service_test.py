@@ -55,6 +55,48 @@ async def test_register_item_database_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
+# update_item
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_item_success(mock_item_session, unit_item_service, unit_item_obj):
+  mock_item_session.commit.return_value = None
+
+  result = await unit_item_service.update_item(unit_item_obj, {"name": "updated_name"})
+
+  assert result.name == "updated_name"
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_item_no_field_provided_error(unit_item_service, unit_item_obj):
+  with pytest.raises(e.NoFieldProvidedError) as exc:
+    await unit_item_service.update_item(unit_item_obj, {})
+
+  assert isinstance(exc.value, e.NoFieldProvidedError)
+  assert exc.value.detail == e.NoFieldProvidedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_item_database_integrity_error(
+  mock_item_session,
+  unit_item_service,
+  unit_item_obj
+):
+  mock_item_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_item_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_item_service.update_item(unit_item_obj, {"name": "new name"})
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
 # get_item
 
 @pytest.mark.anyio
