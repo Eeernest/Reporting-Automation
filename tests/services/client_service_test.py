@@ -184,6 +184,47 @@ async def test_updae_client_duplicate_param_error(
   assert exc.value.detail == e.NameUnavailableError.detail
 
 
+# delete_client
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_client_success(
+  mock_client_repo,
+  mock_client_session,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.delete_project.return_value = None
+  mock_client_session.commit.return_value = None
+
+  result = await unit_client_service.delete_client(unit_client_obj)
+
+  assert result is None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def tset_delete_client_database_integrity_error(
+  mock_client_repo,
+  mock_client_session,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_repo.delete_client.return_value = None
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_client_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_client_service.delete_client(unit_client_obj)
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value == e.DatabaseIntegrityError.detail
+
+
 # get_client
 
 @pytest.mark.anyio
