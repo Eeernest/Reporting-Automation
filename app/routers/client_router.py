@@ -39,6 +39,13 @@ async def update_client(
     update_data=request.model_dump(exclude_unset=True)
   )
 
+@router.delete(
+  "/clients/{client_id}",
+  status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_client(client: VerifiedClientDep, service: ClientServiceDep):
+  return await service.delete_client(client)
+
 @router.get(
   "/clients/{client_id}",
   response_model=s.GetClientResponse,
