@@ -9,6 +9,12 @@ class RegisterClientRequest(BaseModel):
   phone_number: t.PolishNumber
   email: EmailStr | None = None
   notes: t.ValidClientNotes | None = None
+
+class UpdateClientRequest(BaseModel):
+  name: t.ValidClientName | None = None
+  email: EmailStr | None = None
+  phone_number: t.PolishNumber | None = None
+  notes: t.ValidClientNotes | None = None
   
 
 # Responses
@@ -19,6 +25,14 @@ class RegisterClinetResponse(BaseModel):
   name: t.ValidClientName
   phone_number: t.PolishNumber
   email: EmailStr | None
+
+class UpdateClientResponse(BaseModel):
+  id: int
+  user_id: int
+  name: t.ValidClientName | None = None
+  email: EmailStr | None = None
+  phone_number: t.PolishNumber | None = None
+  notes: t.ValidClientNotes | None = None  
 
 class GetClientResponse(BaseModel):
   id: int
