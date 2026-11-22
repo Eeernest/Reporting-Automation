@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,6 +40,13 @@ class ItemService:
     await self._commit_item_or_raise(item_obj)
 
     return added_item_obj
+
+  async def update_item(self, item_obj: Item, update_data: dict[str, Any]) -> Item:
+    updated_item_obj = self._update_item_or_raise(item_obj, update_data)
+
+    await self._commit_item_or_raise(updated_item_obj)
+
+    return updated_item_obj
 
   async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
     return await self._get_item_or_raise(item_id, project_id, user_id)
@@ -84,3 +93,15 @@ class ItemService:
       await self.session.rollback()
 
       raise e.DatabaseIntegrityError() from exc
+
+
+  # Object
+
+  def _update_item_or_raise(self, item_obj: Item, update_data: dict[str, Any]) -> Item:
+    if not update_data:
+      raise e.NoFieldProvidedError()
+
+    for field, value in update_data.items():
+      setattr(item_obj, field, value)
+
+    return item_obj
