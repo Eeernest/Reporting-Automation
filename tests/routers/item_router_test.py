@@ -55,6 +55,76 @@ async def test_register_item_credentials_validation_error(
   assert data["detail"][3]["field_name"] == "description"
 
 
+# update_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_item_success(
+  integ_item_router,
+  registered_item_obj,
+  registered_project_obj
+):
+  request = {"name": "updated_name"}
+
+  result = await integ_item_router.patch(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["project_id"]
+  assert data["name"] == request["name"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_item_invalid_credentials_error(
+  integ_item_router,
+  registered_item_obj,
+  registered_project_obj
+):
+  request = {
+    "name": "a" * 101,
+    "item_type": "invalid_item_type",
+    "item_status": "invalid_item_status",
+    "description": "b" * 301
+  }
+
+  result = await integ_item_router.patch(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+  assert data["detail"][0]["field_name"] == "name"
+  assert data["detail"][1]["field_name"] == "item_type"
+  assert data["detail"][2]["field_name"] == "item_status"
+  assert data["detail"][3]["field_name"] == "description"
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_item_no_field_provided_error(
+  integ_item_router,
+  registered_item_obj,
+  registered_project_obj
+):
+  request = {}
+
+  result = await integ_item_router.patch(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_400_BAD_REQUEST
+  assert data["detail"] == e.NoFieldProvidedError.detail
+
+
 # get_item
 
 @pytest.mark.anyio
