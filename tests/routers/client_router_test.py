@@ -135,6 +135,16 @@ async def test_update_client_credentials_validation_error(
     assert data["detail"] == e.NameUnavailableError()
 
 
+# delete_client
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_delete_client_success(integ_client_router, registered_client_obj):
+  result = await integ_client_router.delete(f"/clients/{registered_client_obj.id}")
+
+  assert result.status_code == status.HTTP_204_NO_CONTENT
+
+
 # get_client
 
 @pytest.mark.anyio
