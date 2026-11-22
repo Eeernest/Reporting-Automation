@@ -48,6 +48,11 @@ class ClientService:
 
     return updated_client_obj
 
+  async def delete_client(self, client_obj: Client) -> None:
+    await self.client_repo.delete_client(client_obj)
+
+    await self._commit_client_or_raise(client_obj=None)
+
   async def get_client(self, client_id: int, user_id: int) -> Client:
     return await self._get_client_or_raise(client_id, user_id)
 
