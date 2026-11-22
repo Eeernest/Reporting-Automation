@@ -33,7 +33,11 @@ class ItemService:
       description=description
     )
 
-    return await self._commit_item_or_raise(item_obj)
+    added_item_obj = await self._add_item_or_raise(item_obj)
+
+    await self._commit_item_or_raise(item_obj)
+
+    return added_item_obj
 
   async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
     return await self._get_item_or_raise(item_id, project_id, user_id)
@@ -57,13 +61,24 @@ class ItemService:
 
   # item_repo and session
 
-  async def _commit_item_or_raise(self, item_obj: Item) -> Item:
+  async def _add_item_or_raise(self, item_obj: Item) -> Item:
     try:
-      added_item_obj = await self.item_repo.add_item(item_obj)
+      return await self.item_repo.add_item(item_obj)
 
+    except IntegrityError as exc:
+      await self.session.rollback()
+
+      raise e.DatabaseIntegrityError() from exc
+
+
+  # session
+
+  async def _commit_item_or_raise(self, item_obj: Item | None = None) -> None:
+    try:
       await self.session.commit()
 
-      return added_item_obj
+      if item_obj:
+        await self.session.refresh(item_obj)
 
     except IntegrityError as exc:
       await self.session.rollback()
