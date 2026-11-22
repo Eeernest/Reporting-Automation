@@ -71,6 +71,70 @@ async def test_register_client_name_unavailable_error(integ_client_router):
   assert data["detail"] == e.NameUnavailableError.detail
 
 
+# update_client
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_client_success(integ_client_router, registered_client_obj):
+  request = {"name": "updated name"}
+
+  result = await integ_client_router.patch(
+    f"clients/{registered_client_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["user_id"]
+  assert data["name"] == request["name"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_client_credentials_validation_error(
+  integ_client_router,
+  registered_client_obj
+):
+  request = {
+  "name": "a" * 33,
+  "phone_number": "123",
+  "email": "wrong email",
+  "notes": "a" * 301
+  }
+
+  result = await integ_client_router.patch(
+    f"/clients/{registered_client_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+  assert data["detail"][0]["field_name"] == "name"
+  assert data["detail"][1]["field_name"] == "email"
+  assert data["detail"][2]["field_name"] == "phone_number"
+  assert data["detail"][3]["field_name"] == "notes"
+
+  @pytest.mark.anyio
+  @pytest.mark.integration
+  async def test_update_client_name_unavailable(
+    integ_client_router,
+    registered_client_obj
+  ):
+    request = {"name": registered_client_obj.name}
+
+    result = integ_client_router.patch(
+      f"/clients/{registered_client_obj.id}",
+      json=request
+    )
+
+    data = result.json()
+
+    assert result.status_code == status.HTTP_409_CONFLICT
+    assert data["detail"] == e.NameUnavailableError()
+
+
 # get_client
 
 @pytest.mark.anyio
