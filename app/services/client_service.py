@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,6 +36,17 @@ class ClientService:
     await self._commit_client_or_raise(client_obj)
 
     return added_client_obj
+
+  async def update_client(
+    self,
+    client_obj: Client,
+    update_data: dict[str, Any]
+  ) -> Client:
+    updated_client_obj = self._update_client_or_raise(client_obj, update_data)
+
+    await self._commit_client_or_raise(updated_client_obj)
+
+    return updated_client_obj
 
   async def get_client(self, client_id: int, user_id: int) -> Client:
     return await self._get_client_or_raise(client_id, user_id)
@@ -84,3 +97,18 @@ class ClientService:
       err_msg = str(exc.orig).lower()
 
       exc_map.refine_integrity_error(err_msg, exc)
+
+
+  # Object
+
+  def _update_client_or_raise(
+      self, client_obj: Client,
+      update_data: dict[str, Any]
+  ) -> Client:
+    if not update_data:
+      raise e.NoFieldProvidedError()
+
+    for field, value in update_data.items():
+      setattr(client_obj, field, value)
+
+    return client_obj
