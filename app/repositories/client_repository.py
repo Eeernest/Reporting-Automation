@@ -15,6 +15,9 @@ class ClientRepository:
 
     return client_obj
 
+  async def delete_client(self, client_obj: Client) -> None:
+    await self.session.delete(client_obj)
+
   async def get_by_id_and_owner(self, client_id: int, user_id: int) -> Client | None:
     stmt = (
       select(Client)
