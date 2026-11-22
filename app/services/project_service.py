@@ -68,13 +68,6 @@ class ProjectService:
 
   # project_repo
 
-  async def _add_project_or_raise(self, project_obj: Project) -> Project:
-    try:
-      return await self.project_repo.add_project(project_obj)
-
-    except IntegrityError as exc:
-      raise e.DatabaseIntegrityError() from exc
-
   async def _get_project_or_raise(
     self,
     project_id: int,
@@ -91,6 +84,18 @@ class ProjectService:
       raise e.ProjectNotFoundError()
 
     return project_obj
+
+
+  # project_repo and session
+
+  async def _add_project_or_raise(self, project_obj: Project) -> Project:
+    try:
+      return await self.project_repo.add_project(project_obj)
+
+    except IntegrityError as exc:
+      await self.session.rollback()
+
+      raise e.DatabaseIntegrityError() from exc
 
 
   # session
