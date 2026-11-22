@@ -29,7 +29,11 @@ class ClientService:
       notes=notes
     )
 
-    return await self._commit_client_or_raise(client_obj)
+    added_client_obj = await self._add_client_or_raise(client_obj)
+
+    await self._commit_client_or_raise(client_obj)
+
+    return added_client_obj
 
   async def get_client(self, client_id: int, user_id: int) -> Client:
     return await self._get_client_or_raise(client_id, user_id)
@@ -53,13 +57,26 @@ class ClientService:
 
   # client_repo and session
 
-  async def _commit_client_or_raise(self, client_obj: Client) -> Client:
+  async def _add_client_or_raise(self, client_obj: Client) -> Client:
     try:
-      added_client_obj = await self.client_repo.add_client(client_obj)
+      return await self.client_repo.add_client(client_obj)
 
+    except IntegrityError as exc:
+      await self.session.rollback()
+
+      err_msg = str(exc.orig).lower()
+
+      exc_map.refine_integrity_error(err_msg, exc)
+
+
+  # session
+
+  async def _commit_client_or_raise(self, client_obj: Client | None = None) -> None:
+    try:
       await self.session.commit()
 
-      return added_client_obj
+      if client_obj:
+        await self.session.refresh(client_obj)
     
     except IntegrityError as exc:
       await self.session.rollback()
