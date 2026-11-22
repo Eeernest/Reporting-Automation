@@ -1,3 +1,5 @@
+from tkinter import N
+
 import pytest
 from sqlalchemy.exc import IntegrityError
 
@@ -125,6 +127,61 @@ async def test_register_client_database_error(
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# update_client
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_client_success(
+  mock_client_session,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_session.commit.return_value = None
+
+  result = await unit_client_service.update_client(
+    unit_client_obj,
+    {"name": "updated name"}
+  )
+
+  assert result.name == "updated name"
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_client_no_field_provided_error(
+  unit_client_service,
+  unit_client_obj
+):
+  with pytest.raises(e.NoFieldProvidedError) as exc:
+    await unit_client_service.update_client(unit_client_obj, {})
+
+  assert isinstance(exc.value, e.NoFieldProvidedError)
+  assert exc.value.detail == e.NoFieldProvidedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_updae_client_duplicate_param_error(
+  mock_client_session,
+  unit_client_service,
+  unit_client_obj
+):
+  mock_client_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "user_client_name"
+  )
+
+  mock_client_session.rollback.return_value = None
+
+  with pytest.raises(e.NameUnavailableError) as exc:
+    await unit_client_service.update_client(
+      unit_client_obj,
+      {"name": unit_client_obj.name}
+    )
+
+  assert isinstance(exc.value, e.NameUnavailableError)
+  assert exc.value.detail == e.NameUnavailableError.detail
 
 
 # get_client
