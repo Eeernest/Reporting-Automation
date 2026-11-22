@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.dependencies.client_dependency import ClientServiceDep
+from app.dependencies.client_dependency import ClientServiceDep, VerifiedClientDep
 from app.dependencies.permit_dependency import CurrentUserDep
 import app.schemas.client_schema as s
 
@@ -22,6 +22,21 @@ async def register_client(
     email=request.email,
     phone_number=request.phone_number,
     notes=request.notes
+  )
+
+@router.patch(
+  "/clients/{client_id}",
+  response_model=s.UpdateClientResponse,
+  status_code=status.HTTP_200_OK
+)
+async def update_client(
+  client: VerifiedClientDep,
+  service: ClientServiceDep,
+  request: s.UpdateClientRequest
+):
+  return await service.update_client(
+    client_obj=client,
+    update_data=request.model_dump(exclude_unset=True)
   )
 
 @router.get(
