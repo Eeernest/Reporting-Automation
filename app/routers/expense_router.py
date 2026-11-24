@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.dependencies.expense_dependency import ExpenseServiceDep
+from app.dependencies.expense_dependency import ExpenseServiceDep, VerifiedProjectExpenseDep
 from app.dependencies.item_dependency import VerifiedItemDep
 from app.dependencies.project_dependency import VerifiedProjectDep
 import app.schemas.expense_schema as s
@@ -38,6 +38,21 @@ async def register_expense_for_item(
     item_id=item.id,
     expense_type=request.expense_type,
     amount=request.amount
+  )
+
+@router.patch(
+  "/projects/{project_id}/expenses/{expense_id}",
+  response_model=s.UpdateExpenseResponse,
+  status_code=status.HTTP_200_OK
+)
+async def update_expesnse_for_project(
+  expense: VerifiedProjectExpenseDep,
+  request: s.UpdateExpenseRequest,
+  service: ExpenseServiceDep
+):
+  return await service.update_expense(
+    expense_obj=expense,
+    update_data=request.model_dump(exclude_unset=True)
   )
 
 @router.get(
