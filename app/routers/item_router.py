@@ -39,6 +39,13 @@ async def update_item(
     update_data=request.model_dump(exclude_unset=True)
   )
 
+@router.delete(
+    "/projects/{project_id}/items/{item_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_item(item: VerifiedItemDep, service: ItemServiceDep):
+  return await service.delete_item(item_obj=item)
+
 @router.get(
   "/projects/{project_id}/items/{item_id}",
   response_model=s.GetItemResponse,
