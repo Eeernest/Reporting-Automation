@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Any
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,6 +35,17 @@ class ExpenseService:
     await self._commit_expense_or_raise(added_expense_obj)
 
     return added_expense_obj
+
+  async def update_expense(
+    self,
+    expense_obj: Expense,
+    update_data: dict[str, Any]
+  ) -> Expense:
+    updated_expense_obj = self._update_expense_or_raise(expense_obj, update_data)
+
+    await self._commit_expense_or_raise(updated_expense_obj)
+
+    return updated_expense_obj
 
   async def get_expense(
     self,
@@ -98,3 +110,19 @@ class ExpenseService:
       await self.session.rollback()
 
       raise e.DatabaseIntegrityError() from exc
+
+
+  # Object
+
+  def _update_expense_or_raise(
+    self,
+    expense_obj: Expense,
+    update_data: dict[str, Any]
+  ) -> Expense:
+    if not update_data:
+      raise e.NoFieldProvidedError()
+
+    for field, value in update_data.items():
+      setattr(expense_obj, field, value)
+
+    return expense_obj
