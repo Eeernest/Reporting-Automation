@@ -11,6 +11,26 @@ async def test_add_item_success(integ_item_repo, integ_item_obj):
   assert result == integ_item_obj
 
 
+# delete_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_delete_item_success(
+  integ_item_repo,
+  registered_item_obj,
+  registered_project_obj
+):
+  await integ_item_repo.delete_item(registered_item_obj)
+
+  still_exists = await integ_item_repo.get_by_id_and_owner(
+    registered_item_obj.id,
+    registered_item_obj.project_id,
+    registered_project_obj.user_id
+  )
+
+  assert still_exists is None
+
+
 # get_by_id_and_owner
 
 @pytest.mark.anyio
