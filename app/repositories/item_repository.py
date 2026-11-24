@@ -16,6 +16,9 @@ class ItemRepository:
 
     return item_obj
 
+  async def delete_item(self, item_obj: Item) -> None:
+    await self.session.delete(item_obj)
+
   async def get_by_id_and_owner(
     self,
     item_id: int,
