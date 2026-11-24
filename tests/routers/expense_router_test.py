@@ -245,7 +245,7 @@ async def test_update_expense_for_item_no_field_provided_error(
 
 @pytest.mark.anyio
 @pytest.mark.integration
-async def test_delete_expense_for_project(
+async def test_delete_expense_for_project_success(
   integ_expense_router,
   registered_expense_obj
 ):
@@ -253,6 +253,21 @@ async def test_delete_expense_for_project(
 
   result = await integ_expense_router.delete(
     f"/projects/{expense.project_id}/expenses/{expense.id}"
+  )
+
+  assert result.status_code == status.HTTP_204_NO_CONTENT
+
+
+# delete_expense_for_item
+
+async def test_delete_expense_for_item_success(
+  integ_expense_router,
+  integ_expense_obj
+):
+  expense = integ_expense_obj
+
+  result = await integ_expense_router.delete(
+    f"/projects/{expense.project_id}/items/{expense.item_id}/expenses/{expense.id}"
   )
 
   assert result.status_code == status.HTTP_204_NO_CONTENT
