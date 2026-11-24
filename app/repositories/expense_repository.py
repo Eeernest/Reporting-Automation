@@ -15,6 +15,9 @@ class ExpenseRepository:
 
     return expense_obj
 
+  async def delete_expense(self, expense_obj: Expense) -> None:
+    await self.session.delete(expense_obj)
+
   async def get_by_id_and_owner(
     self,
     expense_id: int,
