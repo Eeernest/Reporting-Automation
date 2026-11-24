@@ -48,6 +48,11 @@ class ItemService:
 
     return updated_item_obj
 
+  async def delete_item(self, item_obj: Item) -> None:
+    await self.item_repo.delete_item(item_obj)
+
+    await self._commit_item_or_raise(item_obj=None)
+
   async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
     return await self._get_item_or_raise(item_id, project_id, user_id)
 
