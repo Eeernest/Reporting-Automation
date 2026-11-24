@@ -125,6 +125,22 @@ async def test_update_item_no_field_provided_error(
   assert data["detail"] == e.NoFieldProvidedError.detail
 
 
+# delete_item
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_delete_item_success(
+  integ_item_router,
+  registered_item_obj,
+  registered_project_obj
+):
+  result = await integ_item_router.delete(
+    f"/projects/{registered_project_obj.id}/items/{registered_item_obj.id}"
+  )
+
+  assert result.status_code == status.HTTP_204_NO_CONTENT
+
+
 # get_item
 
 @pytest.mark.anyio
