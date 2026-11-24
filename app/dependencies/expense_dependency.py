@@ -26,9 +26,22 @@ async def get_verified_project_expense(
     project_id=project.id,
   )
 
+async def get_verified_item_expense(
+    expense_id: int,
+    item: VerifiedItemDep,
+    service: ExpenseServiceDep
+) -> Expense:
+  return await service.get_expense(
+    expense_id=expense_id,
+    project_id=item.project_id,
+    item_id=item.id
+  )
+
 
 # Alias Variables
 
 ExpenseServiceDep = Annotated[ExpenseService, Depends(get_expense_service)]
 
 VerifiedProjectExpenseDep = Annotated[Expense, Depends(get_verified_project_expense)]
+
+VerifiedItemExpenseDep = Annotated[Expense, Depends(get_verified_item_expense)]
