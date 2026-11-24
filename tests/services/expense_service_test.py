@@ -1,3 +1,5 @@
+from tkinter import N
+
 import pytest
 from sqlalchemy.exc import IntegrityError
 
@@ -98,6 +100,47 @@ async def test_udpate_expense_database_integrity_error(
 
   with pytest.raises(e.DatabaseIntegrityError) as exc:
     await unit_expense_service.update_expense(unit_expense_obj, {"amount": 321})
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
+# delete_expense
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_expense_success(
+  mock_expense_repo,
+  mock_expense_session,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_repo.delete_expense.return_value = None
+  mock_expense_session.commit.return_value = None
+
+  result = await unit_expense_service.delete_expense(unit_expense_obj)
+
+  assert result is None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_expense_database_integrity_error(
+  mock_expense_repo,
+  mock_expense_session,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_repo.delete_expense.return_value = N
+  mock_expense_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_expense_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_expense_service.delete_expense(unit_expense_obj)
 
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
