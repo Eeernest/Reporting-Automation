@@ -29,7 +29,11 @@ class ExpenseService:
       amount=amount
     )
 
-    return await self._commit_expense_or_raise(expense_obj)
+    added_expense_obj = await self._add_expense_or_raise(expense_obj)
+
+    await self._commit_expense_or_raise(added_expense_obj)
+
+    return added_expense_obj
 
   async def get_expense(
     self,
@@ -71,13 +75,24 @@ class ExpenseService:
 
   # expense_repo and session
 
-  async def _commit_expense_or_raise(self, expense_obj: Expense) -> Expense:
+  async def _add_expense_or_raise(self, expense_obj: Expense) -> Expense:
     try:
-      added_expense_obj = await self.expense_repo.add_expense(expense_obj)
+      return await self.expense_repo.add_expense(expense_obj)
 
+    except IntegrityError as exc:
+      await self.session.rollback()
+
+      raise e.DatabaseIntegrityError() from exc
+
+
+  # session
+
+  async def _commit_expense_or_raise(self, expense_obj: Expense | None = None) -> None:
+    try:
       await self.session.commit()
 
-      return added_expense_obj
+      if expense_obj:
+        await self.session.refresh(expense_obj)
 
     except IntegrityError as exc:
       await self.session.rollback()
