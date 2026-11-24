@@ -97,6 +97,47 @@ async def test_update_item_database_integrity_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
+# delete_item
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_item_success(
+  mock_item_repo,
+  mock_item_session,
+  unit_item_service,
+  unit_item_obj
+):
+  mock_item_repo.delete_item.return_value = None
+  mock_item_session.commit.return_value = None
+
+  result = await unit_item_service.delete_item(unit_item_obj)
+
+  assert result is None
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_delete_item_database_integrity_error(
+  mock_item_repo,
+  mock_item_session,
+  unit_item_service,
+  unit_item_obj
+):
+  mock_item_repo.delete_item.return_value = None
+  mock_item_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_item_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_item_service.delete_item(unit_item_obj)
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
 # get_item
 
 @pytest.mark.anyio
