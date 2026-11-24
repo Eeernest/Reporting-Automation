@@ -105,6 +105,72 @@ async def test_register_expense_for_item_credentials_validation_error(
   assert data["detail"][1]["field_name"] == "amount"
 
 
+# update_expense_for_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_expense_for_project(
+  integ_expense_router,
+  registered_expense_obj,
+  registered_project_obj
+):
+  request = {"amount": 123321.32}
+
+  result = await integ_expense_router.patch(
+    f"/projects/{registered_project_obj.id}/expenses/{registered_expense_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["project_id"]
+  assert data["amount"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_udpate_expense_for_project_invalid_credentials_validation_error(
+  integ_expense_router,
+  registered_expense_obj,
+  registered_project_obj
+):
+  request = {
+    "expense_type": "wrong_expense",
+    "amount": 0.001
+  }
+
+  result = await integ_expense_router.patch(
+    f"/projects/{registered_project_obj.id}/expenses/{registered_expense_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+  assert data["detail"][0]["field_name"] == "expense_type"
+  assert data["detail"][1]["field_name"] == "amount"
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_expense_for_project_no_field_provided_error(
+  integ_expense_router,
+  registered_expense_obj,
+  registered_project_obj
+):
+  request = {}
+
+  result = await integ_expense_router.patch(
+    f"/projects/{registered_project_obj.id}/expenses/{registered_expense_obj.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_400_BAD_REQUEST
+  assert data["detail"] == e.NoFieldProvidedError.detail
+
+
 # get_expesne_for_project
 
 @pytest.mark.anyio
