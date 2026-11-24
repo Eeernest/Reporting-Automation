@@ -47,6 +47,11 @@ class ExpenseService:
 
     return updated_expense_obj
 
+  async def delete_expense(self, expense_obj: Expense) -> None:
+    await self.expense_repo.delete_expense(expense_obj)
+
+    await self._commit_expense_or_raise(expense_obj=None)
+
   async def get_expense(
     self,
     expense_id: int,
