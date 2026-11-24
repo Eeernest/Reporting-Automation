@@ -22,6 +22,22 @@ async def test_add_expense_only_required_success(integ_expense_repo, integ_expen
   assert result.id
 
 
+# delete_expense
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def tset_delete_expense_success(integ_expense_repo, registered_expense_obj):
+  await integ_expense_repo.delete_expense(registered_expense_obj)
+
+  still_exists = await integ_expense_repo.get_by_id_and_owner(
+    expense_id=registered_expense_obj.id,
+    project_id=registered_expense_obj.project_id,
+    item_id=registered_expense_obj.item_id
+  )
+
+  assert still_exists is None
+
+
 # get_by_id_and_owner
 
 @pytest.mark.anyio
