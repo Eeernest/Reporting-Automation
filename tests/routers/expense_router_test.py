@@ -241,6 +241,23 @@ async def test_update_expense_for_item_no_field_provided_error(
   assert data["detail"] == e.NoFieldProvidedError.detail
 
 
+# delete_expense_for_project
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_delete_expense_for_project(
+  integ_expense_router,
+  registered_expense_obj
+):
+  expense = registered_expense_obj
+
+  result = await integ_expense_router.delete(
+    f"/projects/{expense.project_id}/expenses/{expense.id}"
+  )
+
+  assert result.status_code == status.HTTP_204_NO_CONTENT
+
+
 # get_expesne_for_project
 
 @pytest.mark.anyio
