@@ -53,6 +53,56 @@ async def test_register_expense_database_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
+# update_expense
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_expense_success(
+  mock_expense_session,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_session.commit.return_value = None
+
+  result = await unit_expense_service.update_expense(
+    unit_expense_obj,
+    {"amount": 1231.23}
+  )
+
+  assert result.amount == 1231.23
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_udpate_expense_no_field_provided_error(
+  unit_expense_service,
+  unit_expense_obj
+):
+  with pytest.raises(e.NoFieldProvidedError) as exc:
+    await unit_expense_service.update_expense(unit_expense_obj, {})
+
+  assert isinstance(exc.value, e.NoFieldProvidedError)
+  assert exc.value.detail == e.NoFieldProvidedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_udpate_expense_database_integrity_error(
+  mock_expense_session,
+  unit_expense_service,
+  unit_expense_obj
+):
+  mock_expense_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_expense_service.update_expense(unit_expense_obj, {"amount": 321})
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
 # get_expense
 
 @pytest.mark.anyio
