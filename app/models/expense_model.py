@@ -12,7 +12,7 @@ class Expense(Base):
   project_id = Column(Integer, ForeignKey("projects.id"), nullable=False, index=True)
   item_id = Column(Integer, ForeignKey("items.id"), index=True)
   expense_type = Column(String, nullable=False, index=True)
-  amount = Column(DECIMAL)
+  amount = Column(DECIMAL(precision=10, scale=2))
   created_at = Column(DateTime, default=datetime.utcnow)
   updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
