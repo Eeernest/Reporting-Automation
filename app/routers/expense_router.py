@@ -70,6 +70,16 @@ async def update_expense_for_item(
     update_data=request.model_dump(exclude_unset=True),
   )
 
+@router.delete(
+  "/projects/{project_id}/expenses/{expense_id}",
+  status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_expense_for_project(
+  expense: VerifiedProjectExpenseDep,
+  service: ExpenseServiceDep
+):
+  return await service.delete_expense(expense)
+
 @router.get(
   "/projects/{project_id}/expenses/{expense_id}",
   response_model=s.GetExpenseResponse,
