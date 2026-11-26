@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.item_model import Item
+from app.models.item_status_history_model import ItemStatusHistory
 from app.models.project_model import Project
 
 class ItemRepository:
@@ -9,6 +10,8 @@ class ItemRepository:
     self.session = session
 
   # Main Methods
+
+  # Item Model
 
   async def add_item(self, item_obj: Item) -> Item:
     self.session.add(item_obj)
@@ -52,3 +55,15 @@ class ItemRepository:
     result = await self.session.execute(stmt)
 
     return list(result.scalars().all())
+
+
+  # ItemStatusHistory Model
+
+  async def add_status_history(
+    self,
+    item_status_obj: ItemStatusHistory
+  ) -> ItemStatusHistory:
+    self.session.add(item_status_obj)
+    await self.session.flush()
+
+    return item_status_obj
