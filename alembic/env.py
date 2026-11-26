@@ -12,6 +12,7 @@ from app.db.database import Base
 from app.models.client_model import Client
 from app.models.expense_model import Expense
 from app.models.item_model import Item
+from app.models.item_status_history_model import ItemStatusHistory
 from app.models.project_model import Project
 from app.models.user_model import User
 
