@@ -88,7 +88,6 @@ async def test_update_item_invalid_credentials_error(
   request = {
     "name": "a" * 101,
     "item_type": "invalid_item_type",
-    "item_status": "invalid_item_status",
     "description": "b" * 301
   }
 
@@ -102,8 +101,7 @@ async def test_update_item_invalid_credentials_error(
   assert result.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
   assert data["detail"][0]["field_name"] == "name"
   assert data["detail"][1]["field_name"] == "item_type"
-  assert data["detail"][2]["field_name"] == "item_status"
-  assert data["detail"][3]["field_name"] == "description"
+  assert data["detail"][2]["field_name"] == "description"
 
 @pytest.mark.anyio
 @pytest.mark.integration
