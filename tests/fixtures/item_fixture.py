@@ -1,3 +1,4 @@
+from datetime import date
 from unittest.mock import AsyncMock
 
 from httpx import AsyncClient, ASGITransport
@@ -9,6 +10,7 @@ from app.dependencies.project_dependency import get_verified_project
 from app.enums.item_enum import ItemStatus, ItemType
 from app.main import app
 from app.models.item_model import Item
+from app.models.item_status_history_model import ItemStatusHistory
 from app.repositories.item_repository import ItemRepository
 from app.services.item_service import ItemService
 
@@ -63,6 +65,16 @@ def integ_item_obj(registered_project_obj):
     item_type=ItemType.wardrobe,
     item_status=ItemStatus.estimation,
     description="project dsecription",
+  )
+
+@pytest.fixture
+async def integ_item_status_obj(integ_item_repo, integ_item_obj):
+  added_item_obj = await integ_item_repo.add_item(integ_item_obj)
+
+  return ItemStatusHistory(
+    item_id=added_item_obj.id,
+    item_status=added_item_obj.item_status,
+    execution_date = date.today()
   )
 
 @pytest.fixture
