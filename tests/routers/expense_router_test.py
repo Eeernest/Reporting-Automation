@@ -260,11 +260,13 @@ async def test_delete_expense_for_project_success(
 
 # delete_expense_for_item
 
+@pytest.mark.anyio
+@pytest.mark.integration
 async def test_delete_expense_for_item_success(
   integ_expense_router,
-  integ_expense_obj
+  registered_expense_obj
 ):
-  expense = integ_expense_obj
+  expense = registered_expense_obj
 
   result = await integ_expense_router.delete(
     f"/projects/{expense.project_id}/items/{expense.item_id}/expenses/{expense.id}"
