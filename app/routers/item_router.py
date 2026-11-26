@@ -21,7 +21,8 @@ async def register_item(
     name=request.name,
     item_type=request.item_type,
     item_status=request.item_status,
-    description=request.description
+    description=request.description,
+    execution_date=request.execution_date
   )
 
 @router.patch(
