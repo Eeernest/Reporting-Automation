@@ -101,3 +101,12 @@ def unit_item_obj():
     item_status=ItemStatus.estimation,
     description="project dsecription",
   )
+
+@pytest.fixture
+def unit_item_status_obj():
+  return ItemStatusHistory(
+    id=21,
+    item_id=13,
+    item_status=ItemType.wardrobe,
+    execution_date=date.today()
+  )
