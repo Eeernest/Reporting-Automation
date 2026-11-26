@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import BaseModel
 
 import app.core.types as t
@@ -10,6 +12,7 @@ class RegisterItemRequest(BaseModel):
   item_type: ItemType
   item_status: ItemStatus
   description: t.ValidItemDescription | None = None
+  execution_date: date | None = None
 
 class UpdateItemRequest(BaseModel):
   name: t.ValidItemName | None = None
