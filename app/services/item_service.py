@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any
 
 from sqlalchemy.exc import IntegrityError
@@ -6,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import app.core.exceptions as e
 from app.enums.item_enum import ItemStatus, ItemType
 from app.models.item_model import Item
+from app.models.item_status_history_model import ItemStatusHistory
 from app.repositories.item_repository import ItemRepository
 
 class ItemService:
@@ -25,7 +27,8 @@ class ItemService:
     name: str,
     item_type: ItemType,
     item_status: ItemStatus,
-    description: str | None = None
+    description: str | None = None,
+    execution_date: date | None = None
   ) -> Item:
     item_obj = Item(
       project_id=project_id,
@@ -37,14 +40,25 @@ class ItemService:
 
     added_item_obj = await self._add_item_or_raise(item_obj)
 
-    await self._commit_item_or_raise(item_obj)
+    status_history = ItemStatusHistory(
+      item_id=added_item_obj.id,
+      item_status=added_item_obj.item_status,
+      execution_date=execution_date
+    )
+
+    added_status_history_obj = await self._add_status_history_or_raise(status_history)
+
+    await self._commit_item_or_raise(
+      item_obj=added_item_obj,
+      status_history_obj=added_status_history_obj
+    )
 
     return added_item_obj
 
   async def update_item(self, item_obj: Item, update_data: dict[str, Any]) -> Item:
     updated_item_obj = self._update_item_or_raise(item_obj, update_data)
 
-    await self._commit_item_or_raise(updated_item_obj)
+    await self._commit_item_or_raise(item_obj=updated_item_obj, status_history_obj=None)
 
     return updated_item_obj
 
@@ -84,15 +98,34 @@ class ItemService:
 
       raise e.DatabaseIntegrityError() from exc
 
+  async def _add_status_history_or_raise(
+    self,
+    status_history_obj: ItemStatusHistory
+  ) -> ItemStatusHistory:
+    try:
+      return await self.item_repo.add_status_history(status_history_obj)
+
+    except IntegrityError as exc:
+      await self.session.rollback()
+
+      raise e.DatabaseIntegrityError() from exc
+
 
   # session
 
-  async def _commit_item_or_raise(self, item_obj: Item | None = None) -> None:
+  async def _commit_item_or_raise(
+    self,
+    item_obj: Item | None = None,
+    status_history_obj: ItemStatusHistory | None = None
+  ) -> None:
     try:
       await self.session.commit()
 
       if item_obj:
         await self.session.refresh(item_obj)
+
+      if status_history_obj:
+        await self.session.refresh(status_history_obj)
 
     except IntegrityError as exc:
       await self.session.rollback()
