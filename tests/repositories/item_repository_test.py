@@ -1,5 +1,7 @@
 import pytest
 
+# Item Model
+
 # add_item
 
 @pytest.mark.anyio
@@ -80,3 +82,16 @@ async def test_get_all_by_owner_return_empty_list_success(integ_item_repo):
 
   assert len(result) == 0
   assert result == []
+
+
+# ItemStatusModel
+
+# add_status_history
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_add_status_history(integ_item_repo, integ_item_status_obj):
+  result = await integ_item_repo.add_status_history(integ_item_status_obj)
+
+  assert result.id
+  assert result == integ_item_status_obj
