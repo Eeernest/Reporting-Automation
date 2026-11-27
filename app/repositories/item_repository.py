@@ -67,3 +67,20 @@ class ItemRepository:
     await self.session.flush()
 
     return item_status_obj
+
+  async def get_status_history_by_id_and_owner(
+    self,
+    status_history_id: int,
+    item_id: int
+  ) -> ItemStatusHistory | None:
+    stmt = (
+      select(ItemStatusHistory)
+      .where(
+        ItemStatusHistory.id == status_history_id,
+        ItemStatusHistory.item_id == item_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return result.scalar_one_or_none()
