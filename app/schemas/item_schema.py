@@ -14,6 +14,10 @@ class RegisterItemRequest(BaseModel):
   description: t.ValidItemDescription | None = None
   execution_date: date | None = None
 
+class ChangeItemStatusRequest(BaseModel):
+  item_status: ItemStatus
+  execution_date: date | None = None
+
 class UpdateItemRequest(BaseModel):
   name: t.ValidItemName | None = None
   item_type: ItemType | None = None
@@ -26,6 +30,11 @@ class RegisterItemResponse(BaseModel):
   id: int
   project_id: int
   name: t.ValidItemName
+
+class ChangeItemStatusResponse(BaseModel):
+  id: int
+  name: t.ValidItemName
+  item_status: ItemStatus
 
 class UpdateItemResponse(BaseModel):
   id: int
