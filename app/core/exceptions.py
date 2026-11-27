@@ -70,6 +70,9 @@ class ExpenseNotFoundError(NotFoundError):
 class ItemNotFoundError(NotFoundError):
   detail = "Item not found"
 
+class ItemStatusHistoryNotFoundError(NotFoundError):
+  detail = "Item status history not found"
+
 class ProjectNotFoundError(NotFoundError):
   detail = "Project not found"
 
