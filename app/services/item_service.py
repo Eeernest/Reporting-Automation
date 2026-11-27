@@ -21,6 +21,8 @@ class ItemService:
 
   # Main Methods
 
+  # Item Model
+
   async def register_item(
     self,
     project_id: int,
@@ -40,13 +42,13 @@ class ItemService:
 
     added_item_obj = await self._add_item_or_raise(item_obj)
 
-    status_history = ItemStatusHistory(
+    status_history_obj = ItemStatusHistory(
       item_id=added_item_obj.id,
       item_status=added_item_obj.item_status,
       execution_date=execution_date
     )
 
-    added_status_history_obj = await self._add_status_history_or_raise(status_history)
+    added_status_history_obj = await self._add_status_history_or_raise(status_history_obj)
 
     await self._commit_item_or_raise(
       item_obj=added_item_obj,
@@ -74,6 +76,19 @@ class ItemService:
     return await self.item_repo.get_all_by_owner(project_id, user_id)
 
 
+  # ItemStatusHistory Model
+
+  async def get_status_history(
+    self,
+    status_history_id: int,
+    item_id: int
+  ) -> ItemStatusHistory:
+    return await self._get_status_history_or_raise(
+      status_history_id,
+      item_id
+    )
+
+
   # Helper Methods
 
   # item_repo
@@ -85,6 +100,21 @@ class ItemService:
       raise e.ItemNotFoundError()
 
     return item_obj
+
+  async def _get_status_history_or_raise(
+    self,
+    status_history_id: int,
+    item_id: int
+  ) -> ItemStatusHistory:
+    status_history_obj = await self.item_repo.get_status_history_by_id_and_owner(
+      status_history_id,
+      item_id
+    )
+
+    if not status_history_obj:
+      raise e.ItemStatusHistoryNotFoundError()
+
+    return status_history_obj
 
 
   # item_repo and session
