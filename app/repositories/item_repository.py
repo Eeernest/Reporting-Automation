@@ -19,9 +19,6 @@ class ItemRepository:
 
     return item_obj
 
-  async def delete_item(self, item_obj: Item) -> None:
-    await self.session.delete(item_obj)
-
   async def get_by_id_and_owner(
     self,
     item_id: int,
@@ -56,6 +53,8 @@ class ItemRepository:
 
     return list(result.scalars().all())
 
+  async def delete_item(self, item_obj: Item) -> None:
+    await self.session.delete(item_obj)
 
   # ItemStatusHistory Model
 
@@ -84,3 +83,18 @@ class ItemRepository:
     result = await self.session.execute(stmt)
 
     return result.scalar_one_or_none()
+
+  async def get_all_status_histories_by_owner(
+    self,
+    item_id: int
+  ) -> list[ItemStatusHistory]:
+    stmt = (
+      select(ItemStatusHistory)
+      .where(
+        ItemStatusHistory.item_id == item_id
+      )
+    )
+
+    result = await self.session.execute(stmt)
+
+    return list(result.scalars().all())
