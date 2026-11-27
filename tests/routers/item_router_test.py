@@ -324,3 +324,52 @@ async def test_get_all_status_histories_success(
   assert data[0]["item_id"]
   assert data[0]["item_status"]
   assert data[0]["execution_date"]
+
+
+# update_status_history
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_sattus_history_success(
+  integ_item_router,
+  registered_item_obj,
+  commited_item_status_obj
+):
+  item = registered_item_obj
+  history = commited_item_status_obj
+
+  request = {"item_status": "Production"}
+
+  result = await integ_item_router.patch(
+    f"/projects/{item.project_id}/items/{history.item_id}/status_history/{history.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["item_id"]
+  assert data["item_status"] == request["item_status"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_update_sattus_history_no_field_provided_error(
+  integ_item_router,
+  registered_item_obj,
+  commited_item_status_obj
+):
+  item = registered_item_obj
+  history = commited_item_status_obj
+
+  request = {}
+
+  result = await integ_item_router.patch(
+    f"/projects/{item.project_id}/items/{history.item_id}/status_history/{history.id}",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_400_BAD_REQUEST
+  assert data["detail"] == e.NoFieldProvidedError.detail
