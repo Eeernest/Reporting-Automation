@@ -93,6 +93,96 @@ async def test_register_item_add_status_history_database_error(
   assert isinstance(exc.value, e.DatabaseIntegrityError)
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
+
+# change_item_status
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_change_item_status_success(
+  mock_item_repo,
+  mock_item_session,
+  unit_item_service,
+  unit_item_obj,
+  unit_item_status_obj
+):
+  unit_item_status_obj.item_status = "Kitchen"
+  
+  mock_item_repo.add_status_history.return_value = unit_item_status_obj
+  mock_item_session.commit.return_value = None
+
+  result = await unit_item_service.change_item_status(
+    item_obj=unit_item_obj,
+    item_status="Kitchen"
+  )
+
+  assert result.item_status == "Kitchen"
+  assert result.item_status == unit_item_status_obj.item_status
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_change_item_status_already_assigner_error(
+  unit_item_service,
+  unit_item_obj
+):
+  with pytest.raises(e.StatusAlreadyAssignedError) as exc:
+    await unit_item_service.change_item_status(
+      item_obj=unit_item_obj,
+      item_status=unit_item_obj.item_status
+    )
+
+  assert isinstance(exc.value, e.StatusAlreadyAssignedError)
+  assert exc.value.detail == e.StatusAlreadyAssignedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_change_item_status_add_status_history_failure(
+  mock_item_repo,
+  unit_item_service,
+  unit_item_obj
+):
+  mock_item_repo.add_status_history.side_effect = IntegrityError(
+    "stmt",
+    "paramse",
+    "db_error"
+  )
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_item_service.change_item_status(
+      item_obj=unit_item_obj,
+      item_status="Kitchen"
+    )
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_change_item_status_commit_failure(
+  mock_item_repo,
+  mock_item_session,
+  unit_item_service,
+  unit_item_obj,
+  unit_item_status_obj
+):
+  unit_item_status_obj.item_status = "Kitchen"
+  
+  mock_item_repo.add_status_history.return_value = unit_item_status_obj
+  mock_item_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_item_service.change_item_status(
+      item_obj=unit_item_obj,
+      item_status="Kitchen"
+    )
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
+
+
 # update_item
 
 @pytest.mark.anyio
