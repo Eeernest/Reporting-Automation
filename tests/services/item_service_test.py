@@ -384,3 +384,61 @@ async def test_get_all_status_histories_return_empty_list_success(
 
   assert len(result) == 0
   assert result == []
+
+
+# update_status_history
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_status_history_success(
+  mock_item_session,
+  unit_item_service,
+  unit_item_status_obj
+):
+  mock_item_session.commit.return_value = None
+
+  result = await unit_item_service.update_status_history(
+    unit_item_status_obj,
+    {"item_status": "Production"}
+  )
+
+  assert result.item_status == "Production"
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_status_history_no_field_provided_error(
+  unit_item_service,
+  unit_item_status_obj
+):
+  with pytest.raises(e.NoFieldProvidedError) as exc:
+    await unit_item_service.update_status_history(
+      unit_item_status_obj,
+      {}
+    )
+
+  assert isinstance(exc.value, e.NoFieldProvidedError)
+  assert exc.value.detail == e.NoFieldProvidedError.detail
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_update_status_history_database_integrity_error(
+  mock_item_session,
+  unit_item_service,
+  unit_item_status_obj
+):
+  mock_item_session.commit.side_effect = IntegrityError(
+    "stmt",
+    "params",
+    "db_error"
+  )
+
+  mock_item_session.rollback.return_value = None
+
+  with pytest.raises(e.DatabaseIntegrityError) as exc:
+    await unit_item_service.update_status_history(
+      unit_item_status_obj,
+      {"item_status": "Production"}
+    )
+
+  assert isinstance(exc.value, e.DatabaseIntegrityError)
+  assert exc.value.detail == e.DatabaseIntegrityError.detail
