@@ -211,3 +211,45 @@ async def test_get_all_items_return_empty_success(integ_item_router):
 
   assert result.status_code == status.HTTP_200_OK
   assert data == []
+
+
+# get_status_history
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_status_history_success(
+  integ_item_router,
+  commited_item_status_obj,
+  registered_item_obj
+):
+  item = registered_item_obj
+  history = commited_item_status_obj
+  
+  result = await integ_item_router.get(
+    f"/projects/{item.project_id}/items/{history.item_id}/status_history/{history.id}"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["item_id"]
+  assert data["item_status"]
+  assert data["execution_date"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_status_history_item_status_history_not_found_error(
+  integ_item_router,
+  registered_item_obj
+):
+  item = registered_item_obj
+  
+  result = await integ_item_router.get(
+    f"/projects/{item.project_id}/items/{item.id}/status_history/{34}"
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_404_NOT_FOUND
+  assert data["detail"] == e.ItemStatusHistoryNotFoundError.detail
