@@ -50,7 +50,7 @@ class ItemService:
 
     added_status_history_obj = await self._add_status_history_or_raise(status_history_obj)
 
-    await self._commit_item_or_raise(
+    await self._commit_or_raise(
       item_obj=added_item_obj,
       status_history_obj=added_status_history_obj
     )
@@ -81,7 +81,7 @@ class ItemService:
 
     added_status_history_obj = await self._add_status_history_or_raise(status_history_obj)
 
-    await self._commit_item_or_raise(
+    await self._commit_or_raise(
       item_obj=item_obj,
       status_history_obj=added_status_history_obj
     )
@@ -91,14 +91,14 @@ class ItemService:
   async def update_item(self, item_obj: Item, update_data: dict[str, Any]) -> Item:
     updated_item_obj = self._update_item_or_raise(item_obj, update_data)
 
-    await self._commit_item_or_raise(item_obj=updated_item_obj, status_history_obj=None)
+    await self._commit_or_raise(item_obj=updated_item_obj, status_history_obj=None)
 
     return updated_item_obj
 
   async def delete_item(self, item_obj: Item) -> None:
     await self.item_repo.delete_item(item_obj)
 
-    await self._commit_item_or_raise(item_obj=None)
+    await self._commit_or_raise(item_obj=None)
 
 
   # ItemStatusHistory Model
@@ -115,6 +115,23 @@ class ItemService:
 
   async def get_all_status_histories(self, item_id: int) -> list[ItemStatusHistory]:
     return await self.item_repo.get_all_status_histories_by_owner(item_id)
+
+  async def update_status_history(
+    self,
+    status_history_obj: ItemStatusHistory,
+    update_data: dict[str, Any]
+  ) -> ItemStatusHistory:
+    updated_status_history = self._update_status_history_or_raise(
+      status_history_obj,
+      update_data
+    )
+
+    await self._commit_or_raise(
+      item_obj=None,
+      status_history_obj=updated_status_history
+    )
+
+    return updated_status_history
 
 
   # Helper Methods
@@ -171,7 +188,7 @@ class ItemService:
 
   # session
 
-  async def _commit_item_or_raise(
+  async def _commit_or_raise(
     self,
     item_obj: Item | None = None,
     status_history_obj: ItemStatusHistory | None = None
@@ -201,6 +218,19 @@ class ItemService:
       setattr(item_obj, field, value)
 
     return item_obj
+
+  def _update_status_history_or_raise(
+    self,
+    status_history_obj: ItemStatusHistory,
+    update_data: dict[str, Any]
+  ) -> ItemStatusHistory:
+      if not update_data:
+        raise e.NoFieldProvidedError()
+  
+      for field, value in update_data.items():
+        setattr(status_history_obj, field, value)
+  
+      return status_history_obj
 
   def _validate_item_status(self, item_obj: Item, item_status: ItemStatus) -> None:
     if item_obj.item_status == item_status:
