@@ -111,3 +111,6 @@ class BadRequestError(AppError):
 
 class NoFieldProvidedError(BadRequestError):
   detail = "At least one field of input is required"
+
+class StatusAlreadyAssignedError(BadRequestError):
+  detail = "This status is already set on the item"
