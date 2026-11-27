@@ -23,6 +23,9 @@ class UpdateItemRequest(BaseModel):
   item_type: ItemType | None = None
   description: t.ValidItemDescription | None = None
 
+class UpdateStatusHistoryRequest(BaseModel):
+  item_status: ItemStatus | None = None
+  execution_date: date | None = None
 
 # Responses
 
@@ -30,6 +33,20 @@ class RegisterItemResponse(BaseModel):
   id: int
   project_id: int
   name: t.ValidItemName
+
+class GetItemResponse(BaseModel):
+  id: int
+  project_id: int
+  name: t.ValidItemName
+  item_type: ItemType
+  item_status: ItemStatus
+  description: t.ValidItemDescription | None
+
+class GetStatusHistoryResponse(BaseModel):
+  id: int
+  item_id: int
+  item_status: ItemStatus
+  execution_date: date
 
 class ChangeItemStatusResponse(BaseModel):
   id: int
@@ -43,15 +60,7 @@ class UpdateItemResponse(BaseModel):
   item_type: ItemType | None = None
   description: t.ValidItemDescription | None = None
 
-class GetItemResponse(BaseModel):
-  id: int
-  project_id: int
-  name: t.ValidItemName
-  item_type: ItemType
-  item_status: ItemStatus
-  description: t.ValidItemDescription | None
-
-class GetStatusHistoryResponse(BaseModel):
+class UpdateStatusHistoryResponse(BaseModel):
   id: int
   item_id: int
   item_status: ItemStatus
