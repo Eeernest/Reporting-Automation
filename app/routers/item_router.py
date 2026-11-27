@@ -70,3 +70,18 @@ async def get_item(
 )
 async def get_all_items(project: VerifiedProjectDep, service: ItemServiceDep):
   return await service.get_all_items(project_id=project.id, user_id=project.user_id)
+
+@router.get(
+  "/projects/{project_id}/items/{item_id}/status_history/{status_history_id}",
+  response_model=s.GetStatusHistoryResponse,
+  status_code=status.HTTP_200_OK
+)
+async def get_status_history(
+  status_history_id: int,
+  item: VerifiedItemDep,
+  service: ItemServiceDep
+):
+  return await service.get_status_history(
+    status_history_id=status_history_id,
+    item_id=item.id
+  )
