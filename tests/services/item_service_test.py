@@ -94,6 +94,61 @@ async def test_register_item_add_status_history_database_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
+# get_item
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_client_success(
+  mock_item_repo,
+  unit_item_service,
+  unit_item_obj,
+  unit_project_obj
+):
+  mock_item_repo.get_by_id_and_owner.return_value = unit_item_obj
+
+  result = await unit_item_service.get_item(
+    unit_item_obj.id,
+    unit_project_obj.id,
+    unit_project_obj.user_id
+  )
+
+  assert result == unit_item_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_client_not_found_error(mock_item_repo, unit_item_service):
+  mock_item_repo.get_by_id_and_owner.return_value = None
+
+  with pytest.raises(e.ItemNotFoundError) as exc:
+    await unit_item_service.get_item(13213, 34, 123321)
+
+  assert isinstance(exc.value, e.ItemNotFoundError)
+  assert exc.value.detail == e.ItemNotFoundError.detail
+
+
+# get_all_items
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_items_success(mock_item_repo, unit_item_service, unit_item_obj):
+  mock_item_repo.get_all_by_owner.return_value = [unit_item_obj]
+
+  result = await unit_item_service.get_all_items(unit_item_obj.project_id, 3)
+
+  assert len(result) == 1
+  assert result[0] == unit_item_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_items_return_empty_list_success(mock_item_repo, unit_item_service):
+  mock_item_repo.get_all_by_owner.return_value = []
+
+  result = await unit_item_service.get_all_items(13, 21)
+
+  assert len(result) == 0
+  assert result == []
+
+
 # change_item_status
 
 @pytest.mark.anyio
@@ -266,61 +321,6 @@ async def test_delete_item_database_integrity_error(
   assert exc.value.detail == e.DatabaseIntegrityError.detail
 
 
-# get_item
-
-@pytest.mark.anyio
-@pytest.mark.unit
-async def test_get_client_success(
-  mock_item_repo,
-  unit_item_service,
-  unit_item_obj,
-  unit_project_obj
-):
-  mock_item_repo.get_by_id_and_owner.return_value = unit_item_obj
-
-  result = await unit_item_service.get_item(
-    unit_item_obj.id,
-    unit_project_obj.id,
-    unit_project_obj.user_id
-  )
-
-  assert result == unit_item_obj
-
-@pytest.mark.anyio
-@pytest.mark.unit
-async def test_get_client_not_found_error(mock_item_repo, unit_item_service):
-  mock_item_repo.get_by_id_and_owner.return_value = None
-
-  with pytest.raises(e.ItemNotFoundError) as exc:
-    await unit_item_service.get_item(13213, 34, 123321)
-
-  assert isinstance(exc.value, e.ItemNotFoundError)
-  assert exc.value.detail == e.ItemNotFoundError.detail
-
-
-# get_all_items
-
-@pytest.mark.anyio
-@pytest.mark.unit
-async def test_get_all_items_success(mock_item_repo, unit_item_service, unit_item_obj):
-  mock_item_repo.get_all_by_owner.return_value = [unit_item_obj]
-
-  result = await unit_item_service.get_all_items(unit_item_obj.project_id, 3)
-
-  assert len(result) == 1
-  assert result[0] == unit_item_obj
-
-@pytest.mark.anyio
-@pytest.mark.unit
-async def test_get_items_return_empty_list_success(mock_item_repo, unit_item_service):
-  mock_item_repo.get_all_by_owner.return_value = []
-
-  result = await unit_item_service.get_all_items(13, 21)
-
-  assert len(result) == 0
-  assert result == []
-
-
 # ItemStatusHistory Model
 
 # get_status_history
@@ -354,3 +354,33 @@ async def test_get_status_history_item_status_history_not_found_error(
 
   assert isinstance(exc.value, e.ItemStatusHistoryNotFoundError)
   assert exc.value.detail == e.ItemStatusHistoryNotFoundError.detail
+
+
+# get_all_status_histories
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_status_histories_success(
+  mock_item_repo,
+  unit_item_service,
+  unit_item_status_obj
+):
+  mock_item_repo.get_all_status_histories_by_owner.return_value = [unit_item_status_obj]
+
+  result = await unit_item_service.get_all_status_histories(unit_item_status_obj.item_id)
+
+  assert len(result) == 1
+  assert result[0] == unit_item_status_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_all_status_histories_return_empty_list_success(
+  mock_item_repo,
+  unit_item_service
+):
+  mock_item_repo.get_all_status_histories_by_owner.return_value = []
+
+  result = await unit_item_service.get_all_status_histories(99)
+
+  assert len(result) == 0
+  assert result == []
