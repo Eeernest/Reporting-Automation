@@ -41,3 +41,9 @@ class GetItemResponse(BaseModel):
   item_type: ItemType
   item_status: ItemStatus
   description: t.ValidItemDescription | None
+
+class GetStatusHistoryResponse(BaseModel):
+  id: int
+  item_id: int
+  item_status: ItemStatus
+  execution_date: date
