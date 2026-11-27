@@ -26,6 +26,22 @@ async def register_item(
   )
 
 @router.patch(
+  "/projects/{project_id}/items/{item_id}/status_history",
+  response_model=s.ChangeItemStatusResponse,
+  status_code=status.HTTP_200_OK
+)
+async def change_item_status(
+  item: VerifiedItemDep,
+  service: ItemServiceDep,
+  request: s.ChangeItemStatusRequest
+):
+  return await service.change_item_status(
+    item_obj=item,
+    item_status=request.item_status,
+    execution_date=request.execution_date
+  )
+
+@router.patch(
   "/projects/{project_id}/items/{item_id}",
   response_model=s.UpdateItemResponse,
   status_code=status.HTTP_200_OK
