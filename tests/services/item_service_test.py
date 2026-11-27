@@ -3,6 +3,8 @@ from sqlalchemy.exc import IntegrityError
 
 import app.core.exceptions as e
 
+# Item Model
+
 # register_item
 
 @pytest.mark.anyio
@@ -227,3 +229,38 @@ async def test_get_items_return_empty_list_success(mock_item_repo, unit_item_ser
 
   assert len(result) == 0
   assert result == []
+
+
+# ItemStatusHistory Model
+
+# get_status_history
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_satatus_history_success(
+  mock_item_repo,
+  unit_item_service,
+  unit_item_status_obj
+):
+  mock_item_repo.get_status_history_by_id_and_owner.return_value = unit_item_status_obj
+
+  result = await unit_item_service.get_status_history(
+    unit_item_status_obj.id,
+    unit_item_status_obj.item_id
+  )
+
+  assert result == unit_item_status_obj
+
+@pytest.mark.anyio
+@pytest.mark.unit
+async def test_get_status_history_item_status_history_not_found_error(
+  mock_item_repo,
+  unit_item_service
+):
+  mock_item_repo.get_status_history_by_id_and_owner.return_value = None
+
+  with pytest.raises(e.ItemStatusHistoryNotFoundError) as exc:
+    await unit_item_service.get_status_history(21, 34)
+
+  assert isinstance(exc.value, e.ItemStatusHistoryNotFoundError)
+  assert exc.value.detail == e.ItemStatusHistoryNotFoundError.detail
