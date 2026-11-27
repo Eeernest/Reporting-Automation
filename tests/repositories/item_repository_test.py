@@ -120,3 +120,29 @@ async def test_get_satus_history_by_id_and_owner_return_none_success(
   result = await integ_item_repo.get_status_history_by_id_and_owner(21, 13)
 
   assert result is None
+
+
+# get_all_status_histories_by_owner
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_status_histories_by_owner_success(
+  integ_item_repo,
+  commited_item_status_obj
+):
+  result = await integ_item_repo.get_all_status_histories_by_owner(
+    commited_item_status_obj.item_id
+  )
+
+  assert len(result) == 1
+  assert result[0] == commited_item_status_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_all_status_histories_by_owner_return_empty_list_success(
+  integ_item_repo
+):
+  result = await integ_item_repo.get_all_status_histories_by_owner(45)
+
+  assert len(result) == 0
+  assert result == []
