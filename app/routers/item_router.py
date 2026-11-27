@@ -6,6 +6,8 @@ import app.schemas.item_schema as s
 
 router = APIRouter()
 
+# Item Model
+
 @router.post(
   "/projects/{project_id}/items",
   response_model=s.RegisterItemResponse,
@@ -24,6 +26,30 @@ async def register_item(
     description=request.description,
     execution_date=request.execution_date
   )
+
+@router.get(
+  "/projects/{project_id}/items/{item_id}",
+  response_model=s.GetItemResponse,
+  status_code=status.HTTP_200_OK
+)
+async def get_item(
+  item_id: int,
+  project: VerifiedProjectDep,
+  service: ItemServiceDep
+):
+  return await service.get_item(
+    item_id=item_id,
+    project_id=project.id,
+    user_id=project.user_id
+  )
+
+@router.get(
+  "/projects/{project_id}/items",
+  response_model=list[s.GetItemResponse],
+  status_code=status.HTTP_200_OK
+)
+async def get_all_items(project: VerifiedProjectDep, service: ItemServiceDep):
+  return await service.get_all_items(project_id=project.id, user_id=project.user_id)
 
 @router.patch(
   "/projects/{project_id}/items/{item_id}/status_history",
@@ -63,29 +89,8 @@ async def update_item(
 async def delete_item(item: VerifiedItemDep, service: ItemServiceDep):
   return await service.delete_item(item_obj=item)
 
-@router.get(
-  "/projects/{project_id}/items/{item_id}",
-  response_model=s.GetItemResponse,
-  status_code=status.HTTP_200_OK
-)
-async def get_item(
-  item_id: int,
-  project: VerifiedProjectDep,
-  service: ItemServiceDep
-):
-  return await service.get_item(
-    item_id=item_id,
-    project_id=project.id,
-    user_id=project.user_id
-  )
 
-@router.get(
-  "/projects/{project_id}/items",
-  response_model=list[s.GetItemResponse],
-  status_code=status.HTTP_200_OK
-)
-async def get_all_items(project: VerifiedProjectDep, service: ItemServiceDep):
-  return await service.get_all_items(project_id=project.id, user_id=project.user_id)
+# ItemStatusHistory Model
 
 @router.get(
   "/projects/{project_id}/items/{item_id}/status_history/{status_history_id}",
@@ -101,3 +106,11 @@ async def get_status_history(
     status_history_id=status_history_id,
     item_id=item.id
   )
+
+@router.get(
+  "/projects/{project_id}/items/{item_id}/status_history",
+  response_model=list[s.GetStatusHistoryResponse],
+  status_code=status.HTTP_200_OK
+)
+async def get_all_status_histories(item: VerifiedItemDep, service: ItemServiceDep):
+  return await service.get_all_status_histories(item_id=item.id)
