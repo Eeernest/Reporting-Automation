@@ -92,6 +92,19 @@ async def registered_item_obj(
   )
 
 @pytest.fixture
+async def commited_item_status_obj(
+  db_session,
+  integ_item_repo,
+  integ_item_status_obj
+):
+  added_item_status_obj = await integ_item_repo.add_status_history(integ_item_status_obj)
+
+  await db_session.commit()
+
+  return added_item_status_obj
+  
+
+@pytest.fixture
 def unit_item_obj():
   return Item(
     id=122,
