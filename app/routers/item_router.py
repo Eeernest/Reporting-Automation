@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.dependencies.item_dependency import ItemServiceDep, VerifiedItemDep
+from app.dependencies.item_dependency import ItemServiceDep, VerifiedItemDep, VerifiedStatusHistoryDep
 from app.dependencies.project_dependency import VerifiedProjectDep
 import app.schemas.item_schema as s
 
@@ -114,3 +114,18 @@ async def get_status_history(
 )
 async def get_all_status_histories(item: VerifiedItemDep, service: ItemServiceDep):
   return await service.get_all_status_histories(item_id=item.id)
+
+@router.patch(
+  "/projects/{project_id}/items/{item_id}/status_history/{status_history_id}",
+  response_model=s.UpdateStatusHistoryResponse,
+  status_code=status.HTTP_200_OK
+)
+async def update_status_history(
+  status_history: VerifiedStatusHistoryDep,
+  service: ItemServiceDep,
+  request: s.UpdateStatusHistoryRequest
+):
+  return await service.update_status_history(
+    status_history_obj=status_history,
+    update_data=request.model_dump(exclude_unset=True)
+  )
