@@ -95,3 +95,28 @@ async def test_add_status_history(integ_item_repo, integ_item_status_obj):
 
   assert result.id
   assert result == integ_item_status_obj
+
+
+# get_status_history_by_id_and_owner
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_status_history_by_id_and_owner_success(
+  integ_item_repo,
+  commited_item_status_obj
+):
+  result = await integ_item_repo.get_status_history_by_id_and_owner(
+    commited_item_status_obj.id,
+    commited_item_status_obj.item_id
+  )
+
+  assert result == commited_item_status_obj
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_get_satus_history_by_id_and_owner_return_none_success(
+  integ_item_repo
+):
+  result = await integ_item_repo.get_status_history_by_id_and_owner(21, 13)
+
+  assert result is None
