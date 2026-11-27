@@ -55,6 +55,48 @@ async def test_register_item_credentials_validation_error(
   assert data["detail"][3]["field_name"] == "description"
 
 
+# change_item_status
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_change_item_status_success(integ_item_router, registered_item_obj):
+  item = registered_item_obj
+  
+  request = {"item_status": "Production"}
+
+  result = await integ_item_router.patch(
+    f"/projects/{item.project_id}/items/{item.id}/status_history",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_200_OK
+  assert data["id"]
+  assert data["name"]
+  assert data["item_status"] == request["item_status"]
+
+@pytest.mark.anyio
+@pytest.mark.integration
+async def test_change_item_status_alrady_assigned_error(
+  integ_item_router,
+  registered_item_obj
+):
+  item = registered_item_obj
+  
+  request = {"item_status": item.item_status}
+
+  result = await integ_item_router.patch(
+    f"/projects/{item.project_id}/items/{item.id}/status_history",
+    json=request
+  )
+
+  data = result.json()
+
+  assert result.status_code == status.HTTP_400_BAD_REQUEST
+  assert data["detail"] == e.StatusAlreadyAssignedError.detail
+
+
 # update_item
 
 @pytest.mark.anyio
