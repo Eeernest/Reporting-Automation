@@ -28,9 +28,9 @@ async def get_status_history(
   status_history_id: int,
   service: ItemServiceDep
 ) -> ItemStatusHistory:
-  return await service.get_sattus_history(
+  return await service.get_status_history(
     item_id=item.id,
-    status_hsitory_id=status_history_id
+    status_history_id=status_history_id
   )
 
 
