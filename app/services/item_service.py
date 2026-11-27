@@ -21,7 +21,7 @@ class ItemService:
 
   # Main Methods
 
-  # Return Item Model
+  # Item Model
 
   async def register_item(
     self,
@@ -101,7 +101,7 @@ class ItemService:
     await self._commit_item_or_raise(item_obj=None)
 
 
-  # Return ItemStatusHistory Model
+  # ItemStatusHistory Model
 
   async def get_status_history(
     self,
@@ -112,6 +112,9 @@ class ItemService:
       status_history_id,
       item_id
     )
+
+  async def get_all_status_histories(self, item_id: int) -> list[ItemStatusHistory]:
+    return await self.item_repo.get_all_status_histories_by_owner(item_id)
 
 
   # Helper Methods
