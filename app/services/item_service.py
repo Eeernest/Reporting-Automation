@@ -57,6 +57,31 @@ class ItemService:
 
     return added_item_obj
 
+  async def change_item_status(
+    self,
+    item_obj: Item,
+    item_status: ItemStatus,
+    execution_date: date | None = None
+  ) -> Item:
+    self._validate_item_status(item_obj, item_status)
+
+    item_obj.item_status = item_status
+
+    status_history_obj = ItemStatusHistory(
+      item_id=item_obj.id,
+      item_status=item_obj.item_status,
+      execution_date=execution_date
+    )
+
+    added_status_history_obj = await self._add_status_history_or_raise(status_history_obj)
+
+    await self._commit_item_or_raise(
+      item_obj=item_obj,
+      status_history_obj=added_status_history_obj
+    )
+
+    return item_obj    
+
   async def update_item(self, item_obj: Item, update_data: dict[str, Any]) -> Item:
     updated_item_obj = self._update_item_or_raise(item_obj, update_data)
 
@@ -173,3 +198,7 @@ class ItemService:
       setattr(item_obj, field, value)
 
     return item_obj
+
+  def _validate_item_status(self, item_obj: Item, item_status: ItemStatus) -> None:
+    if item_obj.item_status == item_status:
+      raise e.StatusAlreadyAssignedError()
