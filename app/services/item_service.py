@@ -21,7 +21,7 @@ class ItemService:
 
   # Main Methods
 
-  # Item Model
+  # Return Item Model
 
   async def register_item(
     self,
@@ -56,6 +56,12 @@ class ItemService:
     )
 
     return added_item_obj
+
+  async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
+    return await self._get_item_or_raise(item_id, project_id, user_id)
+
+  async def get_all_items(self, project_id: int, user_id: int) -> list[Item]:
+    return await self.item_repo.get_all_by_owner(project_id, user_id)
 
   async def change_item_status(
     self,
@@ -94,14 +100,8 @@ class ItemService:
 
     await self._commit_item_or_raise(item_obj=None)
 
-  async def get_item(self, item_id: int, project_id: int, user_id: int) -> Item:
-    return await self._get_item_or_raise(item_id, project_id, user_id)
 
-  async def get_all_items(self, project_id: int, user_id: int) -> list[Item]:
-    return await self.item_repo.get_all_by_owner(project_id, user_id)
-
-
-  # ItemStatusHistory Model
+  # Return ItemStatusHistory Model
 
   async def get_status_history(
     self,
